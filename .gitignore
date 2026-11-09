@@ -1,0 +1,11 @@
+# Seuls les fichiers du site en ligne sont publiés.
+# Les scripts Windows (installation, module, sauvegarde) restent sur l'ordinateur.
+*.ps1
+*.vbs
+*.bat
+dashboard-v1-original.html
+*.json
+!manifest.webmanifest
+apps.js
+supabase/
+Sauvegarde*/
