@@ -1,7 +1,7 @@
 /* Dashboard en ligne : la page est demandée au réseau d'abord (toujours la dernière version),
    avec une copie gardée pour ouvrir l'appli sans connexion. Rien d'autre n'est mis en cache
    (ni les données du compte, ni les images externes). */
-const CACHE = 'dashboard-v1';
+const CACHE = 'dashboard-v2'; // v2 : nouveau logo (icônes)
 const FILES = ['dashboard.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
