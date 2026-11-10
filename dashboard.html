@@ -255,8 +255,10 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
   .vb-grid.big.hz-moyen .vcard{height:350px}
   .vb-grid.big.hz-moyen .vc-t{font-size:29px}
   /* Bannière large : l'image reste entière, les côtés sont remplis par la même image floutée */
-  .vb-grid.big.hz-long .rv,.vb-grid.big.hz-moyen .rv{isolation:isolate}
-  .vb-grid.big.hz-long .rv::before,.vb-grid.big.hz-moyen .rv::before{content:'';position:absolute;inset:-40px;z-index:-1;background:var(--rvimg) center/cover no-repeat;filter:blur(26px) brightness(.6);transform:scale(1.1)}
+  /* Long terme : l'image remplit toute la bannière (recadrée en hauteur) */
+  .vb-grid.big.hz-long .rv-img{background-size:cover!important;background-position:center}
+  .vb-grid.big.hz-moyen .rv{isolation:isolate}
+  .vb-grid.big.hz-moyen .rv::before{content:'';position:absolute;inset:-40px;z-index:-1;background:var(--rvimg) center/cover no-repeat;filter:blur(26px) brightness(.6);transform:scale(1.1)}
 }
 @media(max-width:1000px) and (min-width:701px){.vb-grid.big.hz-moyen{grid-template-columns:1fr}}
 .vc-p{font-size:12.5px;color:rgba(255,255,255,.7)}
@@ -958,6 +960,8 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .ti-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 70px 40px;gap:10px;align-items:center;padding-left:calc(var(--d)*18px);font-size:13.5px}
 .ti-row[role=button]{cursor:pointer}.ti-row[role=button]:hover .ti-l{color:var(--gold2)}
 .ti-l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ti-row.src .ti-l{color:rgba(255,255,255,.72);font-size:13px}
+.ti-row.src .ti-bar i{opacity:.55}
 .ti-bar{height:8px;border-radius:8px;background:rgba(255,255,255,.07);overflow:hidden}
 .ti-bar i{display:block;height:100%;border-radius:8px;background:var(--c)}
 .ti-row b{text-align:right;font-weight:600}.ti-row small{color:var(--muted);text-align:right}
@@ -2458,18 +2462,25 @@ function openTimeInfo(id){
   const today=dk(),wk=dk(addDays(now,-6)),mo=dk(new Date(now.getFullYear(),now.getMonth(),1));
   const run=goalRunsIn(g),runName=run?chronoName(S.chrono):'';
   /* Répartition : temps fait directement sur l'objectif, puis chaque sous-objectif (avec son propre arbre) */
+  /* D'où vient le temps « propre » d'un objectif : son chrono à lui, ou un raccourci « Sessions de travail » de l'accueil relié à lui */
+  const c0=S.chrono,srcRows=(x,d)=>{const out=[],col=CATS[x.cat]||'#888';
+    const direct=(x.totalSec||0)+(c0&&c0.gid===x.id?chronoSec():0);
+    if(direct>=30)out.push({l:'Chrono de l’objectif',t:direct,d,c:col,src:1});
+    S.spaces.filter(s=>s.goal===x.id).forEach(s=>{const t=(s.totalSec||0)+(c0&&c0.sid===s.id?chronoSec():0);if(t>=30)out.push({l:`Raccourci « ${s.name} »`,t,d,c:col,src:1});});
+    return out;};
   const rows=[],seen=new Set([g.id]);
-  const own=goalOwnSec(g);if(own>=30||!goalKids(g).length)rows.push({l:'Directement sur cet objectif',t:own,d:0,c:CATS[g.cat]||'#888'});
-  const walk=(x,d)=>goalKids(x).forEach(k=>{if(seen.has(k.id))return;seen.add(k.id);const t=goalWorkSec(k);if(t>=30)rows.push({l:k.title,t,d,c:CATS[k.cat]||'#888',id:k.id});walk(k,d+1);});
+  rows.push(...srcRows(g,0));
+  const walk=(x,d)=>goalKids(x).forEach(k=>{if(seen.has(k.id))return;seen.add(k.id);const t=goalWorkSec(k);if(t>=30){rows.push({l:k.title,t,d,c:CATS[k.cat]||'#888',id:k.id});const sr=srcRows(k,d+1);if(sr.length>1||goalKids(k).some(z=>goalWorkSec(z)>=30)||(sr.length===1&&sr[0].l.startsWith('Raccourci')))rows.push(...sr);}walk(k,d+1);});
   walk(g,0);
+  if(!rows.length)rows.push({l:'Aucun temps pour l’instant',t:0,d:0,c:CATS[g.cat]||'#888',src:1});
   const n=14,ds=[...Array(n)].map((_,i)=>{const d=addDays(now,i-n+1);return {k:dk(d),d};}),mx=Math.max(60,...ds.map(x=>days[x.k]||0));
   const ov=document.createElement('div');ov.className='overlay';
   ov.innerHTML=`<div class="modal wide ti">
     <div class="ti-h"><span class="ti-ic">⏱</span><div><div class="eyebrow">Temps de travail</div><h3>${esc(g.title)}</h3></div></div>
     ${run?`<div class="ti-run">● Session en cours${runName&&runName!==g.title?` sur « ${esc(runName)} »`:''} : <b>${hms(chronoSec())}</b></div>`:''}
     <div class="ti-kpis"><div><b>${fmtDur(total)}</b><span>au total</span></div><div><b>${fmtDur(sumSince(mo))}</b><span>ce mois-ci</span></div><div><b>${fmtDur(sumSince(wk))}</b><span>7 derniers jours</span></div><div><b>${fmtDur(days[today]||0)}</b><span>aujourd'hui</span></div></div>
-    ${rows.length>1||(rows.length&&rows[0].id)?`<h4 class="ti-t">Répartition</h4><div class="ti-rows">${rows.map(r=>`<div class="ti-row" style="--d:${r.d};--c:${r.c}" ${r.id?`role="button" onclick="this.closest('.overlay').remove();openGoal('${r.id}')"`:''}><span class="ti-l">${esc(r.l)}</span><span class="ti-bar"><i style="width:${total?Math.max(2,r.t/total*100):0}%"></i></span><b>${fmtDur(r.t)}</b><small>${total?Math.round(r.t/total*100):0} %</small></div>`).join('')}</div>
-      <p class="sub">Le temps d'un sous-objectif comprend celui de ses propres sous-objectifs.</p>`:''}
+    ${total>=30?`<h4 class="ti-t">Répartition</h4><div class="ti-rows">${rows.map(r=>`<div class="ti-row ${r.src?'src':''}" style="--d:${r.d};--c:${r.c}" ${r.id?`role="button" onclick="this.closest('.overlay').remove();openGoal('${r.id}')"`:''}><span class="ti-l">${esc(r.l)}</span><span class="ti-bar"><i style="width:${total?Math.max(2,r.t/total*100):0}%"></i></span><b>${fmtDur(r.t)}</b><small>${total?Math.round(r.t/total*100):0} %</small></div>`).join('')}</div>
+      <p class="sub">« Chrono de l’objectif » = sessions lancées depuis l'objectif ; « Raccourci » = sessions lancées depuis l'accueil. Le temps d'un sous-objectif comprend celui de ses propres sous-objectifs.</p>`:''}
     <h4 class="ti-t">14 derniers jours</h4>
     <div class="ti-days">${ds.map(x=>{const v=days[x.k]||0;return `<div class="ti-day ${x.k===today?'t':''}" title="${x.d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})} : ${fmtDur(v)}"><span><i style="height:${v?Math.max(4,v/mx*100):0}%"></i></span><small>${x.d.toLocaleDateString('fr-FR',{weekday:'narrow'})}</small></div>`;}).join('')}</div>
     <div class="mact">${goalSessionsOn(g)?`<button class="btn ${S.chrono&&S.chrono.gid===g.id?'primary':''}" onclick="this.closest('.overlay').remove();startGoalChrono('${g.id}')">${S.chrono&&S.chrono.gid===g.id?'■ Arrêter la session':'▶ Lancer une session'}</button>`:''}<span style="flex:1"></span><button class="btn ghost" onclick="this.closest('.overlay').remove()">Fermer</button></div></div>`;
