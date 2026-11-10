@@ -942,6 +942,26 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .gt-time{flex:none;font-size:12.5px;font-weight:600;color:var(--gold2);padding:5px 10px;border-radius:999px;border:1px solid rgba(242,205,120,.3);background:rgba(242,205,120,.08)}
 .gt-time:hover{border-color:var(--gold)}
 .gt-time.on{background:var(--gold);color:#16120a}
+/* Accueil : mosaïque de 3 cadres photo (un grand à gauche, deux petits empilés à droite) */
+.hmosaic{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:12px;align-self:stretch;min-height:0}
+.hmosaic .hframe{grid-row:1/3;min-height:0!important}
+.hero .hmosaic .hframe img{object-fit:cover}
+.hmosaic.solo{grid-template-columns:minmax(0,1fr)}.hmosaic.solo .hsm{display:none}
+.hsm{position:relative;margin:0;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:20px;background:rgba(8,12,32,.42);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 50px rgba(0,0,0,.3);cursor:pointer;min-height:0;transition:border-color .2s,transform .3s var(--ease)}
+.hsm:hover{border-color:rgba(242,205,120,.5);transform:translateY(-2px)}
+.hsm .hf-mat{border-radius:13px}
+.hsm img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .9s ease}
+.hsm img.out{opacity:0}
+.hsm figcaption{min-height:20px;padding:0 4px;display:flex}
+.hsm figcaption .t{font-size:12.5px;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dtag{font-weight:700;color:var(--gold2);margin-right:4px;font-size:.92em}
+@media(max-width:1000px){
+  .hmosaic{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto}
+  .hmosaic .hframe{grid-row:auto;grid-column:1/-1;min-height:300px!important}
+  .hmosaic.solo .hframe{grid-column:1}
+  .hsm{height:170px}
+}
+@media(max-width:700px){.hmosaic .hframe{min-height:260px!important}.hsm{height:130px}}
 /* Titre au-dessus des 3 raccourcis de l'accueil */
 .sp-title{flex:none;display:flex;align-items:center;gap:14px;margin-bottom:calc(-1 * clamp(4px,1vh,12px));font-size:12.5px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);text-shadow:0 1px 6px rgba(0,0,0,.6)}
 .sp-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(242,205,120,.45),transparent)}
@@ -1252,7 +1272,11 @@ body.web .win-only{display:none!important}
             <div class="winmsg" id="prioWin">Tous tes objectifs du jour sont faits. Journée gagnée.</div>
           </div>
         </div>
-        <figure class="hframe" id="hframe"><div class="hf-mat"><img id="hfImg" alt=""></div><figcaption id="pcapt"></figcaption></figure>
+        <div class="hmosaic" id="hmosaic">
+          <figure class="hframe" id="hframe"><div class="hf-mat"><img id="hfImg" alt=""></div><figcaption id="pcapt"></figcaption></figure>
+          <figure class="hsm" id="hsm1" onclick="hsmPick(1)" title="Afficher en grand"><div class="hf-mat"><img alt=""></div><figcaption></figcaption></figure>
+          <figure class="hsm" id="hsm2" onclick="hsmPick(2)" title="Afficher en grand"><div class="hf-mat"><img alt=""></div><figcaption></figcaption></figure>
+        </div>
       </div>
       <div class="sp-title"><span>Sessions de travail</span></div>
       <div class="spaces" id="spaces"></div>
@@ -2059,7 +2083,7 @@ function renderBanners(){
 function bgList(){
   const m=momentNow(),all=sortedPhotos();
   const allOk=all.filter(p=>!p.cat||S.settings.libCats.includes(p.cat));let mine=allOk.filter(p=>p.moment===m);mine=mine.concat(allOk.filter(p=>!p.moment));
-  const dreamItems=S.dreams.filter(d=>!d.done&&d.cover).map(d=>({id:'dream:'+d.id,src:photoSrc(d.cover,2400),label:d.title}));
+  const dreamItems=S.dreams.filter(d=>!d.done&&d.cover).map(d=>({id:'dream:'+d.id,src:photoSrc(d.cover,2400),label:d.title,dream:true}));
   const mineItems=dreamItems.concat(mine.map(p=>({id:p.id,src:p.src,label:p.caption||''})));
   const lib=libVisible().filter(e=>S.settings.libCats.includes(e.cat)).map(e=>({id:e.id,src:libUrl(e,2400),label:e.label}));
   const seed=hash(dk());lib.sort((a,b)=>hash(a.id+seed)-hash(b.id+seed));
@@ -2072,7 +2096,7 @@ function renderBg(advance){
   if(m!==lastMoment){lastMoment=m;bgShown=null;pIdx=0;}
   const list=bgList();
   const fr=$('#hframe'),img=$('#hfImg');
-  if(!list.length){fr.classList.add('empty');img.removeAttribute('src');bgShown=null;
+  if(!list.length){fr.classList.add('empty');img.removeAttribute('src');bgShown=null;const mo0=$('#hmosaic');if(mo0)mo0.classList.add('solo');
     $('#pcapt').innerHTML=`<button class="btn sm" onclick="go('gallery')">+ Ajouter des images</button>`;return;}
   fr.classList.remove('empty');
   if(advance)pIdx++;
@@ -2082,8 +2106,18 @@ function renderBg(advance){
   if(bgShown!==p.id){bgShown=p.id;img.classList.add('out');
     const n=new Image();n.onload=()=>{if(bgShown!==p.id)return;img.src=p.src;img.classList.remove('out');};n.onerror=()=>{img.classList.remove('out');};n.src=p.src;
     const nx=list[(pIdx+1)%list.length];if(nx&&nx.src.startsWith('http'))new Image().src=nx.src;}
-  $('#pcapt').innerHTML=`${p.label?`<span class="t">${esc(p.label)}</span>`:''}${list.length>1?`<span class="pnav"><button onclick="pIdx--;renderBg(false)">‹</button><button onclick="renderBg(true)">›</button></span>`:''}`;
+  $('#pcapt').innerHTML=`${capLabel(p)}${list.length>1?`<span class="pnav"><button onclick="pIdx--;renderBg(false)">‹</button><button onclick="renderBg(true)">›</button></span>`:''}`;
+  /* Mosaïque : les deux petits cadres montrent les deux images suivantes (dès qu'il y en a au moins 3) */
+  const mo=$('#hmosaic');if(!mo)return;
+  mo.classList.toggle('solo',list.length<3);
+  [1,2].forEach(k=>{const f=$('#hsm'+k);if(!f||list.length<3)return;const q=list[(pIdx+k)%list.length],im=f.querySelector('img');
+    if(f.dataset.shown!==q.id){f.dataset.shown=q.id;im.classList.add('out');const n2=new Image();n2.onload=()=>{if(f.dataset.shown!==q.id)return;im.src=q.src;im.classList.remove('out');};n2.onerror=()=>im.classList.remove('out');n2.src=q.src;}
+    f.querySelector('figcaption').innerHTML=capLabel(q);});
 }
+/* Légende d'une image : un rêve est signalé par une petite étiquette dorée */
+const capLabel=p=>p.dream?`<span class="t"><b class="dtag">✦ Rêve</b> ${esc(p.label)}</span>`:p.label?`<span class="t">${esc(p.label)}</span>`:'<span class="t"></span>';
+/* Clic sur un petit cadre : son image passe en grand */
+function hsmPick(k){const list=bgList();if(list.length<3)return;pIdx=(pIdx+k)%list.length;renderBg(false);}
 /* Les 3 espaces de l'accueil : un clic ouvre les onglets et applications choisis */
 /* ===== Chrono des sessions : il démarre avec l'espace et cumule le temps passé ===== */
 const fmtDur=sec=>{const m=Math.round(sec/60);return m<60?`${m} min`:`${Math.floor(m/60)} h ${String(m%60).padStart(2,'0')}`;};
