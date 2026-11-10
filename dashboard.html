@@ -926,6 +926,9 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .gt-time{flex:none;font-size:12.5px;font-weight:600;color:var(--gold2);padding:5px 10px;border-radius:999px;border:1px solid rgba(242,205,120,.3);background:rgba(242,205,120,.08)}
 .gt-time:hover{border-color:var(--gold)}
 .gt-time.on{background:var(--gold);color:#16120a}
+/* Titre au-dessus des 3 raccourcis de l'accueil */
+.sp-title{flex:none;display:flex;align-items:center;gap:14px;margin-bottom:calc(-1 * clamp(4px,1vh,12px));font-size:12.5px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.sp-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(242,205,120,.45),transparent)}
 /* Fenêtre « Temps de travail » */
 .modal.ti{background:#0d1119;max-width:720px}
 .ti-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
@@ -1194,6 +1197,7 @@ body.web .win-only{display:none!important}
         </div>
         <figure class="hframe" id="hframe"><div class="hf-mat"><img id="hfImg" alt=""></div><figcaption id="pcapt"></figcaption></figure>
       </div>
+      <div class="sp-title"><span>Sessions de travail</span></div>
       <div class="spaces" id="spaces"></div>
     </div>
   </div>
@@ -2416,7 +2420,7 @@ function goalTreeRow(x,d,self){
   return `<div class="gt-row ${self?'self':''}" style="--d:${d};--c:${c}" ${self?'':`role="button" tabindex="0" onclick="openGoal('${x.id}')" onkeydown="if(event.key==='Enter')openGoal('${x.id}')"`}>
     <span class="gt-img" style="${bgStyle(photoSrc(goalImgNow(x),300))}"></span>
     <span class="gt-mid"><b>${esc(x.title)}</b><small>${esc(hzLabel(x.horizon))} · ${p} %${self?' · tu es ici':''}</small><span class="gt-bar"><i style="width:${p}%"></i></span></span>
-    ${goalSessionsOn(x)&&(t>=30||goalRunsIn(x))?`<button class="gt-time ${run?'on':''}" title="Voir le détail du temps" onclick="event.stopPropagation();openTimeInfo('${x.id}')">⏱ <span data-live-goal="${x.id}">${fmtDur(t)}</span></button>`:''}</div>`;
+    ${goalHasTime(x)?`<button class="gt-time ${run?'on':''}" title="Voir le détail du temps" onclick="event.stopPropagation();openTimeInfo('${x.id}')">⏱ <span data-live-goal="${x.id}">${fmtDur(t)}</span></button>`:''}</div>`;
 }
 function goalLinksHtml(g){
   const anc=goalAncestors(g),seen=new Set();
@@ -2461,13 +2465,15 @@ function openTimeInfo(id){
 }
 /* Sessions activées dans les réglages de l'objectif (g.sessions) ; anciens objectifs : actif s'ils avaient déjà un chrono ou du temps */
 const goalSessionsOn=g=>g.sessions!==undefined?!!g.sessions:!!(g.timer||(g.totalSec||0)>0);
+/* Le temps (et son détail) s'affiche dès qu'il y en a, même si la case « Sessions » est décochée : seul le bouton Session dépend de la case */
+const goalHasTime=g=>goalWorkSec(g)>=30||goalRunsIn(g);
 /* Une session tourne-t-elle sur cet objectif ou sur un de ses sous-objectifs (à n'importe quel niveau) ? */
 function goalRunsIn(g){const c=S.chrono;if(!c||!c.gid)return false;let x=S.goals.find(y=>y.id===c.gid),n=0;while(x&&n++<30){if(x.id===g.id)return true;x=x.parent&&S.goals.find(y=>y.id===x.parent);}return false;}
 function goalCard(g){
   const c=CATS[g.cat]||'#888',man=isManual(g),st=g.steps||[];
   return `<div class="vcard" style="--c:${c}" onclick="openGoal('${g.id}')">${revealHtml(goalImgNow(g),g.progress,g.id)}
     <div class="vc-ov"><span class="chip" style="--c:${c}">${esc(g.cat)}</span><div class="vc-t display">${esc(g.title)}</div>${g.parent&&goalName(g.parent)?`<div class="vc-p">↑ ${esc(goalName(g.parent))}</div>`:''}
-    <div class="vc-p">${g.progress} % · ${esc(goalSource(g))}${goalSessionsOn(g)&&(goalWorkSec(g)>=30||goalRunsIn(g))?` · <button class="vc-time" title="Voir le détail du temps" onclick="event.stopPropagation();openTimeInfo('${g.id}')">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></button>`:''}</div><div class="thin"><i style="width:${g.progress}%"></i></div></div>
+    <div class="vc-p">${g.progress} % · ${esc(goalSource(g))}${goalHasTime(g)?` · <button class="vc-time" title="Voir le détail du temps" onclick="event.stopPropagation();openTimeInfo('${g.id}')">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></button>`:''}</div><div class="thin"><i style="width:${g.progress}%"></i></div></div>
     ${!goalSessionsOn(g)?'':S.chrono&&S.chrono.gid===g.id?`<button class="vc-run on" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Arrêter la session">■ <span data-live>${hms(chronoSec())}</span></button>`:`<button class="vc-run" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Lancer une session : le chrono démarre, son temps s'ajoute à cet objectif et aux objectifs plus larges">▶ Session</button>`}
     ${man?`<div class="vc-step stepper" onclick="event.stopPropagation()"><button onclick="bump('${g.id}',-10)">−</button><span>${g.progress}%</span><button onclick="bump('${g.id}',10)">+</button></div>`:''}
     ${g.progress===100?'<span class="vc-done">✓ Atteint</span>':''}</div>`;
@@ -2529,7 +2535,7 @@ function renderGoalPage(){
       <input class="dp-title display" data-gf="title" value="${esc(g.title)}" placeholder="Ton objectif" spellcheck="false">
       <div class="dp-src">Progression : ${esc(goalSource(g))} ${link}</div>
       ${S.spaces.filter(s=>s.goal===g.id).map(s=>`<div class="dp-src">⏱ Espace « ${esc(s.name)} » : <b>${fmtDur(s.totalSec||0)}</b> de travail au total <button class="btn sm" onclick="startSpace('${s.id}')">▶ Lancer</button></div>`).join('')}</div>
-    <div class="dp-gauge">${ringSVG(p,200,15,p>=100?'atteint':'accompli')}${!goalSessionsOn(g)?'':(()=>{const run=S.chrono&&S.chrono.gid===g.id,kids=S.goals.filter(x=>x.parent===g.id),kt=goalWorkSec(g)-goalOwnSec(g);return `<div class="dp-work"><button class="dp-wtot" title="Voir le détail du temps" onclick="openTimeInfo('${g.id}')">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span> <small>détail ›</small></button><span>de travail${kids.length&&kt>=60?`, dont ${fmtDur(kt)} sur ${kids.length>1?'les sous-objectifs':'le sous-objectif'}`:''}</span>${run?`<span class="dp-live">● <b data-live>${hms(chronoSec())}</b></span>`:''}<div class="dp-work-a"><button class="btn sm ${run?'primary':''}" onclick="startGoalChrono('${g.id}')">${run?'■ Arrêter la session':'▶ Lancer une session'}</button></div></div>`;})()}
+    <div class="dp-gauge">${ringSVG(p,200,15,p>=100?'atteint':'accompli')}${!goalSessionsOn(g)&&!goalHasTime(g)?'':(()=>{const on=goalSessionsOn(g),run=S.chrono&&S.chrono.gid===g.id,kids=S.goals.filter(x=>x.parent===g.id),kt=goalWorkSec(g)-goalOwnSec(g);return `<div class="dp-work"><button class="dp-wtot" title="Voir le détail du temps" onclick="openTimeInfo('${g.id}')">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span> <small>détail ›</small></button><span>de travail${kids.length&&kt>=60?`, dont ${fmtDur(kt)} sur ${kids.length>1?'les sous-objectifs':'le sous-objectif'}`:''}</span>${run?`<span class="dp-live">● <b data-live>${hms(chronoSec())}</b></span>`:''}${on?`<div class="dp-work-a"><button class="btn sm ${run?'primary':''}" onclick="startGoalChrono('${g.id}')">${run?'■ Arrêter la session':'▶ Lancer une session'}</button></div>`:''}</div>`;})()}
       ${man?`<div class="stepper" style="justify-content:center;margin-top:10px"><button onclick="bump('${g.id}',-10)">−</button><span>${p}%</span><button onclick="bump('${g.id}',10)">+</button></div>`:''}</div>
   </div>
   <div class="dp-track" style="--c:${c}"><div class="dp-fill" style="width:${p}%"></div>${[0,25,50,75,100].map(k=>`<span class="dp-tick ${p>=k?'on':''}" style="left:${k}%"><i></i><b>${k?k===100?'Objectif':k+' %':'Départ'}</b></span>`).join('')}<span class="dp-me" style="left:${p}%"></span></div>
