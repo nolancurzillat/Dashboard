@@ -908,6 +908,12 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .dp-side.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media(max-width:900px){.dp-side,.dp-side.three{grid-template-columns:1fr}}
 .vc-time{color:var(--gold2);font-weight:600}
+/* Bouton « Session » sur chaque carte d'objectif (en haut à gauche) */
+.vc-run{position:absolute;top:12px;left:12px;z-index:2;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);transition:.2s;font-variant-numeric:tabular-nums}
+.vc-run:hover{border-color:var(--gold);color:var(--gold2)}
+.vc-run.on{background:var(--gold);color:#16120a;border-color:var(--gold);box-shadow:0 0 0 0 rgba(242,205,120,.6);animation:runpulse 2s infinite}
+@keyframes runpulse{0%{box-shadow:0 0 0 0 rgba(242,205,120,.55)}70%{box-shadow:0 0 0 10px rgba(242,205,120,0)}100%{box-shadow:0 0 0 0 rgba(242,205,120,0)}}
+.vcard .vc-done{top:52px}
 .dp-work{display:flex;flex-direction:column;align-items:center;margin-top:8px}
 .dp-work b{font-size:18px;color:var(--gold2)}
 .dp-work span{font-size:12px;color:rgba(255,255,255,.65);text-align:center;max-width:200px}
@@ -1084,6 +1090,14 @@ body.cl-locked>*:not(.cl-gate):not(#aurora){display:none!important}
   .dp-gauge .ring{width:104px;height:104px}
   .lbox .lb-p,.lbox .lb-n{top:auto;bottom:60px;transform:none}
 }
+/* Page d'un objectif ou d'une compétence jusqu'à 900 px : image, texte puis jauge, les uns sous les autres */
+@media(max-width:900px){
+  .dp-hero{height:auto;min-height:0;display:flex;flex-direction:column;background:var(--card)}
+  .dp-hero>.rv{position:relative;inset:auto;height:240px;flex:none}
+  .dp-ov{position:relative;inset:auto;padding:18px 20px 4px;gap:8px;background:none!important}
+  .dp-gauge{position:relative;right:auto;bottom:auto;transform:none;align-self:stretch;margin:8px 20px 18px;padding:12px;display:flex;flex-direction:column;align-items:center;border-radius:16px}
+  .dp-gauge .ring{width:120px;height:120px}
+}
 /* Site en ligne (téléphone) : les fonctions du module Windows sont masquées */
 body.web .win-only{display:none!important}
 </style>
@@ -1171,7 +1185,7 @@ body.web .win-only{display:none!important}
 
 <!-- ===== COMPÉTENCES ===== -->
 <section class="view" id="v-skills"><div class="page">
-  <div class="ph"><div><div class="eyebrow">Monter en compétences</div><h1 class="display">Mes compétences</h1><p>Les domaines que tu veux maîtriser. Valide les étapes, garde ta série d'étude en vie.</p></div><div class="acts"><button class="btn primary" onclick="editSkill()">+ Matière</button></div></div>
+  <div class="ph"><div><div class="eyebrow">Monter en compétences</div><h1 class="display">Apprentissage</h1><p>Les domaines que tu veux maîtriser. Valide les étapes, garde ta série d'étude en vie.</p></div><div class="acts"><button class="btn primary" onclick="editSkill()">+ Matière</button></div></div>
   <div class="skgrid" id="skgrid"></div>
 </div></section>
 
@@ -1276,7 +1290,7 @@ body.web .win-only{display:none!important}
 const KEY='centre_controle_v1'; // nom conservé : c'est là que vivent les données existantes
 const HELPER_TOKEN='__DASHBOARD_TOKEN__'; // remplacé par l'installeur
 const helperOn=()=>!HELPER_TOKEN.startsWith('__');
-const VIEWS=[['home','Accueil'],['goals','Objectifs'],['finance','Finance'],['skills','Compétences'],['habits','Habitudes'],['motivation','Motivation'],['calendar','Calendrier']];
+const VIEWS=[['home','Accueil'],['goals','Objectifs'],['finance','Finance'],['skills','Apprentissage'],['habits','Habitudes'],['motivation','Motivation'],['calendar','Calendrier']];
 /* Images incluses : Unsplash (licence libre) et Wikimedia Commons (W:) */
 const LIB=[
  ['mtn-sunset','1506905925346-21bda4d32df4','voyage','Au-dessus des nuages'],
@@ -2349,11 +2363,14 @@ function goalWorkSec(g,seen=new Set()){
   if(seen.has(g.id))return 0;seen.add(g.id);
   return goalOwnSec(g)+S.goals.filter(x=>x.parent===g.id).reduce((a,x)=>a+goalWorkSec(x,seen),0);
 }
+/* Une session tourne-t-elle sur cet objectif ou sur un de ses sous-objectifs (à n'importe quel niveau) ? */
+function goalRunsIn(g){const c=S.chrono;if(!c||!c.gid)return false;let x=S.goals.find(y=>y.id===c.gid),n=0;while(x&&n++<30){if(x.id===g.id)return true;x=x.parent&&S.goals.find(y=>y.id===x.parent);}return false;}
 function goalCard(g){
   const c=CATS[g.cat]||'#888',man=isManual(g),st=g.steps||[];
   return `<div class="vcard" style="--c:${c}" onclick="openGoal('${g.id}')">${revealHtml(goalImgNow(g),g.progress,g.id)}
     <div class="vc-ov"><span class="chip" style="--c:${c}">${esc(g.cat)}</span><div class="vc-t display">${esc(g.title)}</div>${g.parent&&goalName(g.parent)?`<div class="vc-p">↑ ${esc(goalName(g.parent))}</div>`:''}
-    <div class="vc-p">${g.progress} % · ${esc(goalSource(g))}${g.timer?` · <b class="vc-time">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></b>`:''}</div><div class="thin"><i style="width:${g.progress}%"></i></div></div>
+    <div class="vc-p">${g.progress} % · ${esc(goalSource(g))}${goalWorkSec(g)>=30||goalRunsIn(g)?` · <b class="vc-time">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></b>`:''}</div><div class="thin"><i style="width:${g.progress}%"></i></div></div>
+    ${S.chrono&&S.chrono.gid===g.id?`<button class="vc-run on" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Arrêter la session">■ <span data-live>${hms(chronoSec())}</span></button>`:`<button class="vc-run" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Lancer une session : le chrono démarre, son temps s'ajoute à cet objectif et aux objectifs plus larges">▶ Session</button>`}
     ${man?`<div class="vc-step stepper" onclick="event.stopPropagation()"><button onclick="bump('${g.id}',-10)">−</button><span>${g.progress}%</span><button onclick="bump('${g.id}',10)">+</button></div>`:''}
     ${g.progress===100?'<span class="vc-done">✓ Atteint</span>':''}</div>`;
 }
@@ -2412,7 +2429,7 @@ function renderGoalPage(){
       <input class="dp-title display" data-gf="title" value="${esc(g.title)}" placeholder="Ton objectif" spellcheck="false">
       <div class="dp-src">Progression : ${esc(goalSource(g))} ${link}</div>
       ${S.spaces.filter(s=>s.goal===g.id).map(s=>`<div class="dp-src">⏱ Espace « ${esc(s.name)} » : <b>${fmtDur(s.totalSec||0)}</b> de travail au total <button class="btn sm" onclick="startSpace('${s.id}')">▶ Lancer</button></div>`).join('')}</div>
-    <div class="dp-gauge">${ringSVG(p,200,15,p>=100?'atteint':'accompli')}${g.timer?(()=>{const run=S.chrono&&S.chrono.gid===g.id,kids=S.goals.filter(x=>x.parent===g.id),kt=goalWorkSec(g)-goalOwnSec(g);return `<div class="dp-work"><b>⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></b><span>de travail${kids.length&&kt>=60?`, dont ${fmtDur(kt)} sur ${kids.length>1?'les sous-objectifs':'le sous-objectif'}`:''}</span>${run?`<span class="dp-live">● <b data-live>${hms(chronoSec())}</b></span>`:''}<div class="dp-work-a"><button class="btn sm ${run?'primary':''}" onclick="startGoalChrono('${g.id}')">${run?'■ Arrêter':'▶ Lancer le chrono'}</button><button class="btn sm ghost" title="Retirer le chrono de cet objectif (le temps est gardé)" onclick="setGoalTimer(false)">×</button></div></div>`;})():`<button class="btn sm dp-addtimer" onclick="setGoalTimer(true)">⏱ Ajouter un chrono</button>`}
+    <div class="dp-gauge">${ringSVG(p,200,15,p>=100?'atteint':'accompli')}${(()=>{const run=S.chrono&&S.chrono.gid===g.id,kids=S.goals.filter(x=>x.parent===g.id),kt=goalWorkSec(g)-goalOwnSec(g);return `<div class="dp-work"><b>⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></b><span>de travail${kids.length&&kt>=60?`, dont ${fmtDur(kt)} sur ${kids.length>1?'les sous-objectifs':'le sous-objectif'}`:''}</span>${run?`<span class="dp-live">● <b data-live>${hms(chronoSec())}</b></span>`:''}<div class="dp-work-a"><button class="btn sm ${run?'primary':''}" onclick="startGoalChrono('${g.id}')">${run?'■ Arrêter la session':'▶ Lancer une session'}</button></div></div>`;})()}
       ${man?`<div class="stepper" style="justify-content:center;margin-top:10px"><button onclick="bump('${g.id}',-10)">−</button><span>${p}%</span><button onclick="bump('${g.id}',10)">+</button></div>`:''}</div>
   </div>
   <div class="dp-track" style="--c:${c}"><div class="dp-fill" style="width:${p}%"></div>${[0,25,50,75,100].map(k=>`<span class="dp-tick ${p>=k?'on':''}" style="left:${k}%"><i></i><b>${k?k===100?'Objectif':k+' %':'Départ'}</b></span>`).join('')}<span class="dp-me" style="left:${p}%"></span></div>
@@ -2597,7 +2614,7 @@ function renderSkillPage(){
   const s=curS();if(!s){go('skills');return;}
   const ci=s.stages.findIndex(x=>!x.done),L=skillLevel(s),pct=skillPct(s),done=s.stages.filter(x=>x.done).length,notes=s.stages.filter(x=>(x.note||'').trim()).length;
   const goals=S.goals.filter(g=>g.mode==='skill'&&goalSkillIds(g).includes(s.id));
-  $('#skillPage').innerHTML=`<div class="dp-top"><button class="btn ghost" onclick="go('skills')">← Mes compétences</button><span style="flex:1"></span><button class="btn" onclick="pickPhoto(curS().cover,id=>{curS().cover=id;save();renderSkillPage();})">Changer l'image</button><button class="btn" onclick="editSkill('${s.id}')">⚙ Réglages</button></div>
+  $('#skillPage').innerHTML=`<div class="dp-top"><button class="btn ghost" onclick="go('skills')">← Apprentissage</button><span style="flex:1"></span><button class="btn" onclick="pickPhoto(curS().cover,id=>{curS().cover=id;save();renderSkillPage();})">Changer l'image</button><button class="btn" onclick="editSkill('${s.id}')">⚙ Réglages</button></div>
   <div class="dp-hero" style="--c:${s.color}"><div class="rv ${photoSrc(s.cover)?'':'noimg'}"><div class="rv-img" style="${bgStyle(photoSrc(s.cover,1800))}"></div></div>
     <div class="dp-ov"><div class="dp-tags"><span class="chip" style="--c:${s.color}">${L.icon} ${L.name}</span>${ci<0&&s.stages.length?'<span class="chip" style="--c:#43b97f">🎓 Compétence maîtrisée</span>':''}</div>
       <input class="dp-title display" data-sf="name" value="${esc(s.name)}" spellcheck="false">
@@ -2629,7 +2646,7 @@ function delRes(i){const s=curS();s.res.splice(i,1);save();renderSkillPage();}
 
 /* ================= Calendrier : tout ce que tu as fait, jour par jour ================= */
 let calMonth=0,calDay=null;const calOff=new Set();
-const CAL_KINDS=[['prio','🎯','Objectifs du jour','#f2cd78'],['space','⏱','Sessions','#5aa2e6'],['skill','📘','Compétences','#a77be0'],['goal','🏁','Objectifs','#4fc3c7'],['life','⭐','Victoires et journal','#e0c27a'],['fin','💶','Finance','#8fd1a5']];
+const CAL_KINDS=[['prio','🎯','Objectifs du jour','#f2cd78'],['space','⏱','Sessions','#5aa2e6'],['skill','📘','Apprentissage','#a77be0'],['goal','🏁','Objectifs','#4fc3c7'],['life','⭐','Victoires et journal','#e0c27a'],['fin','💶','Finance','#8fd1a5']];
 function dayActivity(k){
   const d=S.days[k]||{},a={};
   a.prio=(d.priorities||[]).filter(p=>p.text);
@@ -2682,7 +2699,7 @@ function renderCalDay(){
     sec('🎯 Objectifs du jour','#f2cd78',a.prio.map(p=>li(esc(p.text),!!p.done)).join('')),
     sec('🏋️ Sport','#e58a5c',a.sport.map(s=>{const ty=SPORT_TYPES.find(x=>x[0]===s.type)||SPORT_TYPES[6];return li(`${ty[1]} ${esc(ty[2])} · ${s.dur} min${s.note?` · <span class="muted">${esc(s.note)}</span>`:''}`);}).join('')),
     sec('⏱ Sessions','#5aa2e6',a.space.map(([s,v])=>li(`${esc(s.name)} · <b class="gold">${fmtDur(v)}</b>`)).join('')),
-    sec('📘 Compétences','#a77be0',a.skill.map(([s,x])=>li(`<b>${esc(s.name)}</b> · ${esc(x.t)}`,true)).join('')),
+    sec('📘 Apprentissage','#a77be0',a.skill.map(([s,x])=>li(`<b>${esc(s.name)}</b> · ${esc(x.t)}`,true)).join('')),
     sec('🏁 Objectifs','#4fc3c7',a.goal.map(([g,x])=>li(`<b>${esc(g.title)}</b> · ${esc(x.t)}`,true)).join('')),
     sec('💶 Finance','#8fd1a5',a.fin?li(`Relevé de patrimoine : <b>${eur(a.fin.value)}</b>`):''),
     sec('⭐ Victoires','#e0c27a',a.wins.map(w=>li(esc(w.text))).join('')),
