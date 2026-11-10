@@ -1166,6 +1166,17 @@ body.cl-locked>*:not(.cl-gate):not(#aurora){display:none!important}
   .dp-gauge{position:relative;right:auto;bottom:auto;transform:none;align-self:stretch;margin:8px 20px 18px;padding:12px;display:flex;flex-direction:column;align-items:center;border-radius:16px}
   .dp-gauge .ring{width:120px;height:120px}
 }
+/* ===== Texte des objectifs et des rêves sur une « plaque » de verre dépoli : l'image reste nette partout ailleurs ===== */
+.vc-ov,.dream .ov{background:none!important;text-shadow:none!important;padding:14px}
+.plate{display:flex;flex-direction:column;gap:5px;align-self:flex-start;max-width:min(100%,560px);padding:12px 15px 13px;border-radius:14px;background:rgba(8,11,17,.62);backdrop-filter:blur(14px) saturate(1.25);-webkit-backdrop-filter:blur(14px) saturate(1.25);border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.plate .chip{align-self:flex-start}
+.plate .vc-t{text-shadow:none}
+.plate .thin{margin-top:4px;min-width:160px}
+.dream .plate h3{font-size:19px}
+.dream .plate p{margin-top:2px;font-size:13px;color:rgba(255,255,255,.78);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vb-grid.big.hz-long .vc-ov{padding:20px}
+.vb-grid.big.hz-long .plate{max-width:min(100%,960px);padding:14px 20px 16px}
+.vb-grid.big.hz-long .plate .thin{min-width:320px}
 /* ===== ESSAI (2026-11-10) : toutes les pages sur toute la largeur de l'écran.
    Pour revenir comme avant, il suffit de supprimer ce bloc (avant : .page 1380px, accueil 1500px). ===== */
 @media(min-width:701px){
@@ -2516,8 +2527,8 @@ function goalRunsIn(g){const c=S.chrono;if(!c||!c.gid)return false;let x=S.goals
 function goalCard(g){
   const c=CATS[g.cat]||'#888',man=isManual(g),st=g.steps||[];
   return `<div class="vcard" style="--c:${c}" onclick="openGoal('${g.id}')">${revealHtml(goalImgNow(g),g.progress,g.id)}
-    <div class="vc-ov"><span class="chip" style="--c:${c}">${esc(g.cat)}</span><div class="vc-t display">${esc(g.title)}</div>${g.parent&&goalName(g.parent)?`<div class="vc-p">↑ ${esc(goalName(g.parent))}</div>`:''}
-    <div class="vc-p">${g.progress} % · ${esc(goalSource(g))}${goalHasTime(g)?` · <button class="vc-time" title="Voir le détail du temps" onclick="event.stopPropagation();openTimeInfo('${g.id}')">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></button>`:''}</div><div class="thin"><i style="width:${g.progress}%"></i></div></div>
+    <div class="vc-ov"><div class="plate"><span class="chip" style="--c:${c}">${esc(g.cat)}</span><div class="vc-t display">${esc(g.title)}</div>${g.parent&&goalName(g.parent)?`<div class="vc-p">↑ ${esc(goalName(g.parent))}</div>`:''}
+    <div class="vc-p">${g.progress} % · ${esc(goalSource(g))}${goalHasTime(g)?` · <button class="vc-time" title="Voir le détail du temps" onclick="event.stopPropagation();openTimeInfo('${g.id}')">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></button>`:''}</div><div class="thin"><i style="width:${g.progress}%"></i></div></div></div>
     ${!goalSessionsOn(g)?'':S.chrono&&S.chrono.gid===g.id?`<button class="vc-run on" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Arrêter la session">■ <span data-live>${hms(chronoSec())}</span></button>`:`<button class="vc-run" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Lancer une session : le chrono démarre, son temps s'ajoute à cet objectif et aux objectifs plus larges">▶ Session</button>`}
     ${man?`<div class="vc-step stepper" onclick="event.stopPropagation()"><button onclick="bump('${g.id}',-10)">−</button><span>${g.progress}%</span><button onclick="bump('${g.id}',10)">+</button></div>`:''}
     ${g.progress===100?'<span class="vc-done">✓ Atteint</span>':''}</div>`;
@@ -3152,7 +3163,7 @@ function renderMotivation(){renderMotHero();renderDreams();renderWhy();renderWin
 function renderDreams(){
   /* Pas de date : un rêve n'a pas d'échéance. Les rêves réalisés sont rangés à part, plus petits, en dessous */
   const card=d=>{const src=photoSrc(d.cover,1200);
-    return `<div class="dream ${d.done?'done':''}" onclick="editDream('${d.id}')">${src?`<div class="dbg" style="${bgStyle(src)}"></div><img src="${src}" alt="" loading="lazy">`:'<div class="noimg"></div>'}${d.done?'<span class="ok">✓ Réalisé</span>':''}<div class="ov"><h3 class="display">${esc(d.title)}</h3>${d.why?`<p>${esc(d.why)}</p>`:''}</div></div>`;};
+    return `<div class="dream ${d.done?'done':''}" onclick="editDream('${d.id}')">${src?`<div class="dbg" style="${bgStyle(src)}"></div><img src="${src}" alt="" loading="lazy">`:'<div class="noimg"></div>'}${d.done?'<span class="ok">✓ Réalisé</span>':''}<div class="ov"><div class="plate"><h3 class="display">${esc(d.title)}</h3>${d.why?`<p>${esc(d.why)}</p>`:''}</div></div></div>`;};
   const todo=S.dreams.filter(d=>!d.done),done=S.dreams.filter(d=>d.done);
   $('#dreams').innerHTML=S.dreams.length?`${todo.length?`<div class="dreams">${todo.map(card).join('')}</div>`:'<div class="sub">Tous tes rêves sont réalisés. Ajoute le suivant.</div>'}
     ${done.length?`<div class="dreams-done"><div class="dd-h"><span>✓</span><h3 class="display">Rêves réalisés</h3><span class="sub">${done.length}</span></div><div class="dreams sm">${done.map(card).join('')}</div></div>`:''}`
