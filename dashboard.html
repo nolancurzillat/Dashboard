@@ -256,7 +256,6 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
   .vb-grid.big.hz-moyen .vc-t{font-size:29px}
   /* Bannière large : l'image reste entière, les côtés sont remplis par la même image floutée */
   /* Long terme : l'image remplit toute la bannière (recadrée en hauteur) */
-  .vb-grid.big.hz-long .rv-img{background-size:cover!important;background-position:center}
   .vb-grid.big.hz-moyen .rv{isolation:isolate}
   .vb-grid.big.hz-moyen .rv::before{content:'';position:absolute;inset:-40px;z-index:-1;background:var(--rvimg) center/cover no-repeat;filter:blur(26px) brightness(.6);transform:scale(1.1)}
 }
@@ -947,6 +946,11 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .vb-grid.big.hz-moyen .rv::before{display:none}
 .dream .dm img{object-fit:cover}
 .dream .dm .dbg{display:none}
+.space .sp-img{background-size:cover}
+/* Format de l'image choisi dans les réglages (objectif, session de travail) : entière, ou recadrée en gardant le haut / le bas */
+.fit-contain .rv-img,.sp-img.fit-contain{background-size:contain!important;background-color:#05070b}
+.pos-top .rv-img,.sp-img.pos-top{background-position:center top!important}
+.pos-bottom .rv-img,.sp-img.pos-bottom{background-position:center bottom!important}
 /* Accueil : mosaïque de 3 cadres photo (un grand à gauche, deux petits empilés à droite) */
 .hmosaic{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:12px;align-self:stretch;min-height:0}
 .hmosaic .hframe{grid-row:1/3;min-height:0!important}
@@ -1224,7 +1228,7 @@ body.cl-locked>*:not(.cl-gate):not(#aurora){display:none!important}
    Pour revenir comme avant, il suffit de supprimer ce bloc (avant : .page 1380px, accueil 1500px). ===== */
 @media(min-width:701px){
   .page{max-width:1640px;padding-left:clamp(24px,3vw,48px);padding-right:clamp(24px,3vw,48px)} /* essai pleine largeur abandonné : un peu plus large qu'avant (1380px) */
-  /* L'accueil garde sa largeur d'avant (1500px), à la demande de Nolan */
+  .hwrap{max-width:1640px} /* l'accueil a la même largeur que les autres onglets */
 }
 /* Site en ligne (téléphone) : les fonctions du module Windows sont masquées */
 body.web .win-only{display:none!important}
@@ -2167,9 +2171,16 @@ function paintChrono(full){
   document.querySelectorAll('[data-live]').forEach(el=>{el.textContent=hms(chronoSec());});
   document.querySelectorAll('[data-live-goal]').forEach(el=>{const g=S.goals.find(x=>x.id===el.dataset.liveGoal);if(g)el.textContent=fmtDur(goalWorkSec(g));});
 }
+/* Format de l'image (réglages d'un objectif ou d'une session de travail) */
+const IMG_FITS=[['cover','Remplir le cadre (image un peu recadrée)'],['contain','Image entière (bandes sombres sur les côtés si besoin)']];
+const IMG_POS=[['center','Le centre'],['top','Le haut'],['bottom','Le bas']];
+const imgFmtClass=o=>`fit-${o&&o.imgFit==='contain'?'contain':'cover'} pos-${o&&['top','bottom'].includes(o.imgPos)?o.imgPos:'center'}`;
+const imgFmtFields=o=>[
+  {key:'imgFit',label:"Format de l'image",type:'select',value:(o&&o.imgFit)||'cover',options:IMG_FITS},
+  {key:'imgPos',label:"Partie de l'image à garder quand elle est recadrée",type:'select',value:(o&&o.imgPos)||'center',options:IMG_POS}];
 function renderSpaces(){
   $('#spaces').innerHTML=S.spaces.map(s=>{const run=S.chrono&&S.chrono.sid===s.id;return `<div class="space ${run?'running':''}" role="button" tabindex="0" onclick="startSpace('${s.id}')" onkeydown="if(event.key==='Enter')startSpace('${s.id}')">
-    <div class="sp-img" style="${bgStyle(photoSrc(s.cover,1200))}"></div>
+    <div class="sp-img ${imgFmtClass(s)}" style="${bgStyle(photoSrc(s.cover,1200))}"></div>
     <div class="sp-ov"><h3 class="display">${esc(s.name)}</h3><div class="sp-sub">${s.totalSec||run?`⏱ ${fmtDur(s.totalSec||0)} au total · ${fmtDur(spaceToday(s))} aujourd'hui`:esc(s.sub||'')}</div>${spaceGoalHtml(s)}</div>
     ${run?`<span class="sp-n live">● <b data-live>${hms(chronoSec())}</b></span><button class="sp-stop" onclick="event.stopPropagation();stopChrono()">■ Arrêter</button>`:(s.items.length?`<span class="sp-n">${s.items.length} ${s.items.length>1?'éléments':'élément'}</span>`:'')}
     <button class="sp-edit" title="Modifier" onclick="event.stopPropagation();editSpace('${s.id}')">✎</button>
@@ -2225,11 +2236,12 @@ function editSpace(id){
       {key:'name',label:'Nom',value:s.name},
       {key:'sub',label:'Petite phrase sous le nom',value:s.sub||''},
       {key:'cover',label:'Image',type:'photo',value:s.cover},
+      ...imgFmtFields(s),
       {key:'goal',label:'Objectif que cet espace fait avancer',type:'select',value:s.goal||'',options:[['','Aucun']].concat(S.goals.map(g=>[g.id,`${(H.find(h=>h[0]===g.horizon)||['',''])[1]} : ${g.title}`]))},
       {key:'items',label:"Ce qui s'ouvre au clic : un élément par ligne. Une adresse (https://... ou monsite.com) ouvre un onglet ; le nom d'une application (OneNote, Claude, The Analytics...) l'ouvre.",type:'textarea',rows:7,value:itemsToText(s.items),placeholder:'https://www.tradingview.com\nOneNote\nClaude'},
       {key:'add',label:'',type:'html',html:`<div class="addrow"><button type="button" class="btn sm" onclick="pickApp(n=>addLine('f_items',n))">＋ Ajouter une application installée</button><button type="button" class="btn sm ghost" onclick="const u=prompt('Adresse du site :','https://');if(u&&u.trim()&&u.trim()!=='https://')addLine('f_items',u.trim())">＋ Ajouter un site</button></div>`},
       {key:'info',label:'',type:'html',html:`<p class="sub">Un chrono démarre à chaque lancement : temps passé sur « ${esc(s.name)} » jusqu'ici, ${fmtDur(s.totalSec||0)}. <button type="button" class="btn sm ghost" onclick="if(confirm('Remettre le temps total de cet espace à zéro ?')){const x=S.spaces.find(y=>y.id==='${s.id}');x.totalSec=0;x.days={};save();this.closest('.overlay').remove();renderSpaces();}">Remettre à zéro</button></p>`}],
-    onSave:(v,ov)=>{if(!v.name)return false;Object.assign(s,{name:v.name,sub:v.sub,cover:v.cover,goal:v.goal,items:textToItems(v.items),focus:0});save();if(cur==='home')renderSpaces();else if(cur==='settings')renderSettings();}});
+    onSave:(v,ov)=>{if(!v.name)return false;Object.assign(s,{name:v.name,sub:v.sub,cover:v.cover,imgFit:v.imgFit,imgPos:v.imgPos,goal:v.goal,items:textToItems(v.items),focus:0});save();if(cur==='home')renderSpaces();else if(cur==='settings')renderSettings();}});
 }
 function renderDrawer(){
   renderSessions();renderHToday();renderMiniChal();renderMiniGoals();renderMiniFin();renderMiniWhy();
@@ -2583,7 +2595,7 @@ const goalHasTime=g=>goalWorkSec(g)>=30||goalRunsIn(g);
 function goalRunsIn(g){const c=S.chrono;if(!c||!c.gid)return false;let x=S.goals.find(y=>y.id===c.gid),n=0;while(x&&n++<30){if(x.id===g.id)return true;x=x.parent&&S.goals.find(y=>y.id===x.parent);}return false;}
 function goalCard(g){
   const c=CATS[g.cat]||'#888',man=isManual(g),st=g.steps||[];
-  return `<div class="vcard" style="--c:${c}" onclick="openGoal('${g.id}')"><div class="vm">${revealHtml(goalImgNow(g),g.progress,g.id)}</div>
+  return `<div class="vcard" style="--c:${c}" onclick="openGoal('${g.id}')"><div class="vm ${imgFmtClass(g)}">${revealHtml(goalImgNow(g),g.progress,g.id)}</div>
     <div class="vc-ov"><div class="plate"><span class="chip" style="--c:${c}">${esc(g.cat)}</span><div class="vc-t display">${esc(g.title)}</div>${g.parent&&goalName(g.parent)?`<div class="vc-p">↑ ${esc(goalName(g.parent))}</div>`:''}
     <div class="vc-p">${g.progress} % · ${esc(goalSource(g))}${goalHasTime(g)?` · <button class="vc-time" title="Voir le détail du temps" onclick="event.stopPropagation();openTimeInfo('${g.id}')">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></button>`:''}</div><div class="thin"><i style="width:${g.progress}%"></i></div></div></div>
     ${!goalSessionsOn(g)?'':S.chrono&&S.chrono.gid===g.id?`<button class="vc-run on" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Arrêter la session">■ <span data-live>${hms(chronoSec())}</span></button>`:`<button class="vc-run" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Lancer une session : le chrono démarre, son temps s'ajoute à cet objectif et aux objectifs plus larges">▶ Session</button>`}
@@ -2598,6 +2610,7 @@ function editGoal(id,hz,par){
   const ov=modal({title:id?"Modifier l'objectif":'Nouvel objectif',wide:true,fields:[
       {key:'title',label:'Objectif (concret et mesurable)',value:g.title,placeholder:'Ex : Atteindre 50 000 € investis'},
       {key:'covers',label:'Ses images (une ou plusieurs : elles défilent toutes les 5 minutes ; sans choix, une image de sa catégorie est utilisée)',type:'photos',value:goalImgs(g)},
+      ...imgFmtFields(g),
       {key:'horizon',label:'Horizon',type:'select',value:g.horizon,options:H.map(h=>[h[0],`${h[1]} (${h[2]})`])},
       {key:'cat',label:'Catégorie',type:'select',value:g.cat,options:Object.keys(CATS).map(c=>[c,c])},
       {key:'parent',label:'Il sert quel objectif plus large ?',type:'select',value:g.parent,options:parents},
@@ -2611,7 +2624,7 @@ function editGoal(id,hz,par){
       {key:'manual',label:'Progression manuelle (si « Je l’ajuste moi-même » ou sans sous-objectif ni étape)',type:'range',value:g.manual||0}],
     onSave:v=>{if(!v.title)return false;
       const steps=v.steps.split('\n').map(l=>l.trim()).filter(Boolean).map(t=>({t,done:v.done.includes(t)}));
-      const o={title:v.title,covers:v.covers,cover:v.covers[0]||'',horizon:v.horizon,cat:v.cat,parent:v.parent,mode:v.mode,amount:numIn(v.amount),skills:v.skills,skill:v.skills[0]||'',habit:v.habit,steps,manual:Math.round(v.manual),sessions:v.sessions.includes('on')};
+      const o={title:v.title,covers:v.covers,cover:v.covers[0]||'',imgFit:v.imgFit,imgPos:v.imgPos,horizon:v.horizon,cat:v.cat,parent:v.parent,mode:v.mode,amount:numIn(v.amount),skills:v.skills,skill:v.skills[0]||'',habit:v.habit,steps,manual:Math.round(v.manual),sessions:v.sessions.includes('on')};
       if(id&&!o.sessions&&S.chrono&&S.chrono.gid===id)stopChrono();
       const before=g.progress||0;if(id)Object.assign(g,o);else S.goals.push({id:uid(),...o});save();
       const ng=id?g:S.goals[S.goals.length-1];if(ng.progress===100&&before<100)toast('Objectif atteint : '+v.title);
@@ -2642,7 +2655,7 @@ function renderGoalPage(){
   const gsk=goalSkillIds(g);
   const link=mode==='skill'&&gsk.length?gsk.map(id=>`<button class="btn sm" onclick="openSkill('${id}')">${gsk.length>1?esc(S.skills.find(s=>s.id===id).name)+' →':'Voir la compétence →'}</button>`).join(' '):mode==='wealth'?`<button class="btn sm" onclick="go('finance')">Voir ma finance →</button>`:mode==='habit'?`<button class="btn sm" onclick="go('habits')">Voir mes habitudes →</button>`:'';
   $('#goalPage').innerHTML=`<div class="dp-top"><button class="btn ghost" onclick="go('goals')">← Mes objectifs</button><span style="flex:1"></span><button class="btn" onclick="editGoal('${g.id}')">⚙ Réglages</button></div>
-  <div class="dp-hero" style="--c:${c}">${revealHtml(goalImgNow(g),p,g.id)}
+  <div class="dp-hero ${imgFmtClass(g)}" style="--c:${c}">${revealHtml(goalImgNow(g),p,g.id)}
     <div class="dp-ov"><div class="dp-tags"><span class="chip" style="--c:${c}">${esc(g.cat)}</span><span class="chip" style="--c:#c8d0dc">${esc(hz[1])} · ${esc(hz[2])}</span>${par?`<button class="chip" style="--c:#c8d0dc;cursor:pointer" onclick="openGoal('${par.id}')">↑ ${esc(par.title)}</button>`:''}${p>=100?'<span class="chip" style="--c:#43b97f">✓ Atteint</span>':''}</div>
       <input class="dp-title display" data-gf="title" value="${esc(g.title)}" placeholder="Ton objectif" spellcheck="false">
       <div class="dp-src">Progression : ${esc(goalSource(g))} ${link}</div>
