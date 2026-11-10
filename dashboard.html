@@ -1172,8 +1172,13 @@ body.cl-locked>*:not(.cl-gate):not(#aurora){display:none!important}
 .plate .chip{align-self:flex-start}
 .plate .vc-t{text-shadow:none}
 .plate .thin{margin-top:4px;min-width:160px}
-.dream .plate h3{font-size:19px}
-.dream .plate p{margin-top:2px;font-size:13px;color:rgba(255,255,255,.78);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Rêves : image en haut (16/10, entière), texte dans une bande sous l'image */
+.dream{aspect-ratio:auto!important;display:flex;flex-direction:column;background:#0b0f16}
+.dream .dm{position:relative;aspect-ratio:16/10;overflow:hidden;flex:none}
+.dream .dcap{padding:13px 16px 15px;display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--line)}
+.dream .dcap h3{font-size:18px;font-weight:600;line-height:1.25}
+.dream .dcap p{font-size:13px;line-height:1.45;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0}
+.dreams.sm .dream .dcap h3{font-size:15px}
 .vb-grid.big.hz-long .vc-ov{padding:20px}
 .vb-grid.big.hz-long .plate{max-width:min(100%,960px);padding:14px 20px 16px}
 .vb-grid.big.hz-long .plate .thin{min-width:320px}
@@ -3163,7 +3168,8 @@ function renderMotivation(){renderMotHero();renderDreams();renderWhy();renderWin
 function renderDreams(){
   /* Pas de date : un rêve n'a pas d'échéance. Les rêves réalisés sont rangés à part, plus petits, en dessous */
   const card=d=>{const src=photoSrc(d.cover,1200);
-    return `<div class="dream ${d.done?'done':''}" onclick="editDream('${d.id}')">${src?`<div class="dbg" style="${bgStyle(src)}"></div><img src="${src}" alt="" loading="lazy">`:'<div class="noimg"></div>'}${d.done?'<span class="ok">✓ Réalisé</span>':''}<div class="ov"><div class="plate"><h3 class="display">${esc(d.title)}</h3>${d.why?`<p>${esc(d.why)}</p>`:''}</div></div></div>`;};
+    /* Image entière et propre en haut, texte dans une bande en dessous (rien ne recouvre l'image) */
+    return `<div class="dream ${d.done?'done':''}" onclick="editDream('${d.id}')"><div class="dm">${src?`<div class="dbg" style="${bgStyle(src)}"></div><img src="${src}" alt="" loading="lazy">`:'<div class="noimg"></div>'}${d.done?'<span class="ok">✓ Réalisé</span>':''}</div><div class="dcap"><h3 class="display">${esc(d.title)}</h3>${d.why?`<p>${esc(d.why)}</p>`:''}</div></div>`;};
   const todo=S.dreams.filter(d=>!d.done),done=S.dreams.filter(d=>d.done);
   $('#dreams').innerHTML=S.dreams.length?`${todo.length?`<div class="dreams">${todo.map(card).join('')}</div>`:'<div class="sub">Tous tes rêves sont réalisés. Ajoute le suivant.</div>'}
     ${done.length?`<div class="dreams-done"><div class="dd-h"><span>✓</span><h3 class="display">Rêves réalisés</h3><span class="sub">${done.length}</span></div><div class="dreams sm">${done.map(card).join('')}</div></div>`:''}`
