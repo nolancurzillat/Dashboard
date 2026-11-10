@@ -942,6 +942,11 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .gt-time{flex:none;font-size:12.5px;font-weight:600;color:var(--gold2);padding:5px 10px;border-radius:999px;border:1px solid rgba(242,205,120,.3);background:rgba(242,205,120,.08)}
 .gt-time:hover{border-color:var(--gold)}
 .gt-time.on{background:var(--gold);color:#16120a}
+/* Photos des cartes (objectifs, rêves, compétences, page d'un objectif) : elles remplissent leur cadre, plus de grands bords flous */
+.vcard .rv-img,.skcard .rv-img,.dp-hero .rv-img{background-size:cover!important;background-position:center!important}
+.vb-grid.big.hz-moyen .rv::before{display:none}
+.dream .dm img{object-fit:cover}
+.dream .dm .dbg{display:none}
 /* Accueil : mosaïque de 3 cadres photo (un grand à gauche, deux petits empilés à droite) */
 .hmosaic{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:12px;align-self:stretch;min-height:0}
 .hmosaic .hframe{grid-row:1/3;min-height:0!important}
@@ -1218,7 +1223,7 @@ body.cl-locked>*:not(.cl-gate):not(#aurora){display:none!important}
 /* ===== ESSAI (2026-11-10) : toutes les pages sur toute la largeur de l'écran.
    Pour revenir comme avant, il suffit de supprimer ce bloc (avant : .page 1380px, accueil 1500px). ===== */
 @media(min-width:701px){
-  .page{max-width:none;padding-left:clamp(24px,3vw,56px);padding-right:clamp(24px,3vw,56px)}
+  .page{max-width:1640px;padding-left:clamp(24px,3vw,48px);padding-right:clamp(24px,3vw,48px)} /* essai pleine largeur abandonné : un peu plus large qu'avant (1380px) */
   /* L'accueil garde sa largeur d'avant (1500px), à la demande de Nolan */
 }
 /* Site en ligne (téléphone) : les fonctions du module Windows sont masquées */
