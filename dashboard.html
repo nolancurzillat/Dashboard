@@ -245,6 +245,20 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .vc-ov .chip{align-self:flex-start}
 .vc-t{font-size:19px;font-weight:600;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.5)}
 .vb-grid.big .vc-t{font-size:25px}
+/* Onglet Objectifs (pas sur téléphone) : long terme en grandes bannières larges, moyen terme un cran en dessous, court terme inchangé */
+@media(min-width:701px){
+  .vb-grid.big.hz-long{grid-template-columns:1fr;gap:20px}
+  .vb-grid.big.hz-long .vcard{height:400px}
+  .vb-grid.big.hz-long .vc-t{font-size:clamp(30px,2.8vw,42px)}
+  .vb-grid.big.hz-long .vc-ov{padding-right:30%}
+  .vb-grid.big.hz-moyen{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .vb-grid.big.hz-moyen .vcard{height:350px}
+  .vb-grid.big.hz-moyen .vc-t{font-size:29px}
+  /* Bannière large : l'image reste entière, les côtés sont remplis par la même image floutée */
+  .vb-grid.big.hz-long .rv,.vb-grid.big.hz-moyen .rv{isolation:isolate}
+  .vb-grid.big.hz-long .rv::before,.vb-grid.big.hz-moyen .rv::before{content:'';position:absolute;inset:-40px;z-index:-1;background:var(--rvimg) center/cover no-repeat;filter:blur(26px) brightness(.6);transform:scale(1.1)}
+}
+@media(max-width:1000px) and (min-width:701px){.vb-grid.big.hz-moyen{grid-template-columns:1fr}}
 .vc-p{font-size:12.5px;color:rgba(255,255,255,.7)}
 .vc-ov .thin{margin-top:6px}
 .vc-step{position:absolute;top:12px;right:12px;opacity:0;transition:.2s}
@@ -1772,7 +1786,7 @@ function ringSVG(pct,size,stroke,label){const r=(size-stroke)/2-2,C=2*Math.PI*r;
 /* Image d'un objectif, rêve ou patrimoine : affichée telle quelle (plus de gris selon la progression) */
 function revealHtml(id,pct,gid){
   const p=Math.max(0,Math.min(1,(pct||0)/100)),src=photoSrc(id);
-  return `<div class="rv ${p>=1?'full':''} ${src?'':'noimg'}"><div class="rv-img" style="${bgStyle(src)}"${gid?` data-gimg="${gid}" data-gcur="${esc(id)}"`:''}></div></div>`;
+  return `<div class="rv ${p>=1?'full':''} ${src?'':'noimg'}"${src?` style="--rvimg:url('${src}')"`:''}><div class="rv-img" style="${bgStyle(src)}"${gid?` data-gimg="${gid}" data-gcur="${esc(id)}"`:''}></div></div>`;
 }
 const normUrl=u=>{u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:'https://'+u;};
 
@@ -2361,7 +2375,7 @@ const GOAL_ROT_MS=300000;
 const goalImgs=g=>[...new Set((Array.isArray(g.covers)?g.covers:[g.cover]).filter(Boolean))];
 function goalImgNow(g){const a=goalImgs(g);if(!a.length)return CAT_IMG[g.cat]||'lib:mtn-sunset';let h=0;for(const ch of String(g.id))h=(h*31+ch.charCodeAt(0))|0;return a[(Math.floor(Date.now()/GOAL_ROT_MS)+Math.abs(h))%a.length];}
 /* Change l'image affichée sans redessiner la page (pas de perte de saisie) */
-setInterval(()=>{document.querySelectorAll('[data-gimg]').forEach(el=>{const g=S.goals.find(x=>x.id===el.dataset.gimg);if(!g||goalImgs(g).length<2)return;const id=goalImgNow(g);if(el.dataset.gcur!==id){el.dataset.gcur=id;el.style.cssText=bgStyle(photoSrc(id,1800));}});},20000);
+setInterval(()=>{document.querySelectorAll('[data-gimg]').forEach(el=>{const g=S.goals.find(x=>x.id===el.dataset.gimg);if(!g||goalImgs(g).length<2)return;const id=goalImgNow(g);if(el.dataset.gcur!==id){el.dataset.gcur=id;const s=photoSrc(id,1800);el.style.cssText=bgStyle(s);if(el.parentNode&&s)el.parentNode.style.setProperty('--rvimg',`url('${s}')`);}});},20000);
 /* Compétences suivies par un objectif : plusieurs possibles (g.skills), l'ancien champ g.skill reste lu */
 const goalSkillIds=g=>(Array.isArray(g.skills)&&g.skills.length?g.skills:(g.skill?[g.skill]:[])).filter(id=>S.skills.some(s=>s.id===id));
 const MODES=[['auto','Automatique : moyenne de ses sous-objectifs, sinon ses étapes'],['steps','Étapes à cocher'],['wealth','Montant de patrimoine à atteindre'],['skill','Avancement d’une ou plusieurs compétences'],['habit','Régularité d’une habitude (30 derniers jours)'],['manual','Je l’ajuste moi-même']];
@@ -2397,7 +2411,7 @@ function renderGoals(){renderDaily();
   /* Tous les objectifs, en grand, sans filtre ; le bouton d'ajout est discret dans l'en-tête */
   gFilter='';$('#gfilters').innerHTML='';
   $('#gboard').innerHTML=H.map(([h,l,sub])=>{const gs=S.goals.filter(g=>g.horizon===h);
-    return `<section class="vb-sec"><div class="vb-h"><h3 class="display">${l}</h3><span class="n">${sub} · ${gs.length}</span><button class="vb-add-s" title="Ajouter un objectif ${l.toLowerCase()}" onclick="editGoal(null,'${h}')">+</button></div>${gs.length?`<div class="vb-grid big">${gs.map(goalCard).join('')}</div>`:`<div class="sub">Aucun objectif ${l.toLowerCase()} pour l'instant.</div>`}</section>`;}).join('');
+    return `<section class="vb-sec"><div class="vb-h"><h3 class="display">${l}</h3><span class="n">${sub} · ${gs.length}</span><button class="vb-add-s" title="Ajouter un objectif ${l.toLowerCase()}" onclick="editGoal(null,'${h}')">+</button></div>${gs.length?`<div class="vb-grid big hz-${h}">${gs.map(goalCard).join('')}</div>`:`<div class="sub">Aucun objectif ${l.toLowerCase()} pour l'instant.</div>`}</section>`;}).join('');
 }
 /* Temps de travail d'un objectif : sessions des espaces qui lui sont liés, plus celles de ses sous-objectifs */
 /* Temps propre (chrono de l'objectif + espaces liés, y compris le chrono en cours) + tous ses sous-objectifs, qui s'additionnent */
