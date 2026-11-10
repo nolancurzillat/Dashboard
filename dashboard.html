@@ -3192,8 +3192,8 @@ $('#ifile').addEventListener('change',async e=>{
    Photos : table dash_photos (une ligne par photo, avec une date de modification « mt » et un marqueur « deleted »).
    La sécurité vient des règles RLS de Supabase (chacun ne lit que ses lignes) : la clé ci-dessous est publique par nature.
    Sur le site en ligne, rien ne s'affiche tant qu'on n'est pas connecté. Sur l'ordinateur, la connexion est facultative. */
-const CLOUD_URL='';   // ex : https://xxxx.supabase.co   (à remplir une fois le projet créé)
-const CLOUD_KEY='';   // clé publique « publishable » du projet
+const CLOUD_URL='https://asabzgnpdzabqklsncmk.supabase.co';   // projet Supabase « Dashboard »
+const CLOUD_KEY='sb_publishable_otf3DUGv-2X_UUL5Cm2aMg_D5pLb0jA';   // clé PUBLIQUE (publishable), faite pour être visible ; ne jamais mettre la clé secrète ici
 const cloudOn=()=>!!(CLOUD_URL&&CLOUD_KEY);
 const isWeb=()=>/^https?:$/.test(location.protocol);
 const CL_SES='dash-session',CL_REV='dash-rev',CL_DIRTY='dash-dirty',CL_BACKUP=KEY+'-avant-synchro';
