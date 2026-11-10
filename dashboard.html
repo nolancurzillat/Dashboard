@@ -1172,6 +1172,22 @@ body.cl-locked>*:not(.cl-gate):not(#aurora){display:none!important}
 .plate .chip{align-self:flex-start}
 .plate .vc-t{text-shadow:none}
 .plate .thin{margin-top:4px;min-width:160px}
+/* Objectifs : image propre en haut (.vm), texte dans une bande en dessous (.vc-ov devient une légende) */
+.vcard{height:auto!important;display:flex;flex-direction:column;background:#0b0f16}
+.vcard .vm{position:relative;height:180px;overflow:hidden;flex:none}
+.vb-grid.big .vcard .vm{height:220px}
+.vcard .vc-ov{position:static;inset:auto;padding:13px 16px 15px;border-top:1px solid var(--line)}
+.vcard .plate{background:none;backdrop-filter:none;-webkit-backdrop-filter:none;border:0;box-shadow:none;padding:0;max-width:none;align-self:stretch}
+.vcard .plate .thin{min-width:0}
+@media(min-width:701px){
+  .vb-grid.big.hz-long .vcard .vm{height:330px}
+  .vb-grid.big.hz-moyen .vcard .vm{height:270px}
+  .vb-grid.big.hz-long .vc-ov{padding:16px 22px 18px}
+  .vb-grid.big.hz-long .plate{max-width:none;padding:0}
+  .vb-grid.big.hz-long .vc-t{font-size:clamp(24px,2vw,32px)}
+  .vb-grid.big.hz-moyen .vc-t{font-size:24px}
+}
+@media(max-width:700px){.vb-grid.big .vcard .vm{height:190px}}
 /* Rêves : image en haut (16/10, entière), texte dans une bande sous l'image */
 .dream{aspect-ratio:auto!important;display:flex;flex-direction:column;background:#0b0f16}
 .dream .dm{position:relative;aspect-ratio:16/10;overflow:hidden;flex:none}
@@ -1179,14 +1195,11 @@ body.cl-locked>*:not(.cl-gate):not(#aurora){display:none!important}
 .dream .dcap h3{font-size:18px;font-weight:600;line-height:1.25}
 .dream .dcap p{font-size:13px;line-height:1.45;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0}
 .dreams.sm .dream .dcap h3{font-size:15px}
-.vb-grid.big.hz-long .vc-ov{padding:20px}
-.vb-grid.big.hz-long .plate{max-width:min(100%,960px);padding:14px 20px 16px}
-.vb-grid.big.hz-long .plate .thin{min-width:320px}
 /* ===== ESSAI (2026-11-10) : toutes les pages sur toute la largeur de l'écran.
    Pour revenir comme avant, il suffit de supprimer ce bloc (avant : .page 1380px, accueil 1500px). ===== */
 @media(min-width:701px){
   .page{max-width:none;padding-left:clamp(24px,3vw,56px);padding-right:clamp(24px,3vw,56px)}
-  .hwrap{max-width:none}
+  /* L'accueil garde sa largeur d'avant (1500px), à la demande de Nolan */
 }
 /* Site en ligne (téléphone) : les fonctions du module Windows sont masquées */
 body.web .win-only{display:none!important}
@@ -2531,7 +2544,7 @@ const goalHasTime=g=>goalWorkSec(g)>=30||goalRunsIn(g);
 function goalRunsIn(g){const c=S.chrono;if(!c||!c.gid)return false;let x=S.goals.find(y=>y.id===c.gid),n=0;while(x&&n++<30){if(x.id===g.id)return true;x=x.parent&&S.goals.find(y=>y.id===x.parent);}return false;}
 function goalCard(g){
   const c=CATS[g.cat]||'#888',man=isManual(g),st=g.steps||[];
-  return `<div class="vcard" style="--c:${c}" onclick="openGoal('${g.id}')">${revealHtml(goalImgNow(g),g.progress,g.id)}
+  return `<div class="vcard" style="--c:${c}" onclick="openGoal('${g.id}')"><div class="vm">${revealHtml(goalImgNow(g),g.progress,g.id)}</div>
     <div class="vc-ov"><div class="plate"><span class="chip" style="--c:${c}">${esc(g.cat)}</span><div class="vc-t display">${esc(g.title)}</div>${g.parent&&goalName(g.parent)?`<div class="vc-p">↑ ${esc(goalName(g.parent))}</div>`:''}
     <div class="vc-p">${g.progress} % · ${esc(goalSource(g))}${goalHasTime(g)?` · <button class="vc-time" title="Voir le détail du temps" onclick="event.stopPropagation();openTimeInfo('${g.id}')">⏱ <span data-live-goal="${g.id}">${fmtDur(goalWorkSec(g))}</span></button>`:''}</div><div class="thin"><i style="width:${g.progress}%"></i></div></div></div>
     ${!goalSessionsOn(g)?'':S.chrono&&S.chrono.gid===g.id?`<button class="vc-run on" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Arrêter la session">■ <span data-live>${hms(chronoSec())}</span></button>`:`<button class="vc-run" onclick="event.stopPropagation();startGoalChrono('${g.id}')" title="Lancer une session : le chrono démarre, son temps s'ajoute à cet objectif et aux objectifs plus larges">▶ Session</button>`}
