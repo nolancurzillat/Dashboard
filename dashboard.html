@@ -433,6 +433,22 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .why .eyebrow.red{color:var(--red)}
 .why .eyebrow.blue{color:var(--blue)}
 .why .grid>.card{padding:26px 28px}
+/* Mon pourquoi : 4 cartes, chacune sa couleur (--ac) */
+.wgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.wcard{position:relative;overflow:hidden;border-radius:22px;padding:24px 26px 18px;background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 13%,rgba(255,255,255,.035)) 0%,rgba(255,255,255,.02) 55%);border:1px solid color-mix(in srgb,var(--ac) 26%,var(--line));box-shadow:0 18px 48px rgba(0,0,0,.22);transition:border-color .25s,box-shadow .25s}
+.wcard:before{content:'';position:absolute;left:0;top:22px;bottom:22px;width:3px;border-radius:0 3px 3px 0;background:var(--ac);opacity:.85}
+.wcard:after{content:'';position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(color-mix(in srgb,var(--ac) 22%,transparent),transparent 70%);pointer-events:none}
+.wcard:focus-within{border-color:color-mix(in srgb,var(--ac) 60%,transparent);box-shadow:0 18px 48px rgba(0,0,0,.28),0 0 0 3px color-mix(in srgb,var(--ac) 14%,transparent)}
+.wc-h{position:relative;z-index:1;display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.wc-ic{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:13px;font-size:19px;color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,transparent);border:1px solid color-mix(in srgb,var(--ac) 35%,transparent)}
+.wc-t{font-size:22px;line-height:1.2;color:var(--ink,#fff)}
+.wc-q{font-size:13.5px;color:var(--muted);margin-top:3px}
+.wc-n{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap;padding-top:4px}
+.why .wcard textarea{position:relative;z-index:1;display:block;background:transparent;border:1px solid transparent;border-radius:14px;padding:12px 14px;margin:0 -14px;width:calc(100% + 28px);font-family:inherit;font-size:16.5px;line-height:1.7;min-height:150px;color:rgba(255,255,255,.92);resize:none}
+.why .wcard textarea::placeholder{color:rgba(255,255,255,.34);font-style:italic}
+.why .wcard textarea:hover{background:rgba(255,255,255,.025);border-color:var(--line)}
+.why .wcard textarea:focus{background:rgba(0,0,0,.22);border-color:color-mix(in srgb,var(--ac) 45%,transparent);outline:0}
+@media(max-width:900px){.wgrid{grid-template-columns:1fr}.wcard{padding:20px 18px 14px}.wc-t{font-size:19px}}
 .letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .env{position:relative;height:170px;border-radius:18px;padding:20px;background:linear-gradient(160deg,#2a2418,#17140e);border:1px solid rgba(214,169,74,.3);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
 .env::before{content:"";position:absolute;left:0;right:0;top:0;height:90px;background:linear-gradient(160deg,rgba(214,169,74,.22),rgba(214,169,74,.04));clip-path:polygon(0 0,100% 0,50% 100%)}
@@ -878,6 +894,28 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
   .hero .space h3{font-size:clamp(18px,2.6vh,26px)}
   .hero .space .sp-sub{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 }
+/* Mes objectifs du jour + Mes tâches, côte à côte */
+.hcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:26px;align-items:start}
+.hcards .hprio{margin-top:0;max-width:none}
+.htasks{display:flex;flex-direction:column;min-width:0}
+.tcount{margin-left:auto;font-size:12px;font-weight:600;color:rgba(255,255,255,.55);background:rgba(255,255,255,.08);border-radius:20px;padding:2px 10px}
+.tlist{max-height:clamp(110px,26vh,300px);overflow-y:auto;margin:0 -6px;padding:0 6px;scrollbar-width:thin}
+.trow{display:flex;align-items:center;gap:12px;padding:9px 2px;border-bottom:1px solid var(--line);transition:opacity .35s,transform .35s}
+.trow:last-child{border-bottom:0}
+.trow .check{width:24px;height:24px;border-radius:8px;cursor:pointer;background:transparent}
+.trow .check:hover{border-color:var(--green);background:rgba(67,185,127,.15)}
+.trow .ttxt{flex:1;min-width:0;font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.trow .tdel{opacity:0;background:none;border:0;color:var(--muted);font-size:15px;cursor:pointer;padding:2px 6px;border-radius:6px}
+.trow:hover .tdel{opacity:.8}.trow .tdel:hover{color:var(--red);opacity:1}
+.trow.out{opacity:0;transform:translateX(18px)}
+.trow.out .check{background:var(--green);border-color:var(--green)}
+.tempty{padding:6px 2px 10px;color:rgba(255,255,255,.5);font-size:13.5px}
+.tadd{display:flex;align-items:center;gap:12px;margin-top:8px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.16);cursor:text;transition:.2s}
+.tadd:focus-within{border-style:solid;border-color:var(--gold);background:rgba(0,0,0,.25)}
+.tplus{width:24px;height:24px;flex:none;display:grid;place-items:center;border-radius:8px;color:var(--gold);font-weight:700;font-size:17px}
+.tadd input{flex:1;min-width:0;background:none;border:0;outline:0;color:inherit;font:inherit;font-size:15px;padding:2px 0}
+@media(min-width:1001px){.hcards{margin-top:clamp(8px,2vh,22px)}.htasks{padding:clamp(10px,1.6vh,20px) 20px}.trow{padding:clamp(4px,.8vh,9px) 0}}
+@media(max-width:1000px){.hcards{grid-template-columns:1fr}.trow .tdel{opacity:.6}}
 @media(min-width:1001px) and (max-height:720px){.hero .hquote{display:none}.hero .space .sp-sub{display:none}}
 @media(max-width:1000px){.hwrap{padding:130px 16px 30px}.hmain{grid-template-columns:1fr;gap:22px}.hero .hframe{min-height:300px}.hero .spaces{grid-template-columns:1fr}.htop{flex-wrap:wrap}}
 /* Images toujours entières et nettes : jamais rognées ni agrandies */
@@ -1277,11 +1315,18 @@ body.web .win-only{display:none!important}
           <div class="htime display" id="htime"></div>
           <div class="hgreet display" id="hgreet"></div>
           <div class="hquote" id="hquote"></div>
+          <div class="hcards">
           <div class="glass hprio">
             <div class="ch"><h2 style="color:rgba(255,255,255,.7)">Mes objectifs du jour</h2><div class="acts"><button class="btn sm" onclick="openMorning(1)">Modifier</button></div></div>
             <div id="prio"></div>
             <div class="pbar" id="pbar"></div>
             <div class="winmsg" id="prioWin">Tous tes objectifs du jour sont faits. Journée gagnée.</div>
+          </div>
+          <div class="glass htasks">
+            <div class="ch"><h2 style="color:rgba(255,255,255,.7)">Mes tâches</h2><span class="tcount" id="tcount"></span></div>
+            <div class="tlist" id="tlist"></div>
+            <label class="tadd"><span class="tplus">+</span><input id="tinput" placeholder="Ajouter une tâche, puis Entrée" maxlength="200" autocomplete="off"></label>
+          </div>
           </div>
         </div>
         <div class="hmosaic" id="hmosaic">
@@ -1392,11 +1437,11 @@ body.web .win-only{display:none!important}
   <div class="sec-h" style="margin-top:0"><h2 class="display">Ce qui me fait rêver</h2><span class="sub">Les objectifs qui te donnent envie de te lever le matin. Ils défilent aussi sur l'accueil.</span><div class="acts"><button class="btn primary" onclick="editDream()">+ Ajouter</button></div></div>
   <div id="dreams"></div>
   <div class="sec-h"><h2 class="display">Mon pourquoi</h2><span class="sub">Écris directement dans les cadres, tout est enregistré automatiquement.</span></div>
-  <div class="grid">
-    <section class="card s6"><div class="eyebrow">Mon pourquoi</div><textarea data-k="why" placeholder="Pourquoi la liberté financière compte pour toi ? Qui veux-tu devenir ? Qu'est-ce que tu veux offrir aux gens que tu aimes ?"></textarea></section>
-    <section class="card s6"><div class="eyebrow red">Ce que je refuse</div><textarea data-k="anti" placeholder="La vie que tu ne veux surtout pas avoir dans 10 ans si tu ne changes rien."></textarea></section>
-    <section class="card s6"><div class="eyebrow blue">Mes valeurs et mes règles</div><textarea data-k="values" placeholder="Ex : Je ne vends jamais dans la panique. Je tiens mes engagements envers moi-même. J'apprends chaque jour."></textarea></section>
-    <section class="card s6"><div class="eyebrow">Qui je serai dans 5 ans</div><textarea data-k="letter" placeholder="Décris la personne que tu seras dans 5 ans : ta journée type, ce que tu sais faire, ce que tu as construit."></textarea></section>
+  <div class="wgrid">
+    <section class="wcard" style="--ac:#d6a94a"><div class="wc-h"><span class="wc-ic">✦</span><div><div class="wc-t display">Mon pourquoi</div><div class="wc-q">Ce qui te fait avancer, même les jours sans envie.</div></div><span class="wc-n" data-n="why"></span></div><textarea data-k="why" placeholder="Pourquoi la liberté financière compte pour toi ? Qui veux-tu devenir ? Qu'est-ce que tu veux offrir aux gens que tu aimes ?"></textarea></section>
+    <section class="wcard" style="--ac:#e5695c"><div class="wc-h"><span class="wc-ic">⊘</span><div><div class="wc-t display">Ce que je refuse</div><div class="wc-q">La vie que tu ne veux pas subir.</div></div><span class="wc-n" data-n="anti"></span></div><textarea data-k="anti" placeholder="La vie que tu ne veux surtout pas avoir dans 10 ans si tu ne changes rien."></textarea></section>
+    <section class="wcard" style="--ac:#5aa2e6"><div class="wc-h"><span class="wc-ic">◆</span><div><div class="wc-t display">Mes valeurs et mes règles</div><div class="wc-q">Ce que tu t'engages à toujours respecter.</div></div><span class="wc-n" data-n="values"></span></div><textarea data-k="values" placeholder="Ex : Je ne vends jamais dans la panique. Je tiens mes engagements envers moi-même. J'apprends chaque jour."></textarea></section>
+    <section class="wcard" style="--ac:#9b8afb"><div class="wc-h"><span class="wc-ic">➚</span><div><div class="wc-t display">Qui je serai dans 5 ans</div><div class="wc-q">La personne que tu es en train de construire.</div></div><span class="wc-n" data-n="letter"></span></div><textarea data-k="letter" placeholder="Décris la personne que tu seras dans 5 ans : ta journée type, ce que tu sais faire, ce que tu as construit."></textarea></section>
   </div>
   <div class="sec-h"><h2 class="display">Lettres au futur moi</h2><span class="sub">Scellées jusqu'à la date choisie.</span><div class="acts"><button class="btn primary" onclick="editLetter()">✉ Écrire une lettre</button></div></div>
   <div id="letters"></div>
@@ -1770,7 +1815,7 @@ function defaults(){
       {id:uid(),name:"1h d'apprentissage",icon:'💻',color:'#5aa2e6',target:5,log:{}},
       {id:uid(),name:'Lecture 20 min',icon:'📖',color:'#d6a94a',target:7,log:{}}
     ],
-    wins:[],focus:{},
+    wins:[],focus:{},tasks:[],
     skills:[],challenges:[],letters:[],weeks:{},dreams:[],game:{lastLevel:0,badges:null},
     launcher:[{id:la,name:'The Analytics',icon:'📊',kind:'site',target:'https://the-analytics.fr'}],
     modes:[
@@ -1791,7 +1836,8 @@ function load(){
   try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);
     const S={...d,...o,settings:{...d.settings,...(o.settings||{})},finance:{...d.finance,...(o.finance||{}),sim:{...d.finance.sim,...((o.finance||{}).sim||{})}}};
     const rm=o.reminders||{};S.reminders={habits:{...d.reminders.habits,...(rm.habits||{})},evening:{...d.reminders.evening,...(rm.evening||{})},weekly:{...d.reminders.weekly,...(rm.weekly||{})},focus:{...d.reminders.focus,...(rm.focus||{})}};
-    for(const k of ['goals','habits','wins','skills','challenges','letters','launcher','modes','quotes','dreams'])if(!Array.isArray(S[k]))S[k]=d[k];
+    for(const k of ['goals','habits','wins','skills','challenges','letters','launcher','modes','quotes','dreams','tasks'])if(!Array.isArray(S[k]))S[k]=d[k];
+    S.tasks=S.tasks.filter(t=>t&&t.id&&typeof t.t==='string');
     if(!S.settings.quotesV2){const have=new Set(S.quotes.map(q=>q.text));QUOTES_MORE.forEach(q=>{if(!have.has(q.text))S.quotes.push({...q});});S.settings.quotesV2=1;}
     S.game={...d.game,...(o.game||{})};
     for(const k of ['days','weeks','focus'])if(!S[k]||typeof S[k]!=='object'||Array.isArray(S[k]))S[k]={};
@@ -1816,6 +1862,8 @@ function load(){
     if(!Array.isArray(S.finance.positions))S.finance.positions=[];
     if(!S.settings.skillsSeeded){S.settings.skillsSeeded=1;seedSkills(S);}
     S.reminders.monthly={on:false,day:1,time:'19:00',...((o.reminders||{}).monthly||{})};
+    /* Revues du soir et de la semaine retirées : on coupe leurs rappels une fois (reprogrammés au démarrage) */
+    if(!S.settings.noReviews){S.settings.noReviews=1;if(S.reminders.evening.on||S.reminders.weekly.on){S.reminders.evening.on=false;S.reminders.weekly.on=false;window.__reschedule=true;}}
     const t=S.days[dk()];if(t&&t.priorities&&t.priorities.length&&t.morningDone===undefined&&!t.planned)t.morningDone=true;
     delete S.photos;return S;}}catch(e){
     /* Jamais de perte silencieuse : on met de côté les données illisibles avant de repartir de zéro */
@@ -2077,16 +2125,14 @@ function renderHome(){
   const d=today(),q=curQuote();
   $('#hquote').innerHTML=(q?`<blockquote>« ${esc(q.text)} »</blockquote>${q.author?`<cite>${esc(q.author)}</cite>`:''}`:'')
     +`<div class="qbtns"><button class="btn sm" onclick="qOff++;renderHome()">Autre citation</button><button class="btn sm" onclick="editQuotes()">Mes citations</button></div>`;
-  renderBanners();renderPriorities();renderBg(false);renderSpaces();
+  renderBanners();renderPriorities();renderTasks();renderBg(false);renderSpaces();
   if(drawerOpen())renderDrawer();
 }
 function renderBanners(){
   const d=today(),h=new Date().getHours(),b=[],lr=lettersReady();
   if(lr.length)b.push(`<button class="banner gold" onclick="openLetter('${lr[0].id}')">✉ Une lettre de toi t'attend</button>`);
   if(!d.morningDone)b.push(`<button class="banner" onclick="openMorning()">☀ Démarrer ma journée</button>`);
-  if(h>=18&&!d.eveningDone)b.push(`<button class="banner" onclick="openEvening()">🌙 Revue du soir</button>`);
   if(new Date().getDate()>=(S.reminders.monthly.day||1)&&!statementThisMonth())b.push(`<button class="banner" onclick="updateWealth()">📊 Relevé de patrimoine du mois</button>`);
-  if(weekReviewKey())b.push(`<button class="banner" onclick="openWeekly()">🗓 Revue de la semaine</button>`);
   if(BK.state==='perm')b.push(`<button class="banner warn" onclick="bkReauth()">⚠ Réactiver la sauvegarde automatique</button>`);
   else if(!helperOn()&&!(cloudOn()&&clLogged())&&(BK.state==='off'||BK.state==='err'))b.push(`<button class="banner warn" onclick="go('settings')">💾 Protéger mes données</button>`);
   $('#hbanners').innerHTML=b.join('');
@@ -2248,7 +2294,7 @@ function editSpace(id){
 }
 function renderDrawer(){
   renderSessions();renderHToday();renderMiniChal();renderMiniGoals();renderMiniFin();renderMiniWhy();
-  $('#reviewTitle').textContent=new Date().getHours()>=18?'Revue du soir':'Journal du jour';
+  $('#reviewTitle').textContent='Journal du jour';
   if(document.activeElement!==$('#review'))$('#review').value=today().review||'';
 }
 function editQuotes(){
@@ -2266,6 +2312,28 @@ function renderPriorities(){
   $('#pbar').innerHTML=d.priorities.map(p=>`<i class="${p.done?'on':''}"></i>`).join('');
   $('#prioWin').style.display=d.priorities.length&&d.priorities.every(p=>p.done)?'block':'none';
 }
+/* Mes tâches : une ligne par tâche, cocher la fait disparaître */
+function renderTasks(){
+  const L=$('#tlist');if(!L)return;
+  L.innerHTML=S.tasks.length?S.tasks.map(t=>`<div class="trow" data-id="${esc(t.id)}"><button class="check" title="Fait" onclick="doneTask('${esc(t.id)}',this)"></button><div class="ttxt">${esc(t.t)}</div><button class="tdel" title="Supprimer sans la cocher" onclick="delTask('${esc(t.id)}')">✕</button></div>`).join('')
+    :`<div class="tempty">Rien sur ta liste. Note ici ce que tu as à faire.</div>`;
+  $('#tcount').textContent=S.tasks.length?S.tasks.length:'';
+}
+function addTasks(txt){
+  const lines=String(txt||'').split(/\r?\n/).map(s=>s.replace(/^\s*[-•*]\s*/,'').trim()).filter(Boolean);
+  if(!lines.length)return false;
+  lines.forEach(l=>S.tasks.push({id:uid(),t:l.slice(0,200),at:Date.now()}));save();renderTasks();
+  const L=$('#tlist');if(L)L.scrollTop=L.scrollHeight;return true;
+}
+function doneTask(id,btn){
+  const row=btn&&btn.closest('.trow');if(row){if(row.classList.contains('out'))return;btn.textContent='✓';row.classList.add('out');}
+  setTimeout(()=>{S.tasks=S.tasks.filter(t=>t.id!==id);save();renderTasks();},row?380:0);
+}
+function delTask(id){S.tasks=S.tasks.filter(t=>t.id!==id);save();renderTasks();}
+(()=>{const i=$('#tinput');if(!i)return;
+  i.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();if(addTasks(i.value))i.value='';}});
+  i.addEventListener('paste',e=>{const t=(e.clipboardData||window.clipboardData).getData('text');if(/\n/.test(t)){e.preventDefault();addTasks(i.value+t);i.value='';}});
+})();
 function togglePrio(i){const d=today();d.priorities[i].done=!d.priorities[i].done;if(d.priorities[i].done)xpPop(XP_RULES.prio,'Priorité');save();renderPriorities();if(d.priorities.every(p=>p.done))toast('Journée gagnée. Bravo.');}
 $('#review').addEventListener('input',e=>{today().review=e.target.value;save();});
 function goalGroups(sel){return H.map(([h,l])=>{const gs=S.goals.filter(g=>g.horizon===h);return gs.length?`<optgroup label="${l}">${gs.map(g=>`<option value="${g.id}"${g.id===sel?' selected':''}>${esc(g.title)}</option>`).join('')}</optgroup>`:'';}).join('');}
@@ -3258,8 +3326,9 @@ function editDream(id){
       save();renderDreams();bgShown=null;},
     onDelete:id?()=>{S.dreams=S.dreams.filter(x=>x.id!==id);save();renderDreams();}:null});
 }
-function renderWhy(){document.querySelectorAll('#v-motivation textarea').forEach(t=>{t.value=S[t.dataset.k]||'';autoH(t);});renderLetters();}
-document.querySelectorAll('#v-motivation textarea').forEach(t=>t.addEventListener('input',()=>{S[t.dataset.k]=t.value;save();autoH(t);}));
+function whyCount(k){const e=document.querySelector(`#v-motivation [data-n="${k}"]`);if(!e)return;const n=(S[k]||'').trim().split(/\s+/).filter(Boolean).length;e.textContent=n?`${n} mot${n>1?'s':''}`:'';}
+function renderWhy(){document.querySelectorAll('#v-motivation textarea').forEach(t=>{t.value=S[t.dataset.k]||'';autoH(t);whyCount(t.dataset.k);});renderLetters();}
+document.querySelectorAll('#v-motivation textarea').forEach(t=>t.addEventListener('input',()=>{S[t.dataset.k]=t.value;save();autoH(t);whyCount(t.dataset.k);}));
 const lettersReady=()=>S.letters.filter(l=>!l.opened&&l.openOn<=dk());
 function renderLetters(){
   const ls=[...S.letters].sort((a,b)=>a.openOn.localeCompare(b.openOn));
@@ -3413,8 +3482,6 @@ function renderSettings(){
   <section class="card s6 win-only"><div class="ch"><h2>Rappels et notifications Windows</h2></div>
     <div class="status ${hOn?'ok':'warn'}"><i></i><span>${hOn?'Module Windows actif : notifications, rappels et applications disponibles.':"Module Windows non installé : lance Installer.bat pour activer les notifications et l'ouverture d'applications."}</span></div>
     <div class="rem"><label><input type="checkbox" id="r_h" ${r.habits.on?'checked':''}> Rappel des habitudes, chaque jour à</label><input type="time" id="r_ht" value="${r.habits.time}"></div>
-    <div class="rem"><label><input type="checkbox" id="r_e" ${r.evening.on?'checked':''}> Revue du soir, chaque jour à</label><input type="time" id="r_et" value="${r.evening.time}"></div>
-    <div class="rem w"><label><input type="checkbox" id="r_w" ${r.weekly.on?'checked':''}> Revue de la semaine, le</label><select id="r_wd">${DAYS.map((d,i)=>`<option value="${i}"${+r.weekly.day===i?' selected':''}>${d}</option>`).join('')}</select><input type="time" id="r_wt" value="${r.weekly.time}"></div>
     <div class="rem w"><label><input type="checkbox" id="r_m" ${S.reminders.monthly.on?'checked':''}> Relevé de patrimoine, chaque mois le</label><select id="r_md">${[...Array(28)].map((_,i)=>`<option value="${i+1}"${+S.reminders.monthly.day===i+1?' selected':''}>${i+1}</option>`).join('')}</select><input type="time" id="r_mt" value="${S.reminders.monthly.time}"></div>
     <div class="rem"><label><input type="checkbox" id="r_f" ${r.focus.on?'checked':''}> Notification à la fin d'une session de focus</label><span></span></div>
     <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn primary" onclick="saveReminders()">Enregistrer les rappels</button><button class="btn ghost" onclick="notify('Dashboard','Les notifications fonctionnent.','')" ${hOn?'':'disabled'}>Tester une notification</button></div>
@@ -3429,21 +3496,26 @@ function renderSettings(){
     <label>Devise<select id="st_cur">${[['EUR','Euro (€)'],['CHF','Franc suisse (CHF)'],['USD','Dollar ($)']].map(([v,l])=>`<option value="${v}"${v===S.settings.currency?' selected':''}>${l}</option>`).join('')}</select></label></div>
     <div><button class="btn primary" onclick="saveProfile()">Enregistrer</button></div></div></section>
   <section class="card s6"><div class="ch"><h2>Rituels</h2></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="openMorning()">Démarrage du matin</button><button class="btn" onclick="openEvening()">Revue du soir</button><button class="btn" onclick="openWeekly()">Revue de la semaine</button></div></section>`;
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="openMorning()">Démarrage du matin</button></div></section>`;
   paintBackup();paintCloud();
 }
 function saveProfile(){S.settings.name=$('#st_name').value.trim()||'Nolan';S.settings.start=$('#st_start').value||dk();S.settings.currency=$('#st_cur').value;save();toast('Profil enregistré.');}
 function saveReminders(){
   const r=S.reminders;
-  r.habits={on:$('#r_h').checked,time:$('#r_ht').value||'20:00'};r.evening={on:$('#r_e').checked,time:$('#r_et').value||'21:00'};
-  r.weekly={on:$('#r_w').checked,day:+$('#r_wd').value,time:$('#r_wt').value||'18:00'};r.focus={on:$('#r_f').checked};r.monthly={on:$('#r_m').checked,day:+$('#r_md').value,time:$('#r_mt').value||'19:00'};save();
+  /* Revues du soir et de la semaine retirées (Nolan ne les fait pas) : leurs rappels restent toujours coupés */
+  r.habits={on:$('#r_h').checked,time:$('#r_ht').value||'20:00'};r.evening={on:false,time:r.evening.time||'21:00'};
+  r.weekly={on:false,day:+r.weekly.day||0,time:r.weekly.time||'18:00'};r.focus={on:$('#r_f').checked};r.monthly={on:$('#r_m').checked,day:+$('#r_md').value,time:$('#r_mt').value||'19:00'};save();
   if(!helperOn()){toast("Rappels enregistrés. Ils fonctionneront une fois le Dashboard installé avec Installer.bat.");return;}
+  scheduleReminders('Rappels enregistrés.');
+}
+function scheduleReminders(confirm){
+  const r=S.reminders;
   callHelper('schedule',{
     habits:{on:r.habits.on,time:r.habits.time,title:'Tes habitudes du jour',text:"As-tu coché tes habitudes aujourd'hui ? Un petit pas suffit.",view:'habits'},
     evening:{on:r.evening.on,time:r.evening.time,title:'Revue du soir',text:'Deux minutes pour boucler ta journée et préparer demain.',view:'evening'},
     weekly:{on:r.weekly.on,day:r.weekly.day,time:r.weekly.time,title:'Revue de la semaine',text:'Fais le bilan de ta semaine et fixe ton cap pour la prochaine.',view:'weekly'},
     monthly:{on:r.monthly.on,day:r.monthly.day,time:r.monthly.time,title:'Relevé de patrimoine',text:'Une minute pour recopier tes montants Finary et voir ton patrimoine grandir.',view:'finance'},
-    confirm:'Rappels enregistrés.'});
+    ...(confirm?{confirm}:{})});
 }
 function editLauncher(id){
   const l=id?S.launcher.find(x=>x.id===id):{name:'',kind:'site',target:'',icon:'🌐'};
@@ -3714,9 +3786,8 @@ if(isWeb()&&'serviceWorker' in navigator&&location.hostname!=='localhost'){addEv
   if(hv)try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
   go(VIEWS.some(v=>v[0]===hv)||hv==='settings'||hv==='gallery'?hv:'home');CL.ready=true;paintCloud();
   const d=today();
-  if(hv==='evening')openEvening();
-  else if(hv==='weekly')openWeekly();
-  else if(!d.morningDone&&!d.skipped&&(!d.priorities.length||d.planned))openMorning();
+  if(window.__reschedule&&helperOn()){window.__reschedule=false;save();try{scheduleReminders();}catch(e){}}
+  if(!d.morningDone&&!d.skipped&&(!d.priorities.length||d.planned))openMorning();
   // Chrono resté ouvert : si le Dashboard a été fermé (ou l'ordinateur mis en veille), on compte jusqu'au dernier signe de vie
   if(S.chrono&&Date.now()-(S.chrono.beat||S.chrono.start)>2*60*1000){const nm=chronoName(S.chrono),b=(S.chrono.beat||S.chrono.start)+30000;stopChrono(b,true);if(nm)toast(`Chrono « ${nm} » arrêté à la fermeture du Dashboard : temps enregistré.`);}
   paintChrono(true);
