@@ -433,6 +433,36 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .why .eyebrow.red{color:var(--red)}
 .why .eyebrow.blue{color:var(--blue)}
 .why .grid>.card{padding:26px 28px}
+/* Objectifs de vie : tableau 2 colonnes */
+.lg-table{border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.03);overflow:hidden}
+.lg-table+.lg-table{margin-top:16px}
+.lg-head{display:grid;grid-template-columns:1fr 110px;padding:12px 22px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);background:rgba(255,255,255,.04);border-bottom:1px solid var(--line)}
+.lg-head>div:last-child{text-align:center}
+.lg-row{display:grid;grid-template-columns:1fr 110px;align-items:center;padding:6px 22px;border-bottom:1px solid var(--line);transition:opacity .35s,transform .35s,background .2s}
+.lg-row:hover{background:rgba(255,255,255,.03)}
+.lg-row.out{opacity:0;transform:translateX(18px)}
+.lg-row.out .check{background:var(--green);border-color:var(--green)}
+.lg-c1{min-width:0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.lg-in{flex:1;min-width:0;background:transparent;border:1px solid transparent;border-radius:10px;padding:8px 10px;margin-left:-10px;color:inherit;font:inherit;font-size:16px}
+.lg-in:hover{border-color:var(--line)}.lg-in:focus{outline:0;border-color:var(--gold);background:rgba(0,0,0,.22)}
+.lg-txt{font-size:16px;padding:8px 0}
+.lg-date{font-size:12.5px;color:var(--muted)}
+.lg-c2{display:flex;align-items:center;justify-content:center;gap:6px;position:relative}
+.lg-c2 .check{cursor:pointer;background:transparent}
+.lg-c2 .check:hover{border-color:var(--green);background:rgba(67,185,127,.15)}
+.lg-del{position:absolute;right:0;opacity:0;background:none;border:0;color:var(--muted);cursor:pointer;font-size:14px;padding:4px 6px;border-radius:6px}
+.lg-row:hover .lg-del{opacity:.8}.lg-del:hover{color:var(--red);opacity:1}
+.lg-empty{padding:14px 22px;color:var(--muted);font-size:14px;font-style:italic;border-bottom:1px solid var(--line)}
+.lg-add{display:flex;align-items:center;gap:12px;padding:12px 22px;cursor:text}
+.lg-add:focus-within{background:rgba(0,0,0,.18)}
+.lg-add input{flex:1;min-width:0;background:none;border:0;outline:0;color:inherit;font:inherit;font-size:15.5px}
+.lg-done{border-color:rgba(67,185,127,.3);background:rgba(67,185,127,.05)}
+.lg-done .lg-head{color:#8be0b4;background:rgba(67,185,127,.08)}
+.lg-done .lg-row:last-child{border-bottom:0}
+.lg-done .lg-txt{color:rgba(255,255,255,.75)}
+.lg-done .check{background:var(--green);border-color:var(--green)}
+.lg-cnt{display:inline-block;margin-left:6px;padding:1px 9px;border-radius:20px;background:rgba(67,185,127,.2);letter-spacing:0}
+@media(max-width:700px){.lg-head,.lg-row{grid-template-columns:1fr 78px;padding-left:14px;padding-right:12px}.lg-add,.lg-empty{padding-left:14px;padding-right:14px}.lg-del{opacity:.6;right:-4px}}
 /* Mon pourquoi : 4 cartes, chacune sa couleur (--ac) */
 .wgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .wcard{position:relative;overflow:hidden;border-radius:22px;padding:24px 26px 18px;background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 13%,rgba(255,255,255,.035)) 0%,rgba(255,255,255,.02) 55%);border:1px solid color-mix(in srgb,var(--ac) 26%,var(--line));box-shadow:0 18px 48px rgba(0,0,0,.22);transition:border-color .25s,box-shadow .25s}
@@ -1436,6 +1466,8 @@ body.web .win-only{display:none!important}
   <div id="motHero"></div>
   <div class="sec-h" style="margin-top:0"><h2 class="display">Ce qui me fait rêver</h2><span class="sub">Les objectifs qui te donnent envie de te lever le matin. Ils défilent aussi sur l'accueil.</span><div class="acts"><button class="btn primary" onclick="editDream()">+ Ajouter</button></div></div>
   <div id="dreams"></div>
+  <div class="sec-h"><h2 class="display">Mes objectifs de vie</h2><span class="sub">Les expériences à vivre au moins une fois. Coche-les quand c'est fait.</span></div>
+  <div id="lifeGoals"></div>
   <div class="sec-h"><h2 class="display">Mon pourquoi</h2><span class="sub">Écris directement dans les cadres, tout est enregistré automatiquement.</span></div>
   <div class="wgrid">
     <section class="wcard" style="--ac:#d6a94a"><div class="wc-h"><span class="wc-ic">✦</span><div><div class="wc-t display">Mon pourquoi</div><div class="wc-q">Ce qui te fait avancer, même les jours sans envie.</div></div><span class="wc-n" data-n="why"></span></div><textarea data-k="why" placeholder="Pourquoi la liberté financière compte pour toi ? Qui veux-tu devenir ? Qu'est-ce que tu veux offrir aux gens que tu aimes ?"></textarea></section>
@@ -1815,7 +1847,7 @@ function defaults(){
       {id:uid(),name:"1h d'apprentissage",icon:'💻',color:'#5aa2e6',target:5,log:{}},
       {id:uid(),name:'Lecture 20 min',icon:'📖',color:'#d6a94a',target:7,log:{}}
     ],
-    wins:[],focus:{},tasks:[],
+    wins:[],focus:{},tasks:[],lifeGoals:[],
     skills:[],challenges:[],letters:[],weeks:{},dreams:[],game:{lastLevel:0,badges:null},
     launcher:[{id:la,name:'The Analytics',icon:'📊',kind:'site',target:'https://the-analytics.fr'}],
     modes:[
@@ -1836,7 +1868,8 @@ function load(){
   try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);
     const S={...d,...o,settings:{...d.settings,...(o.settings||{})},finance:{...d.finance,...(o.finance||{}),sim:{...d.finance.sim,...((o.finance||{}).sim||{})}}};
     const rm=o.reminders||{};S.reminders={habits:{...d.reminders.habits,...(rm.habits||{})},evening:{...d.reminders.evening,...(rm.evening||{})},weekly:{...d.reminders.weekly,...(rm.weekly||{})},focus:{...d.reminders.focus,...(rm.focus||{})}};
-    for(const k of ['goals','habits','wins','skills','challenges','letters','launcher','modes','quotes','dreams','tasks'])if(!Array.isArray(S[k]))S[k]=d[k];
+    for(const k of ['goals','habits','wins','skills','challenges','letters','launcher','modes','quotes','dreams','tasks','lifeGoals'])if(!Array.isArray(S[k]))S[k]=d[k];
+    S.lifeGoals=S.lifeGoals.filter(g=>g&&g.id&&typeof g.t==='string');
     S.tasks=S.tasks.filter(t=>t&&t.id&&typeof t.t==='string');
     if(!S.settings.quotesV2){const have=new Set(S.quotes.map(q=>q.text));QUOTES_MORE.forEach(q=>{if(!have.has(q.text))S.quotes.push({...q});});S.settings.quotesV2=1;}
     S.game={...d.game,...(o.game||{})};
@@ -3327,7 +3360,30 @@ function editDream(id){
     onDelete:id?()=>{S.dreams=S.dreams.filter(x=>x.id!==id);save();renderDreams();}:null});
 }
 function whyCount(k){const e=document.querySelector(`#v-motivation [data-n="${k}"]`);if(!e)return;const n=(S[k]||'').trim().split(/\s+/).filter(Boolean).length;e.textContent=n?`${n} mot${n>1?'s':''}`:'';}
-function renderWhy(){document.querySelectorAll('#v-motivation textarea').forEach(t=>{t.value=S[t.dataset.k]||'';autoH(t);whyCount(t.dataset.k);});renderLetters();}
+function renderWhy(){document.querySelectorAll('#v-motivation textarea').forEach(t=>{t.value=S[t.dataset.k]||'';autoH(t);whyCount(t.dataset.k);});renderLetters();renderLifeGoals();}
+/* Objectifs de vie : expériences à vivre une fois (tableau 2 colonnes, les réalisés passent en bas) */
+function renderLifeGoals(){
+  const box=$('#lifeGoals');if(!box)return;
+  const todo=S.lifeGoals.filter(g=>!g.done),done=S.lifeGoals.filter(g=>g.done).sort((a,b)=>(b.doneAt||'').localeCompare(a.doneAt||''));
+  const row=g=>`<div class="lg-row ${g.done?'done':''}" data-id="${esc(g.id)}">
+      <div class="lg-c1">${g.done?`<span class="lg-txt">${esc(g.t)}</span>`:`<input class="lg-in" value="${esc(g.t)}" maxlength="160" onchange="editLifeGoal('${esc(g.id)}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">`}${g.done&&g.doneAt?`<span class="lg-date">${esc(fmtLgDate(g.doneAt))}</span>`:''}</div>
+      <div class="lg-c2"><button class="check" title="${g.done?'Remettre à faire':'Réalisé'}" onclick="toggleLifeGoal('${esc(g.id)}')">${g.done?'✓':''}</button><button class="lg-del" title="Supprimer" onclick="delLifeGoal('${esc(g.id)}')">✕</button></div></div>`;
+  box.innerHTML=`<div class="lg-table">
+    <div class="lg-head"><div>Objectif</div><div>Réalisé</div></div>
+    ${todo.map(row).join('')||`<div class="lg-empty">Ex : assister à un décollage de fusée, voir un match de boxe, monter le mont Blanc...</div>`}
+    <label class="lg-add"><span class="tplus">+</span><input id="lgInput" placeholder="Ajouter un objectif de vie, puis Entrée" maxlength="160" autocomplete="off"></label>
+  </div>
+  ${done.length?`<div class="lg-table lg-done"><div class="lg-head"><div>Objectifs réalisés <span class="lg-cnt">${done.length}</span></div><div></div></div>${done.map(row).join('')}</div>`:''}`;
+  const i=$('#lgInput');
+  i.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();if(addLifeGoals(i.value)){renderLifeGoals();$('#lgInput').focus();}}});
+  i.addEventListener('paste',e=>{const t=(e.clipboardData||window.clipboardData).getData('text');if(/\n/.test(t)){e.preventDefault();addLifeGoals(i.value+t);renderLifeGoals();}});
+}
+function fmtLgDate(d){try{return 'le '+new Date(d+'T12:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});}catch(e){return '';}}
+function addLifeGoals(txt){const ls=String(txt||'').split(/\r?\n/).map(s=>s.replace(/^\s*[-•*]\s*/,'').trim()).filter(Boolean);if(!ls.length)return false;ls.forEach(l=>S.lifeGoals.push({id:uid(),t:l.slice(0,160),done:false,doneAt:'',at:Date.now()}));save();return true;}
+function editLifeGoal(id,v){const g=S.lifeGoals.find(x=>x.id===id);if(!g)return;v=v.trim();if(!v){delLifeGoal(id);return;}g.t=v.slice(0,160);save();}
+function toggleLifeGoal(id){const g=S.lifeGoals.find(x=>x.id===id);if(!g)return;g.done=!g.done;g.doneAt=g.done?dk():'';save();
+  if(g.done){const r=document.querySelector(`.lg-row[data-id="${id}"]`);if(r){r.classList.add('out');r.querySelector('.check').textContent='✓';setTimeout(renderLifeGoals,380);toast('Objectif de vie réalisé. Bravo !');return;}}renderLifeGoals();}
+function delLifeGoal(id){const g=S.lifeGoals.find(x=>x.id===id);if(!g||!confirm(`Supprimer « ${g.t} » ?`))return;S.lifeGoals=S.lifeGoals.filter(x=>x.id!==id);save();renderLifeGoals();}
 document.querySelectorAll('#v-motivation textarea').forEach(t=>t.addEventListener('input',()=>{S[t.dataset.k]=t.value;save();autoH(t);whyCount(t.dataset.k);}));
 const lettersReady=()=>S.letters.filter(l=>!l.opened&&l.openOn<=dk());
 function renderLetters(){
