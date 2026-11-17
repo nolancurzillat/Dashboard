@@ -3775,7 +3775,9 @@ function editColItem(cid,iid,status,preset){
       const was=it.status;o.status=v.status;o.doneAt=o.status==='done'?(it.doneAt||dk()):'';
       /* Titre changé : on recherche une nouvelle image */
       if(iid&&(itemTitle(c,o)!==oldTitle||(o.author||'')!==oldAuthor)){o.autoImg=undefined;o.autoIdx=0;AUTO_TRIED.delete(iid);}
-      if(iid){Object.assign(it,o);if(o.autoImg===undefined)delete it.autoImg;}else{const n={id:uid(),at:Date.now(),...o};c.items.push(n);if(c.type==='books'){colItem=n.id;setTimeout(()=>window.scrollTo(0,0),0);}}
+      /* On n'efface l'image auto QUE si le titre a changé (avant : effacée à chaque enregistrement, d'où l'image « Autre image » perdue).
+         L'élément est relu au moment d'enregistrer : une synchronisation a pu remplacer les données pendant que la fenêtre était ouverte */
+      if(iid){const reset='autoImg' in o;delete o.autoImg;const live=(colById(cid)||c).items.find(i=>i.id===iid)||it;Object.assign(live,o);if(reset)delete live.autoImg;}else{const n={id:uid(),at:Date.now(),...o};c.items.push(n);if(c.type==='books'){colItem=n.id;setTimeout(()=>window.scrollTo(0,0),0);}}
       if(o.status==='done'&&was==='todo')toast(`${itemTitle(c,o)} : ${T.doneOne.toLowerCase()} !`);
       save();renderCollection();},
     onDelete:iid?()=>{c.items=c.items.filter(i=>i.id!==iid);if(colItem===iid)colItem=null;save();renderCollection();}:null});
