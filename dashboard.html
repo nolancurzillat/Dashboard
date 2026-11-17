@@ -564,6 +564,12 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .mt-alt{position:relative;font-size:30px;font-weight:700;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}.mt-alt small{font-size:15px;font-weight:600;opacity:.8}
 .mtcard h3{position:relative;font-size:18px;font-weight:600;margin-top:6px}
 .mt-meta{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+/* Coller une image */
+.paste-hint{margin:-4px 0 12px;font-size:13px;color:var(--muted)}.paste-hint b{color:var(--gold2,#f2cd78)}
+.paste-or{font-size:12.5px;color:var(--muted)}
+.phf.pasted .phth{animation:pastedFlash .9s ease}
+@keyframes pastedFlash{0%{box-shadow:0 0 0 0 rgba(214,169,74,.9);transform:scale(1.08)}100%{box-shadow:0 0 0 14px rgba(214,169,74,0);transform:scale(1)}}
+body.web .paste-or{display:none}
 /* Ordre des habitudes */
 .ho-list{display:flex;flex-direction:column;gap:8px}
 .ho-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-left:3px solid var(--hc);cursor:grab;transition:background .15s,border-color .15s,opacity .15s}
@@ -2228,7 +2234,7 @@ function modal({title,fields=[],onSave,onDelete,saveLabel='Enregistrer',wide}){
     else if(fd.type==='range')inp=`<div class="rangewrap"><input type="range" id="${id}" min="${fd.min??0}" max="${fd.max??100}" step="${fd.step??5}" value="${fd.value||0}" oninput="this.nextElementSibling.textContent=this.value+'${fd.unit??' %'}'"><span>${fd.value||0}${fd.unit??' %'}</span></div>`;
     else if(fd.type==='color'){box='div';inp=`<div class="swatches" id="${id}" data-v="${fd.value}">${COLORS.map(c=>`<button type="button" style="background:${c}" class="${c===fd.value?'on':''}" onclick="this.parentNode.dataset.v='${c}';[...this.parentNode.children].forEach(b=>b.classList.remove('on'));this.classList.add('on')"></button>`).join('')}</div>`;}
     else if(fd.type==='emoji'){box='div';inp=`<div class="emojis" id="${id}" data-v="${fd.value}">${EMOJIS.map(e=>`<button type="button" class="${e===fd.value?'on':''}" onclick="this.parentNode.dataset.v='${e}';[...this.parentNode.children].forEach(b=>b.classList.remove('on'));this.classList.add('on')">${e}</button>`).join('')}</div>`;}
-    else if(fd.type==='photo'){box='div';inp=`<div class="phf" id="${id}" data-v="${esc(fd.value||'')}"><span class="phth" style="${bgStyle(photoSrc(fd.value))}"></span><button type="button" class="btn sm" onclick="pickPhotoFor('${id}')">Choisir une image</button></div>`;}
+    else if(fd.type==='photo'){box='div';inp=`<div class="phf" id="${id}" data-v="${esc(fd.value||'')}"><span class="phth" style="${bgStyle(photoSrc(fd.value))}"></span><button type="button" class="btn sm" onclick="pickPhotoFor('${id}')">Choisir une image</button><span class="paste-or">ou Ctrl+V pour coller</span></div>`;}
     else if(fd.type==='photos'){box='div';inp=`<div class="phm" id="${id}" data-v="${esc(JSON.stringify(fd.value||[]))}"></div>`;}
     else if(fd.type==='checks'){box='div';inp=`<div class="checks" id="${id}">${fd.options.length?fd.options.map(([v,l])=>`<label class="ck"><input type="checkbox" value="${esc(v)}"${(fd.value||[]).includes(v)?' checked':''}> ${esc(l)}</label>`).join(''):`<span class="small">${esc(fd.emptyText||'Rien à choisir pour le moment.')}</span>`}</div>`;}
     else inp=`<input id="${id}" type="${fd.type||'text'}" value="${esc(fd.value)}" placeholder="${esc(fd.placeholder||'')}"${fd.step?` step="${fd.step}"`:''}>`;
@@ -2250,8 +2256,9 @@ function modal({title,fields=[],onSave,onDelete,saveLabel='Enregistrer',wide}){
 
 /* Choisir une image dans la galerie (ou en importer une) */
 function pickPhoto(cur,cb){
-  const ov=document.createElement('div');ov.className='overlay top';const list=sortedPhotos();
-  ov.innerHTML=`<div class="modal wide"><h3>Choisir une image</h3><div class="picker">${list.length?`<h4>Mes photos</h4>${list.map(p=>`<button data-id="${p.id}" class="${p.id===cur?'on':''}" style="${bgStyle(p.src)}"></button>`).join('')}`:''}${LIB_CATS.map(([c,l])=>`<h4>${l}</h4>${libVisible(c).map(e=>`<button data-id="${e.id}" class="${e.id===cur?'on':''}" title="${esc(e.label)}" style="${bgStyle(libUrl(e,400))}"></button>`).join('')}`).join('')}</div><div class="mact"><button class="btn ghost" data-a="none">Aucune image</button><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Annuler</button><button class="btn primary" data-a="imp">Importer une image</button></div></div>`;
+  const ov=document.createElement('div');ov.className='overlay top pick-ov';const list=sortedPhotos();
+  ov.__pick=id=>{ov.remove();cb(id);};
+  ov.innerHTML=`<div class="modal wide"><h3>Choisir une image</h3><p class="paste-hint">📋 Astuce : copie une image (clic droit, « Copier l'image ») puis fais <b>Ctrl+V</b> ici pour la coller.</p><div class="picker">${list.length?`<h4>Mes photos</h4>${list.map(p=>`<button data-id="${p.id}" class="${p.id===cur?'on':''}" style="${bgStyle(p.src)}"></button>`).join('')}`:''}${LIB_CATS.map(([c,l])=>`<h4>${l}</h4>${libVisible(c).map(e=>`<button data-id="${e.id}" class="${e.id===cur?'on':''}" title="${esc(e.label)}" style="${bgStyle(libUrl(e,400))}"></button>`).join('')}`).join('')}</div><div class="mact"><button class="btn ghost" data-a="none">Aucune image</button><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Annuler</button><button class="btn primary" data-a="imp">Importer une image</button></div></div>`;
   document.body.appendChild(ov);
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
   ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();ov.remove();}});
@@ -3067,6 +3074,19 @@ function cleanRich(html){
   out.querySelectorAll('span:not([style])').forEach(x=>x.replaceWith(...x.childNodes));
   return out.innerHTML.trim();
 }
+/* Coller une image (Ctrl+V) : dans le choix d'image, dans le champ Image de la fenêtre ouverte, ou dans la galerie */
+function clipImageFiles(e){const it=[...((e.clipboardData&&e.clipboardData.items)||[])];return it.filter(i=>i.kind==='file'&&/^image\//.test(i.type)).map(i=>i.getAsFile()).filter(Boolean);}
+document.addEventListener('paste',async e=>{
+  const files=clipImageFiles(e);if(!files.length)return;
+  const ovs=[...document.querySelectorAll('.overlay')],top=ovs[ovs.length-1];
+  if(top&&top.classList.contains('pick-ov')){e.preventDefault();e.stopImmediatePropagation();const ids=await addPhotos(files.slice(0,1));if(ids[0])top.__pick(ids[0]);return;}
+  if(top){const one=top.querySelector('.phf'),multi=top.querySelector('.phm');if(!one&&!multi)return;
+    e.preventDefault();e.stopImmediatePropagation();
+    if(one){const ids=await addPhotos(files.slice(0,1));if(!ids[0])return;one.dataset.v=ids[0];one.querySelector('.phth').style.cssText=bgStyle(photoSrc(ids[0]));one.classList.remove('pasted');void one.offsetWidth;one.classList.add('pasted');}
+    else{const ids=await addPhotos(files);const a=JSON.parse(multi.dataset.v||'[]');ids.forEach(id=>{if(!a.includes(id))a.push(id);});multi.dataset.v=JSON.stringify(a);paintPhotos(multi);}
+    return;}
+  if(cur==='gallery'){e.preventDefault();addPhotos(files);}
+},true);
 document.addEventListener('paste',e=>{const t=e.target.closest&&e.target.closest('.rte');if(!t)return;e.preventDefault();
   const cd=e.clipboardData,h=cd.getData('text/html');
   const html=h?cleanRich(h):esc(cd.getData('text/plain')).replace(/\r?\n/g,'<br>');
