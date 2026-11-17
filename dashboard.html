@@ -3677,7 +3677,7 @@ function renderColItems(c){
   if(!list.length){box.innerHTML=`<div class="card empty">${colQ?'Aucun résultat.':colTab==='todo'?`Rien dans « ${esc(T.todo)} » pour le moment.`:`Ta collection commence ici.`}<br>${colQ?'':`<button class="btn primary" onclick="editColItem('${c.id}',null,'${colTab}')">+ ${esc(T.add)}</button>`}</div>`;return;}
   if(colTab==='todo'){box.innerHTML=`<div class="lg-table">${list.map(it=>`<div class="lg-row col-todo" data-id="${it.id}"><div class="lg-c1" onclick="openColItem('${c.id}','${it.id}')">${c.type==='countries'?`<img class="ctflag" src="${flagUrl(it.code)}" alt="">`:''}<span class="lg-txt">${esc(itemTitle(c,it))}</span>${itemSub(c,it)?`<span class="lg-date">${esc(itemSub(c,it))}</span>`:''}</div><div class="lg-c2"><button class="check" title="${esc(T.doneOne)}" onclick="doneColItem('${c.id}','${it.id}')"></button><button class="lg-del" title="Supprimer" onclick="delColItem('${c.id}','${it.id}')">✕</button></div></div>`).join('')}</div>`;return;}
   if(c.type==='countries'){box.innerHTML=`<div class="flags">${list.map(it=>`<button class="flagcard" onclick="openColItem('${c.id}','${it.id}')"><img src="${flagUrl(it.code)}" alt="" loading="lazy"><div><b>${esc(countryName(it.code))}</b><span>${esc([isSovereign(it.code)?'':'Outre-mer',it.date?colDate(it.date):''].filter(Boolean).join(' · '))}</span></div></button>`).join('')}</div>`;return;}
-  if(c.type==='mountains'){box.innerHTML=`<div class="mtgrid">${list.map(it=>{const src=itemImg(c,it,700);return `<button class="mtcard ${src?'has-img':''}" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')">${src?`<div class="mt-img"><img src="${esc(src)}" alt="" loading="lazy" onerror="this.parentNode.remove()"></div>`:`<svg class="mt-bg" viewBox="0 0 200 80" preserveAspectRatio="none"><path d="M0 80 L55 28 L78 46 L118 8 L200 80Z"/></svg>`}
+  if(c.type==='mountains'){box.innerHTML=`<div class="mtgrid">${list.map(it=>{const src=itemImg(c,it,700);return `<button class="mtcard ${src?'has-img':''}" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')">${src?`<div class="mt-img"><img src="${esc(src)}" alt="" onerror="this.parentNode.remove()"></div>`:`<svg class="mt-bg" viewBox="0 0 200 80" preserveAspectRatio="none"><path d="M0 80 L55 28 L78 46 L118 8 L200 80Z"/></svg>`}
       <div class="mt-alt">${it.alt?`${(+it.alt).toLocaleString('fr-FR')}<small> m</small>`:'⛰'}</div><h3>${esc(it.title||'')}</h3><div class="mt-meta">${it.place?`<span>${esc(it.place)}</span>`:''}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}${starsHtml(it.rating)}</div></button>`;}).join('')}</div>`;queueAutoImgs(c);return;}
   /* Sans image : tuiles colorées (icône en filigrane, une nuance par élément) au lieu d'un grand cadre vide */
   const tile=it=>{const h=hash(itemTitle(c,it)||it.id)%360,sub=itemSub(c,it);
@@ -3688,7 +3688,7 @@ function renderColItems(c){
   if(c.type==='custom'&&!anyImg){box.innerHTML=`<div class="tilegrid">${list.map(tile).join('')}</div>`;queueAutoImgs(c);return;}
   const port=c.type==='books'||c.type==='custom';
   box.innerHTML=`<div class="colitems ${port?'port':''}">${list.map(it=>{const src=itemImg(c,it,700);if(c.type==='custom'&&!src)return tile(it);
-    return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${src?`<img src="${esc(src)}" alt="" loading="lazy" onerror="this.remove()">`:''}<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div></div>
+    return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${src?`<img src="${esc(src)}" alt="" onerror="this.remove()">`:''}<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div></div>
       <div class="ci-cap"><h3>${esc(itemTitle(c,it))}</h3>${itemSub(c,it)?`<p>${esc(itemSub(c,it))}</p>`:''}<div class="ci-meta">${starsHtml(it.rating)}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}</div></div></button>`;}).join('')}</div>`;
   queueAutoImgs(c);
 }
@@ -3704,8 +3704,15 @@ async function autoImgCandidates(c,it){
     await ol(`q=${encodeURIComponent(title)}`);
     if(out.length)return [...new Set(out)];}
   for(const lang of ['en','fr']){
-    const j=await (await fetch(`https://${lang}.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch=${encodeURIComponent(title)}&gsrlimit=4&prop=pageprops&ppprop=page_image|page_image_free`)).json();
-    Object.values((j.query||{}).pages||{}).sort((a,b)=>a.index-b.index).forEach(p=>{const f=p.pageprops&&(p.pageprops.page_image||p.pageprops.page_image_free);if(f)out.push(`https://${lang}.wikipedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=700`);});}
+    const api=`https://${lang}.wikipedia.org/w/api.php?format=json&origin=*&action=query`;
+    const j=await (await fetch(`${api}&generator=search&gsrsearch=${encodeURIComponent(title)}&gsrlimit=4&prop=pageprops&ppprop=page_image|page_image_free`)).json();
+    const files=Object.values((j.query||{}).pages||{}).sort((a,b)=>a.index-b.index).map(p=>p.pageprops&&(p.pageprops.page_image||p.pageprops.page_image_free)).filter(Boolean);
+    if(!files.length)continue;
+    /* Adresse directe de la miniature (upload.wikimedia.org) : rapide et gardée en cache, contrairement à Special:FilePath qui redirige à chaque fois */
+    const k=await (await fetch(`${api}&titles=${encodeURIComponent(files.map(f=>'File:'+f.replace(/_/g,' ')).join('|'))}&prop=imageinfo&iiprop=url&iiurlwidth=600`)).json();
+    const byName={};Object.values((k.query||{}).pages||{}).forEach(p=>{const ii=p.imageinfo&&p.imageinfo[0];if(ii)byName[p.title.replace(/^[^:]+:/,'').replace(/ /g,'_')]=ii.thumburl||ii.url;});
+    const norm=(k.query||{}).normalized||[];norm.forEach(n=>{const from=n.from.replace(/^[^:]+:/,'').replace(/ /g,'_'),to=n.to.replace(/^[^:]+:/,'').replace(/ /g,'_');if(byName[to]&&!byName[from])byName[from]=byName[to];});
+    files.forEach(f=>{const u=byName[f]||byName[f.replace(/ /g,'_')];if(u)out.push(u);});}
   /* Apostrophes et parenthèses encodées : l'adresse reste sûre dans url('…') et dans le HTML */
   return [...new Set(out)].map(u=>u.replace(/'/g,'%27').replace(/\(/g,'%28').replace(/\)/g,'%29'));
 }
@@ -3713,9 +3720,14 @@ async function fetchAutoImg(c,it){const l=await autoImgCandidates(c,it);it.autoI
 const AUTO_TRIED=new Set();let autoBusy=false;
 async function queueAutoImgs(c){
   if(autoBusy||c.type==='countries'||c.autoImg===false)return;
-  const todo=c.items.filter(it=>!it.cover&&it.autoImg===undefined&&!AUTO_TRIED.has(it.id)&&itemTitle(c,it));if(!todo.length)return;
+  /* Les anciennes adresses « Special:FilePath » (lentes) sont remplacées par l'adresse directe, en gardant l'image choisie */
+  const todo=c.items.filter(it=>!it.cover&&(it.autoImg===undefined||/Special:FilePath/.test(it.autoImg||''))&&!AUTO_TRIED.has(it.id)&&itemTitle(c,it));if(!todo.length)return;
   autoBusy=true;let changed=false;
-  for(const it of todo){AUTO_TRIED.add(it.id);try{await fetchAutoImg(c,it);changed=true;}catch(e){/* hors connexion : on réessaiera plus tard */AUTO_TRIED.delete(it.id);break;}}
+  const fname=u=>decodeURIComponent(String(u).split('?')[0].split('/').pop()).replace(/^\d+px-/,'').replace(/ /g,'_');
+  for(const it of todo){AUTO_TRIED.add(it.id);try{
+      const old=/Special:FilePath/.test(it.autoImg||'')?fname(it.autoImg):'';
+      if(old){const l=await autoImgCandidates(c,it),i=l.findIndex(u=>fname(u)===old);if(i>=0){it.autoImg=l[i];it.autoIdx=i;}else await fetchAutoImg(c,it);}
+      else await fetchAutoImg(c,it);changed=true;}catch(e){/* hors connexion : on réessaiera plus tard */AUTO_TRIED.delete(it.id);break;}}
   autoBusy=false;
   if(changed){save();if(cur==='collection'&&colOpen===c.id){if(colItem)renderCollection();else renderColItems(c);}}
 }
@@ -3768,9 +3780,15 @@ function editColItem(cid,iid,status,preset){
       save();renderCollection();},
     onDelete:iid?()=>{c.items=c.items.filter(i=>i.id!==iid);if(colItem===iid)colItem=null;save();renderCollection();}:null});
 }
-async function nextAutoImg(cid,iid){const c=colById(cid),it=c&&c.items.find(i=>i.id===iid);if(!it)return;const box=$('#aimgBox');if(box)box.classList.add('busy');
-  try{it.autoIdx=it.autoImg&&it.autoImg!=='none'?(it.autoIdx||0)+1:(it.autoIdx||0);await fetchAutoImg(c,it);save();}catch(e){toast("Pas de connexion : impossible de chercher une image.");}
-  if(box){const a=it.autoImg!=='none'?it.autoImg:'';box.classList.remove('busy');box.innerHTML=`${a?`<img src="${esc(a)}" alt="">`:'<span class="aimg-none">Aucune image trouvée</span>'}<div class="aimg-b"><button type="button" class="btn sm" onclick="nextAutoImg('${cid}','${iid}')">Autre image</button>${a?`<button type="button" class="btn ghost sm" onclick="removeAutoImg('${cid}','${iid}')">Retirer</button>`:''}</div>`;}
+const preloadImg=u=>new Promise(r=>{if(!u)return r(false);const im=new Image();const t=setTimeout(()=>r(false),15000);im.onload=()=>{clearTimeout(t);r(true);};im.onerror=()=>{clearTimeout(t);r(false);};im.src=u;});
+async function nextAutoImg(cid,iid){const c=colById(cid),it=c&&c.items.find(i=>i.id===iid);if(!it)return;const box=$('#aimgBox');
+  if(box){box.classList.add('busy');const b=box.querySelector('.btn');if(b)b.textContent='Recherche…';}
+  try{const l=await autoImgCandidates(c,it);
+    /* On passe au résultat suivant ; une image qui ne se charge pas est sautée */
+    let i=it.autoImg&&it.autoImg!=='none'?(it.autoIdx||0)+1:(it.autoIdx||0),found='none';
+    for(let n=0;n<l.length;n++){const u=l[(i+n)%l.length];if(await preloadImg(u)){found=u;i=(i+n)%l.length;break;}}
+    it.autoIdx=i;it.autoImg=found;save();}catch(e){toast("Pas de connexion : impossible de chercher une image.");}
+  if(box&&document.body.contains(box)){const a=it.autoImg!=='none'?it.autoImg:'';box.classList.remove('busy');box.innerHTML=`${a?`<img src="${esc(a)}" alt="">`:'<span class="aimg-none">Aucune image trouvée</span>'}<div class="aimg-b"><button type="button" class="btn sm" onclick="nextAutoImg('${cid}','${iid}')">Autre image</button>${a?`<button type="button" class="btn ghost sm" onclick="removeAutoImg('${cid}','${iid}')">Retirer</button>`:''}</div>`;}
   renderCollection();}
 function removeAutoImg(cid,iid){const c=colById(cid),it=c&&c.items.find(i=>i.id===iid);if(!it)return;it.autoImg='none';save();const box=$('#aimgBox');if(box)box.innerHTML=`<span class="aimg-none">Aucune image</span><div class="aimg-b"><button type="button" class="btn sm" onclick="nextAutoImg('${cid}','${iid}')">Chercher une image</button></div>`;renderCollection();}
 /* --- Page d'un livre : résumé, passages importants, ce que j'en retiens (écrits directement, enregistrés tout seuls) --- */
