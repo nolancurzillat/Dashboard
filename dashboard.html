@@ -564,6 +564,25 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .mt-alt{position:relative;font-size:30px;font-weight:700;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}.mt-alt small{font-size:15px;font-weight:600;opacity:.8}
 .mtcard h3{position:relative;font-size:18px;font-weight:600;margin-top:6px}
 .mt-meta{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+/* Ordre des habitudes */
+.ho-list{display:flex;flex-direction:column;gap:8px}
+.ho-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-left:3px solid var(--hc);cursor:grab;transition:background .15s,border-color .15s,opacity .15s}
+.ho-row:active{cursor:grabbing}.ho-row.drag{opacity:.4}.ho-row.over{border-color:var(--gold);background:rgba(214,169,74,.1)}
+.ho-grip{color:var(--muted);letter-spacing:-2px;font-size:15px}
+.ho-row .em{font-size:20px}.ho-n{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ho-row .icbtn:disabled{opacity:.25;cursor:default}
+/* Historique des objectifs du jour, version simple : une ligne par jour */
+.dh2-month{margin-top:18px}.dh2-month:first-child{margin-top:4px}
+.dh2-mh{display:flex;align-items:baseline;gap:10px;padding:0 4px 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.dh2-mh b{font-size:15px;text-transform:capitalize}.dh2-mh span{font-size:12.5px;color:var(--muted)}
+.dh2-row{display:grid;grid-template-columns:56px 128px minmax(0,1fr);align-items:center;gap:12px;padding:8px 4px;border-bottom:1px solid rgba(255,255,255,.04)}
+.dh2-s{justify-self:start;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;color:#0a0d12}
+.dh2-d{font-size:13.5px;color:var(--muted);white-space:nowrap;display:inline-block}.dh2-d::first-letter{text-transform:uppercase}
+.dh2-items{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
+.dh2-items span{display:inline-flex;gap:6px;align-items:baseline}
+.dh2-items .ok i{color:var(--green);font-style:normal;font-weight:700}
+.dh2-items .ko{color:var(--muted)}.dh2-items .ko i{font-style:normal;opacity:.7}
+@media(max-width:700px){.dh2-row{grid-template-columns:48px 1fr;gap:4px 10px}.dh2-items{grid-column:1/-1}}
 /* Image automatique */
 .ci-img .ci-ph{z-index:0}.ci-img img{position:relative;z-index:1}
 .mtcard.has-img{justify-content:flex-start;padding-top:0}
@@ -1577,7 +1596,7 @@ body.web .win-only{display:none!important}
 
 <!-- ===== HABITUDES ===== -->
 <section class="view" id="v-habits"><div class="page">
-  <div class="ph"><div><div class="eyebrow">La discipline au quotidien</div><h1 class="display">Mes habitudes</h1><p>Clique sur une case pour la cocher. Clique sur une habitude pour la modifier.</p></div><div class="acts"><button class="btn" onclick="editChal()">+ Défi</button><button class="btn primary" onclick="editHabit()">+ Habitude</button></div></div>
+  <div class="ph"><div><div class="eyebrow">La discipline au quotidien</div><h1 class="display">Mes habitudes</h1><p>Clique sur une case pour la cocher. Clique sur une habitude pour la modifier.</p></div><div class="acts"><button class="btn" onclick="editChal()">+ Défi</button><button class="btn" onclick="orderHabits()" title="Changer l'ordre des habitudes">↕ Ordre</button><button class="btn primary" onclick="editHabit()">+ Habitude</button></div></div>
   <div class="sec-h" style="margin-top:0"><h2 class="display">Ma semaine</h2></div>
   <div class="kpis" id="hkpis"></div>
   <div class="card">
@@ -2717,14 +2736,19 @@ function openDailyHistory(){
   document.querySelectorAll('.dh-ov').forEach(x=>x.remove());
   const ov=document.createElement('div');ov.className='overlay dh-ov';
   ov.innerHTML=`<div class="modal wide"><div class="ch"><h3 style="margin:0">Mes anciens objectifs du jour</h3><div class="acts"><button class="btn ghost" data-a="x">Fermer</button></div></div><div id="dailyHist"></div></div>`;
-  document.body.appendChild(ov);dailyShow=14;paintDailyHist();
+  document.body.appendChild(ov);dailyShow=31;paintDailyHist();
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
   ov.addEventListener('click',e=>{if(e.target.dataset&&e.target.dataset.a==='x')ov.remove();});
   ov.addEventListener('keydown',e=>{if(e.key==='Escape')ov.remove();});
 }
 function paintDailyHist(){
   const el=$('#dailyHist');if(!el)return;const t=dk(),past=dailyStats().keys.filter(k=>k<t).reverse();
-  el.innerHTML=past.length?`<div class="dhist">${past.slice(0,dailyShow).map(k=>{const it=dayItems(k),d=it.filter(p=>p.done).length;return `<div class="dday ${d===it.length?'full':''}"><div class="dd-h"><b>${fmtDate(k,{weekday:'long',day:'numeric',month:'long'})}</b><span class="dd-s ${d===it.length?'full':d?'part':'none'}">${d}/${it.length}</span></div>${it.map((p,i)=>dailyRow(k,p,i)).join('')}</div>`;}).join('')}</div>${past.length>dailyShow?`<div style="text-align:center;margin-top:12px"><button class="btn" onclick="dailyShow+=30;paintDailyHist()">Voir les jours plus anciens (${past.length-dailyShow})</button></div>`:''}`
+  /* Version simple : regroupé par mois, une ligne par jour (score, date, objectifs ✓ / ○) */
+  const shown=past.slice(0,dailyShow),months=[];shown.forEach(k=>{const m=k.slice(0,7);let g=months[months.length-1];if(!g||g.m!==m)months.push(g={m,ks:[]});g.ks.push(k);});
+  const allOf=m=>past.filter(k=>k.startsWith(m)),rateOf=ks=>{const it=ks.flatMap(dayItems);return it.length?Math.round(it.filter(p=>p.done).length/it.length*100):0;};
+  el.innerHTML=past.length?months.map(g=>{const ks=allOf(g.m);return `<div class="dh2-month"><div class="dh2-mh"><b>${new Date(g.m+'-15T12:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</b><span>${rateOf(ks)} % réalisés · ${ks.length} jour${ks.length>1?'s':''}</span></div>
+      ${g.ks.map(k=>{const it=dayItems(k),d=it.filter(p=>p.done).length;return `<div class="dh2-row"><span class="dh2-s dd-s ${d===it.length?'full':d?'part':'none'}">${d}/${it.length}</span><span class="dh2-d">${fmtDate(k,{weekday:'short',day:'numeric',month:'short'})}</span><div class="dh2-items">${it.map(p=>`<span class="${p.done?'ok':'ko'}"><i>${p.done?'✓':'○'}</i>${esc(p.text)}</span>`).join('')}</div></div>`;}).join('')}</div>`;}).join('')
+    +(past.length>dailyShow?`<div style="text-align:center;margin-top:14px"><button class="btn" onclick="dailyShow+=60;paintDailyHist()">Voir les jours plus anciens (${past.length-dailyShow})</button></div>`:'')
     :`<div class="empty">Tes objectifs du jour apparaîtront ici jour après jour, avec ce que tu as réalisé ou non.</div>`;
 }
 function renderDaily(){
@@ -3233,6 +3257,31 @@ const rate=(h,n=30)=>[...Array(n)].filter((_,i)=>h.log[dk(addDays(new Date(),-i)
 const bestCurrentStreak=()=>S.habits.reduce((m,h)=>Math.max(m,streak(h)),0);
 function toggleHabit(id,k){const h=S.habits.find(x=>x.id===id);if(h.log[k])delete h.log[k];else{h.log[k]=true;if(k===dk())xpPop(XP_RULES.habit,h.name);const s=streak(h);if(k===dk()&&s>0&&s%7===0)toast(`${h.icon} ${s} jours d'affilée !`);}save();
   if(cur==='habits')renderHabits();if(drawerOpen())renderHToday();}
+/* Ordre des habitudes : glisser-déposer (ordinateur) ou flèches ↑ ↓ (téléphone). L'ordre de S.habits est celui affiché partout */
+function orderHabits(){
+  if(S.habits.length<2){toast("Il faut au moins deux habitudes pour changer l'ordre.");return;}
+  document.querySelectorAll('.ho-ov').forEach(x=>x.remove());
+  const ov=document.createElement('div');ov.className='overlay ho-ov';
+  ov.innerHTML=`<div class="modal"><h3>Ordre des habitudes</h3><p class="small muted" style="margin:-4px 0 14px">Fais glisser une habitude, ou utilise les flèches.</p><div class="ho-list" id="hoList"></div><div class="mact"><span style="flex:1"></span><button class="btn primary" data-a="x">Terminé</button></div></div>`;
+  document.body.appendChild(ov);paintHabitOrder();
+  const close=()=>{ov.remove();renderHabits();};
+  ov.addEventListener('mousedown',e=>{if(e.target===ov)close();});
+  ov.addEventListener('click',e=>{if(e.target.dataset&&e.target.dataset.a==='x')close();});
+  ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();close();}});
+}
+function paintHabitOrder(){
+  const L=$('#hoList');if(!L)return;
+  L.innerHTML=S.habits.map((h,i)=>`<div class="ho-row" draggable="true" data-i="${i}" style="--hc:${h.color}"><span class="ho-grip" aria-hidden="true">⋮⋮</span><span class="em">${h.icon}</span><span class="ho-n">${esc(h.name)}</span>
+    <button class="icbtn" title="Monter" ${i?'':'disabled'} onclick="moveHabit(${i},${i-1})">↑</button><button class="icbtn" title="Descendre" ${i<S.habits.length-1?'':'disabled'} onclick="moveHabit(${i},${i+1})">↓</button></div>`).join('');
+  let from=null;
+  L.querySelectorAll('.ho-row').forEach(r=>{
+    r.addEventListener('dragstart',e=>{from=+r.dataset.i;r.classList.add('drag');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',r.dataset.i);}catch(_){}});
+    r.addEventListener('dragend',()=>{r.classList.remove('drag');L.querySelectorAll('.over').forEach(x=>x.classList.remove('over'));});
+    r.addEventListener('dragover',e=>{e.preventDefault();L.querySelectorAll('.over').forEach(x=>x.classList.remove('over'));r.classList.add('over');});
+    r.addEventListener('drop',e=>{e.preventDefault();if(from!==null)moveHabit(from,+r.dataset.i);from=null;});
+  });
+}
+function moveHabit(a,b){if(a===b||b<0||b>=S.habits.length)return;const [h]=S.habits.splice(a,1);S.habits.splice(b,0,h);save();paintHabitOrder();}
 function renderHabits(){
   renderChals();
   const mon=addDays(monday(new Date()),hWeek*7),days=[...Array(7)].map((_,i)=>addDays(mon,i)),t=dk(),todayD=new Date();todayD.setHours(0,0,0,0);
@@ -3698,14 +3747,19 @@ function renderColItems(c){
 function itemImg(c,it,size){if(it.cover)return photoSrc(it.cover,size);if(c.type==='countries'||c.autoImg===false)return '';return it.autoImg&&it.autoImg!=='none'?it.autoImg:'';}
 async function autoImgCandidates(c,it){
   const title=itemTitle(c,it).trim();if(!title)return [];const out=[];
+  let wq=title;
   if(c.type==='books'){
-    const ol=async p=>{const j=await (await fetch(`https://openlibrary.org/search.json?${p}&limit=6&fields=cover_i`)).json();(j.docs||[]).forEach(d=>{if(d.cover_i)out.push(`https://covers.openlibrary.org/b/id/${d.cover_i}-L.jpg`);});};
-    if(it.author)await ol(`title=${encodeURIComponent(title)}&author=${encodeURIComponent(it.author)}`);
-    await ol(`q=${encodeURIComponent(title)}`);
+    /* Avec un auteur : il fait partie de chaque recherche, et un livre d'un autre auteur est écarté */
+    const nz=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ');
+    const au=(it.author||'').trim(),auWords=nz(au).split(/\s+/).filter(w=>w.length>2);
+    const okAuthor=d=>!auWords.length||(d.author_name||[]).some(n=>{const x=nz(n);return auWords.some(w=>x.split(/\s+/).includes(w));});
+    const ol=async p=>{const j=await (await fetch(`https://openlibrary.org/search.json?${p}&limit=10&fields=cover_i,author_name`)).json();(j.docs||[]).forEach(d=>{if(d.cover_i&&okAuthor(d))out.push(`https://covers.openlibrary.org/b/id/${d.cover_i}-L.jpg`);});};
+    if(au){await ol(`title=${encodeURIComponent(title)}&author=${encodeURIComponent(au)}`);if(!out.length)await ol(`q=${encodeURIComponent(title+' '+au)}`);wq=`${title} ${au}`;}
+    else await ol(`q=${encodeURIComponent(title)}`);
     if(out.length)return [...new Set(out)];}
   for(const lang of ['en','fr']){
     const api=`https://${lang}.wikipedia.org/w/api.php?format=json&origin=*&action=query`;
-    const j=await (await fetch(`${api}&generator=search&gsrsearch=${encodeURIComponent(title)}&gsrlimit=4&prop=pageprops&ppprop=page_image|page_image_free`)).json();
+    const j=await (await fetch(`${api}&generator=search&gsrsearch=${encodeURIComponent(wq)}&gsrlimit=4&prop=pageprops&ppprop=page_image|page_image_free`)).json();
     const files=Object.values((j.query||{}).pages||{}).sort((a,b)=>a.index-b.index).map(p=>p.pageprops&&(p.pageprops.page_image||p.pageprops.page_image_free)).filter(Boolean);
     if(!files.length)continue;
     /* Adresse directe de la miniature (upload.wikimedia.org) : rapide et gardée en cache, contrairement à Special:FilePath qui redirige à chaque fois */
