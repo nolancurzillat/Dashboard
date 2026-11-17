@@ -564,6 +564,20 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .mt-alt{position:relative;font-size:30px;font-weight:700;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}.mt-alt small{font-size:15px;font-weight:600;opacity:.8}
 .mtcard h3{position:relative;font-size:18px;font-weight:600;margin-top:6px}
 .mt-meta{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+/* Tuiles sans image (collections personnalisées) */
+.tilegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.tile{position:relative;overflow:hidden;isolation:isolate;text-align:left;color:inherit;font:inherit;cursor:pointer;border-radius:20px;padding:20px 20px 16px;min-height:165px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--ac) 42%,#0b0f16) 0%,color-mix(in srgb,var(--h2) 22%,#0b0f16) 100%);border:1px solid color-mix(in srgb,var(--ac) 30%,rgba(255,255,255,.08));box-shadow:0 14px 36px rgba(0,0,0,.28);transition:transform .3s var(--ease),box-shadow .3s,border-color .3s}
+.tile:hover{transform:translateY(-4px) rotate(-.4deg);border-color:color-mix(in srgb,var(--ac) 65%,transparent);box-shadow:0 20px 46px rgba(0,0,0,.38)}
+.tl-ic{position:absolute;right:-14px;top:-18px;font-size:120px;line-height:1;opacity:.2;transform:rotate(-14deg);z-index:-1;transition:transform .45s var(--ease),opacity .3s;filter:saturate(1.2)}
+.tile:hover .tl-ic{transform:rotate(-4deg) scale(1.08);opacity:.3}
+.tl-glow{position:absolute;left:-30%;bottom:-60%;width:90%;height:120%;border-radius:50%;background:radial-gradient(color-mix(in srgb,var(--h2) 35%,transparent),transparent 70%);z-index:-1;pointer-events:none}
+.tile h3{font-family:var(--display,Georgia),serif;font-size:23px;font-weight:600;line-height:1.15;text-shadow:0 2px 12px rgba(0,0,0,.4);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tile p{font-size:13.5px;color:rgba(255,255,255,.72)}
+.tile .mt-meta{margin-top:6px;color:rgba(255,255,255,.7)}
+.tl-y{padding:2px 9px;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12);font-variant-numeric:tabular-nums}
+.colitems>.tile{min-height:100%}
+@media(max-width:700px){.tilegrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{min-height:130px;padding:14px}.tile h3{font-size:17px}.tl-ic{font-size:84px}}
 /* Page d'un livre */
 .bk{display:grid;grid-template-columns:280px minmax(0,1fr);gap:40px;align-items:start}
 .bk-side{position:sticky;top:90px;display:flex;flex-direction:column;gap:12px}
@@ -3654,8 +3668,13 @@ function renderColItems(c){
   if(c.type==='countries'){box.innerHTML=`<div class="flags">${list.map(it=>`<button class="flagcard" onclick="openColItem('${c.id}','${it.id}')"><img src="${flagUrl(it.code)}" alt="" loading="lazy"><div><b>${esc(countryName(it.code))}</b><span>${esc([isSovereign(it.code)?'':'Outre-mer',it.date?colDate(it.date):''].filter(Boolean).join(' · '))}</span></div></button>`).join('')}</div>`;return;}
   if(c.type==='mountains'){box.innerHTML=`<div class="mtgrid">${list.map(it=>`<button class="mtcard" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><svg class="mt-bg" viewBox="0 0 200 80" preserveAspectRatio="none"><path d="M0 80 L55 28 L78 46 L118 8 L200 80Z"/></svg>
       <div class="mt-alt">${it.alt?`${(+it.alt).toLocaleString('fr-FR')}<small> m</small>`:'⛰'}</div><h3>${esc(it.title||'')}</h3><div class="mt-meta">${it.place?`<span>${esc(it.place)}</span>`:''}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}${starsHtml(it.rating)}</div></button>`).join('')}</div>`;return;}
+  /* Sans image : tuiles colorées (icône en filigrane, une nuance par élément) au lieu d'un grand cadre vide */
+  const tile=it=>{const h=hash(itemTitle(c,it)||it.id)%360,sub=itemSub(c,it);
+    return `<button class="tile" style="--ac:${esc(c.color)};--h2:hsl(${h} 70% 55%)" onclick="openColItem('${c.id}','${it.id}')"><span class="tl-ic" aria-hidden="true">${esc(c.icon||'⭐')}</span><span class="tl-glow"></span>
+      <h3>${esc(itemTitle(c,it))}</h3>${sub?`<p>${esc(sub)}</p>`:''}<div class="mt-meta">${it.date?`<span class="tl-y">${esc(colDate(it.date))}</span>`:''}${starsHtml(it.rating)}</div></button>`;};
+  if(c.type==='custom'&&!(c.opt||{}).cover){box.innerHTML=`<div class="tilegrid">${list.map(tile).join('')}</div>`;return;}
   const port=c.type==='books';
-  box.innerHTML=`<div class="colitems ${port?'port':''}">${list.map(it=>{const src=it.cover?photoSrc(it.cover,700):'';
+  box.innerHTML=`<div class="colitems ${port?'port':''}">${list.map(it=>{if(c.type==='custom'&&!it.cover)return tile(it);const src=it.cover?photoSrc(it.cover,700):'';
     return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${src?`<img src="${src}" alt="" loading="lazy">`:`<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div>`}</div>
       <div class="ci-cap"><h3>${esc(itemTitle(c,it))}</h3>${itemSub(c,it)?`<p>${esc(itemSub(c,it))}</p>`:''}<div class="ci-meta">${starsHtml(it.rating)}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}</div></div></button>`;}).join('')}</div>`;
 }
