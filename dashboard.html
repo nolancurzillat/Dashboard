@@ -2049,7 +2049,7 @@ function defaults(){
       {id:uid(),name:'Apprentissage',icon:'💻',items:[],focus:50,target:''},
       {id:uid(),name:'Investissement',icon:'📈',items:[la],focus:25,target:''}
     ],
-    reminders:{habits:{on:false,time:'20:00'},evening:{on:false,time:'21:00'},weekly:{on:false,day:0,time:'18:00'},focus:{on:true},monthly:{on:false,day:1,time:'19:00'}},
+    reminders:{habits:{on:false,time:'20:00'},evening:{on:false,time:'21:00'},weekly:{on:false,day:0,time:'18:00'},focus:{on:true},monthly:{on:false,day:1,time:'19:00'},water:{on:true,from:'08:00',to:'22:00'}},
     spaces:[
       {id:'sp-fin',name:'Finance',sub:'Analyser, investir, suivre',cover:'lib:chart',items:[{kind:'site',target:'https://the-analytics.fr'}],focus:0,target:''},
       {id:'sp-tech',name:'Étude Tech',sub:'Apprendre et construire',cover:'lib:falcon',items:[],focus:50,target:''},
@@ -2062,7 +2062,7 @@ function load(){
   const d=defaults();
   try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);
     const S={...d,...o,settings:{...d.settings,...(o.settings||{})},finance:{...d.finance,...(o.finance||{}),sim:{...d.finance.sim,...((o.finance||{}).sim||{})}}};
-    const rm=o.reminders||{};S.reminders={habits:{...d.reminders.habits,...(rm.habits||{})},evening:{...d.reminders.evening,...(rm.evening||{})},weekly:{...d.reminders.weekly,...(rm.weekly||{})},focus:{...d.reminders.focus,...(rm.focus||{})}};
+    const rm=o.reminders||{};S.reminders={habits:{...d.reminders.habits,...(rm.habits||{})},evening:{...d.reminders.evening,...(rm.evening||{})},weekly:{...d.reminders.weekly,...(rm.weekly||{})},focus:{...d.reminders.focus,...(rm.focus||{})},water:{...d.reminders.water,...(rm.water||{})}};
     for(const k of ['goals','habits','wins','skills','challenges','letters','launcher','modes','quotes','dreams','tasks','lifeGoals'])if(!Array.isArray(S[k]))S[k]=d[k];
     S.lifeGoals=S.lifeGoals.filter(g=>g&&g.id&&typeof g.t==='string');
     if(!Array.isArray(S.collections))S.collections=seedCollections();
@@ -4064,6 +4064,7 @@ function renderSettings(){
     <div class="rem"><label><input type="checkbox" id="r_h" ${r.habits.on?'checked':''}> Rappel des habitudes, chaque jour à</label><input type="time" id="r_ht" value="${r.habits.time}"></div>
     <div class="rem w"><label><input type="checkbox" id="r_m" ${S.reminders.monthly.on?'checked':''}> Relevé de patrimoine, chaque mois le</label><select id="r_md">${[...Array(28)].map((_,i)=>`<option value="${i+1}"${+S.reminders.monthly.day===i+1?' selected':''}>${i+1}</option>`).join('')}</select><input type="time" id="r_mt" value="${S.reminders.monthly.time}"></div>
     <div class="rem"><label><input type="checkbox" id="r_f" ${r.focus.on?'checked':''}> Notification à la fin d'une session de focus</label><span></span></div>
+    <div class="rem w"><label><input type="checkbox" id="r_wa" ${r.water.on?'checked':''}> 💧 Boire de l'eau, toutes les 15 min, de</label><input type="time" id="r_waf" value="${r.water.from}"><span class="sub">à</span><input type="time" id="r_wat" value="${r.water.to}"></div>
     <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn primary" onclick="saveReminders()">Enregistrer les rappels</button><button class="btn ghost" onclick="notify('Dashboard','Les notifications fonctionnent.','')" ${hOn?'':'disabled'}>Tester une notification</button></div>
     <p class="sub" style="margin-top:10px">Les rappels arrivent même quand le Dashboard est fermé. Un clic sur la notification ouvre le Dashboard.</p></section>
   ${cloudCard()}
@@ -4084,7 +4085,8 @@ function saveReminders(){
   const r=S.reminders;
   /* Revues du soir et de la semaine retirées (Nolan ne les fait pas) : leurs rappels restent toujours coupés */
   r.habits={on:$('#r_h').checked,time:$('#r_ht').value||'20:00'};r.evening={on:false,time:r.evening.time||'21:00'};
-  r.weekly={on:false,day:+r.weekly.day||0,time:r.weekly.time||'18:00'};r.focus={on:$('#r_f').checked};r.monthly={on:$('#r_m').checked,day:+$('#r_md').value,time:$('#r_mt').value||'19:00'};save();
+  r.weekly={on:false,day:+r.weekly.day||0,time:r.weekly.time||'18:00'};r.focus={on:$('#r_f').checked};r.monthly={on:$('#r_m').checked,day:+$('#r_md').value,time:$('#r_mt').value||'19:00'};
+  r.water={on:$('#r_wa').checked,from:$('#r_waf').value||'08:00',to:$('#r_wat').value||'22:00'};if(r.water.to<=r.water.from)r.water.to='22:00';save();
   if(!helperOn()){toast("Rappels enregistrés. Ils fonctionneront une fois le Dashboard installé avec Installer.bat.");return;}
   scheduleReminders('Rappels enregistrés.');
 }
@@ -4095,6 +4097,7 @@ function scheduleReminders(confirm){
     evening:{on:r.evening.on,time:r.evening.time,title:'Revue du soir',text:'Deux minutes pour boucler ta journée et préparer demain.',view:'evening'},
     weekly:{on:r.weekly.on,day:r.weekly.day,time:r.weekly.time,title:'Revue de la semaine',text:'Fais le bilan de ta semaine et fixe ton cap pour la prochaine.',view:'weekly'},
     monthly:{on:r.monthly.on,day:r.monthly.day,time:r.monthly.time,title:'Relevé de patrimoine',text:'Une minute pour recopier tes montants Finary et voir ton patrimoine grandir.',view:'finance'},
+    water:{on:r.water.on,from:r.water.from,to:r.water.to},
     ...(confirm?{confirm}:{})});
 }
 function editLauncher(id){
@@ -4366,6 +4369,9 @@ if(isWeb()&&'serviceWorker' in navigator&&location.hostname!=='localhost'){addEv
   if(hv)try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
   go(VIEWS.some(v=>v[0]===hv)||hv==='settings'||hv==='gallery'?hv:'home');CL.ready=true;paintCloud();
   const d=today();
+  /* Rappel « boire de l'eau » : programmé une fois sur CET ordinateur (repère local, pas synchronisé avec le téléphone) */
+  let waterSched=false;try{waterSched=localStorage.getItem('dash_water_v1')==='1';}catch(e){}
+  if(helperOn()&&!waterSched){window.__reschedule=true;try{localStorage.setItem('dash_water_v1','1');}catch(e){}}
   if(window.__reschedule&&helperOn()){window.__reschedule=false;save();try{scheduleReminders();}catch(e){}}
   if(!d.morningDone&&!d.skipped&&(!d.priorities.length||d.planned))openMorning();
   // Chrono resté ouvert : si le Dashboard a été fermé (ou l'ordinateur mis en veille), on compte jusqu'au dernier signe de vie
