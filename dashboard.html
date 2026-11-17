@@ -564,6 +564,15 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .mt-alt{position:relative;font-size:30px;font-weight:700;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}.mt-alt small{font-size:15px;font-weight:600;opacity:.8}
 .mtcard h3{position:relative;font-size:18px;font-weight:600;margin-top:6px}
 .mt-meta{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+/* Images masquées de la galerie */
+.pick-gal{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:-4px 0 12px;cursor:pointer}
+.hid-ph{margin-top:22px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025);padding:4px 16px}
+.hid-ph summary{cursor:pointer;padding:12px 0;font-weight:600;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hid-ph summary .sub{font-weight:400}
+.hid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:4px 0 16px}
+.hid-it{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#06080c}
+.hid-it img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.hid-a{display:flex;flex-direction:column;gap:6px;padding:8px}
 /* Coller une image */
 .paste-hint{margin:-4px 0 12px;font-size:13px;color:var(--muted)}.paste-hint b{color:var(--gold2,#f2cd78)}
 .paste-or{font-size:12.5px;color:var(--muted)}
@@ -2254,11 +2263,12 @@ function modal({title,fields=[],onSave,onDelete,saveLabel='Enregistrer',wide}){
   return ov;
 }
 
+const pickToGallery=ov=>{const c=ov&&ov.querySelector('.pick-gal-cb');return !!(c&&c.checked);};
 /* Choisir une image dans la galerie (ou en importer une) */
 function pickPhoto(cur,cb){
   const ov=document.createElement('div');ov.className='overlay top pick-ov';const list=sortedPhotos();
   ov.__pick=id=>{ov.remove();cb(id);};
-  ov.innerHTML=`<div class="modal wide"><h3>Choisir une image</h3><p class="paste-hint">📋 Astuce : copie une image (clic droit, « Copier l'image ») puis fais <b>Ctrl+V</b> ici pour la coller.</p><div class="picker">${list.length?`<h4>Mes photos</h4>${list.map(p=>`<button data-id="${p.id}" class="${p.id===cur?'on':''}" style="${bgStyle(p.src)}"></button>`).join('')}`:''}${LIB_CATS.map(([c,l])=>`<h4>${l}</h4>${libVisible(c).map(e=>`<button data-id="${e.id}" class="${e.id===cur?'on':''}" title="${esc(e.label)}" style="${bgStyle(libUrl(e,400))}"></button>`).join('')}`).join('')}</div><div class="mact"><button class="btn ghost" data-a="none">Aucune image</button><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Annuler</button><button class="btn primary" data-a="imp">Importer une image</button></div></div>`;
+  ov.innerHTML=`<div class="modal wide"><h3>Choisir une image</h3><p class="paste-hint">📋 Astuce : copie une image (clic droit, « Copier l'image ») puis fais <b>Ctrl+V</b> ici pour la coller.</p><label class="pick-gal"><input type="checkbox" class="pick-gal-cb"> Ajouter aussi l'image importée ou collée à ma galerie (elle apparaîtra en fond d'accueil)</label><div class="picker">${list.length?`<h4>Mes photos</h4>${list.map(p=>`<button data-id="${p.id}" class="${p.id===cur?'on':''}" style="${bgStyle(p.src)}"></button>`).join('')}`:''}${LIB_CATS.map(([c,l])=>`<h4>${l}</h4>${libVisible(c).map(e=>`<button data-id="${e.id}" class="${e.id===cur?'on':''}" title="${esc(e.label)}" style="${bgStyle(libUrl(e,400))}"></button>`).join('')}`).join('')}</div><div class="mact"><button class="btn ghost" data-a="none">Aucune image</button><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Annuler</button><button class="btn primary" data-a="imp">Importer une image</button></div></div>`;
   document.body.appendChild(ov);
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
   ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();ov.remove();}});
@@ -2266,7 +2276,7 @@ function pickPhoto(cur,cb){
     if(b.dataset.id){ov.remove();cb(b.dataset.id);}
     else if(b.dataset.a==='none'){ov.remove();cb('');}
     else if(b.dataset.a==='cancel')ov.remove();
-    else if(b.dataset.a==='imp'){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=async()=>{const ids=await addPhotos([...i.files]);if(ids[0]){ov.remove();cb(ids[0]);}};i.click();}});
+    else if(b.dataset.a==='imp'){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=async()=>{const ids=await addPhotos([...i.files],'',!pickToGallery(ov));if(ids[0]){ov.remove();cb(ids[0]);}};i.click();}});
 }
 /* Champ « plusieurs images » : vignettes avec ✕, plus un bouton pour en ajouter */
 function paintPhotos(el){const a=JSON.parse(el.dataset.v||'[]');
@@ -2378,7 +2388,7 @@ function renderBanners(){
 }
 /* Images de fond : tes photos (selon le moment de la journée) + les images incluses des thèmes choisis */
 function bgList(){
-  const m=momentNow(),all=sortedPhotos();
+  const m=momentNow(),all=sortedPhotos().filter(p=>!p.hidden);
   const allOk=all.filter(p=>!p.cat||S.settings.libCats.includes(p.cat));let mine=allOk.filter(p=>p.moment===m);mine=mine.concat(allOk.filter(p=>!p.moment));
   const dreamItems=S.dreams.filter(d=>!d.done&&d.cover).map(d=>({id:'dream:'+d.id,src:photoSrc(d.cover,2400),label:d.title,dream:true}));
   const mineItems=dreamItems.concat(mine.map(p=>({id:p.id,src:p.src,label:p.caption||''})));
@@ -2582,7 +2592,7 @@ const prioRows=prio=>{const ph=["L'objectif le plus important","Deuxième object
 const readPrio=(ov,old=[])=>{const ts=[...ov.querySelectorAll('.gt')],gs=[...ov.querySelectorAll('.gg')];return ts.map((t,i)=>({text:t.value.trim(),goal:gs[i].value,done:!!(old[i]&&old[i].text===t.value.trim()&&old[i].done)})).filter(p=>p.text);};
 
 /* ================= Rituels plein écran ================= */
-function ritualBg(){const f=sortedPhotos().filter(p=>p.featured);const v=S.goals.find(g=>g.horizon==='long');return (f[0]&&f[0].src)||(v&&photoSrc(goalCover(v),2000))||(PH[0]&&PH[0].src)||'';}
+function ritualBg(){const vis=sortedPhotos().filter(p=>!p.hidden),f=vis.filter(p=>p.featured);const v=S.goals.find(g=>g.horizon==='long');return (f[0]&&f[0].src)||(v&&photoSrc(goalCover(v),2000))||(vis[0]&&vis[0].src)||'';}
 function runRitual({bg,steps,finish,skip,startAt=0,finishLabel='Terminer'}){
   document.querySelectorAll('.ritual').forEach(x=>x.remove());closeDrawer();
   const ov=document.createElement('div');ov.className='ritual';let i=Math.min(startAt,steps.length-1);
@@ -3079,11 +3089,11 @@ function clipImageFiles(e){const it=[...((e.clipboardData&&e.clipboardData.items
 document.addEventListener('paste',async e=>{
   const files=clipImageFiles(e);if(!files.length)return;
   const ovs=[...document.querySelectorAll('.overlay')],top=ovs[ovs.length-1];
-  if(top&&top.classList.contains('pick-ov')){e.preventDefault();e.stopImmediatePropagation();const ids=await addPhotos(files.slice(0,1));if(ids[0])top.__pick(ids[0]);return;}
+  if(top&&top.classList.contains('pick-ov')){e.preventDefault();e.stopImmediatePropagation();const ids=await addPhotos(files.slice(0,1),'',!pickToGallery(top));if(ids[0])top.__pick(ids[0]);return;}
   if(top){const one=top.querySelector('.phf'),multi=top.querySelector('.phm');if(!one&&!multi)return;
     e.preventDefault();e.stopImmediatePropagation();
-    if(one){const ids=await addPhotos(files.slice(0,1));if(!ids[0])return;one.dataset.v=ids[0];one.querySelector('.phth').style.cssText=bgStyle(photoSrc(ids[0]));one.classList.remove('pasted');void one.offsetWidth;one.classList.add('pasted');}
-    else{const ids=await addPhotos(files);const a=JSON.parse(multi.dataset.v||'[]');ids.forEach(id=>{if(!a.includes(id))a.push(id);});multi.dataset.v=JSON.stringify(a);paintPhotos(multi);}
+    if(one){const ids=await addPhotos(files.slice(0,1),'',true);if(!ids[0])return;one.dataset.v=ids[0];one.querySelector('.phth').style.cssText=bgStyle(photoSrc(ids[0]));one.classList.remove('pasted');void one.offsetWidth;one.classList.add('pasted');}
+    else{const ids=await addPhotos(files,'',true);const a=JSON.parse(multi.dataset.v||'[]');ids.forEach(id=>{if(!a.includes(id))a.push(id);});multi.dataset.v=JSON.stringify(a);paintPhotos(multi);}
     return;}
   if(cur==='gallery'){e.preventDefault();addPhotos(files);}
 },true);
@@ -4029,16 +4039,26 @@ function toggleLibCat(c){const a=S.settings.libCats;S.settings.libCats=a.include
 const libHidden=()=>S.settings.libHidden||(S.settings.libHidden=[]);
 const libVisible=c=>LIB.filter(e=>(!c||e.cat===c)&&!libHidden().includes(e.id));
 function galTiles(c){
-  const mine=PH.filter(p=>p.cat===c).sort((a,b)=>(b.added||0)-(a.added||0)).map(p=>({kind:'mine',id:p.id,src:p.src,thumb:p.src,label:p.caption||'Ma photo'}));
+  const mine=PH.filter(p=>p.cat===c&&!p.hidden).sort((a,b)=>(b.added||0)-(a.added||0)).map(p=>({kind:'mine',id:p.id,src:p.src,thumb:p.src,label:p.caption||'Ma photo'}));
   return mine.concat(libVisible(c).map(e=>({kind:'lib',id:e.id,src:libUrl(e,2400),thumb:libUrl(e,400),label:e.label})));
 }
 function renderGallery(){
   $('#libsec').innerHTML=LIB_CATS.map(([c,l])=>{const on=S.settings.libCats.includes(c),t=galTiles(c),nh=LIB.filter(e=>e.cat===c&&libHidden().includes(e.id)).length;
     return `<div class="card" style="margin-bottom:14px"><div class="ch" style="margin-bottom:0"><h2 style="color:var(--text);text-transform:none;letter-spacing:0;font-size:15px">${l} <span class="sub" style="font-weight:400">${t.length}</span></h2><div class="acts">${nh?`<button class="btn sm ghost" onclick="restoreLib('${c}')">Rétablir ${nh} image${nh>1?'s':''} retirée${nh>1?'s':''}</button>`:''}<button class="btn sm ${on?'primary':''}" onclick="toggleLibCat('${c}')">${on?"✓ Sur l'accueil":"Afficher sur l'accueil"}</button></div></div>
       <div class="libgrid ${on?'':'off'}"><div class="lt-add" onclick="addToCat('${c}')">+ Ajouter une image</div>${t.map((x,i)=>`<div class="lt ${x.kind==='mine'?'mine':''}" style="${bgStyle(x.thumb)}" onclick="openLbox('${c}',${i})"><span>${esc(x.label)}</span><div class="lt-a"><button title="Voir en grand" onclick="event.stopPropagation();openLbox('${c}',${i})">⤢</button><button title="${x.kind==='mine'?'Supprimer ma photo':'Retirer cette image'}" onclick="event.stopPropagation();removeTile('${x.kind}','${x.id}')">✕</button></div></div>`).join('')}</div></div>`;}).join('');
-  const list=sortedPhotos().filter(p=>!p.cat);
-  $('#gal').innerHTML=`<div class="ph-item lt-add" style="min-height:120px;display:grid;place-items:center;border:1px dashed var(--line2);cursor:pointer;color:var(--muted)" onclick="addToCat('')">+ Ajouter une photo</div>`+list.map(p=>`<div class="ph-item"><img src="${p.src}" alt="" style="cursor:zoom-in" onclick="openLbox('',${list.indexOf(p)})">${p.featured?'<span class="star">★ À la une</span>':''}${p.moment?`<span class="mom">${esc((MOMENTS.find(m=>m[0]===p.moment)||['',''])[1])}</span>`:''}<div class="ov" style="pointer-events:none">${p.caption?`<div class="cap">${esc(p.caption)}</div>`:''}<select style="pointer-events:auto" onchange="momentPhoto('${p.id}',this.value)" title="Moment de la journée">${MOMENTS.map(([v,l])=>`<option value="${v}"${(p.moment||'')===v?' selected':''}>Affichée : ${l.toLowerCase()}</option>`).join('')}</select><div class="acts" style="pointer-events:auto"><button class="btn sm" onclick="featPhoto('${p.id}')">${p.featured?'Retirer de la une':'★ À la une'}</button><button class="btn sm" onclick="capPhoto('${p.id}')">Légende</button><button class="btn sm danger" onclick="delPhoto('${p.id}')">Supprimer</button></div></div></div>`).join('');
+  const list=galMine();
+  paintHiddenPhotos();
+  $('#gal').innerHTML=`<div class="ph-item lt-add" style="min-height:120px;display:grid;place-items:center;border:1px dashed var(--line2);cursor:pointer;color:var(--muted)" onclick="addToCat('')">+ Ajouter une photo</div>`+list.map(p=>`<div class="ph-item"><img src="${p.src}" alt="" style="cursor:zoom-in" onclick="openLbox('',${list.indexOf(p)})">${p.featured?'<span class="star">★ À la une</span>':''}${p.moment?`<span class="mom">${esc((MOMENTS.find(m=>m[0]===p.moment)||['',''])[1])}</span>`:''}<div class="ov" style="pointer-events:none">${p.caption?`<div class="cap">${esc(p.caption)}</div>`:''}<select style="pointer-events:auto" onchange="momentPhoto('${p.id}',this.value)" title="Moment de la journée">${MOMENTS.map(([v,l])=>`<option value="${v}"${(p.moment||'')===v?' selected':''}>Affichée : ${l.toLowerCase()}</option>`).join('')}</select><div class="acts" style="pointer-events:auto"><button class="btn sm" onclick="featPhoto('${p.id}')">${p.featured?'Retirer de la une':'★ À la une'}</button><button class="btn sm" onclick="capPhoto('${p.id}')">Légende</button><button class="btn sm" onclick="hidePhoto('${p.id}',true)" title="La retirer de la galerie et du fond d'accueil, sans la supprimer">Masquer</button><button class="btn sm danger" onclick="delPhoto('${p.id}')">Supprimer</button></div></div></div>`).join('');
 }
+const galMine=()=>sortedPhotos().filter(p=>!p.cat&&!p.hidden);
+/* Images masquées (importées pour un objectif, un rêve, une collection…) : repliées en bas de la galerie, avec « Afficher dans la galerie » */
+function paintHiddenPhotos(){
+  let box=$('#galHidden');if(!box){box=document.createElement('div');box.id='galHidden';$('#gal').insertAdjacentElement('afterend',box);}
+  const hs=sortedPhotos().filter(p=>p.hidden);
+  box.innerHTML=hs.length?`<details class="hid-ph"${box.dataset.open?' open':''} ontoggle="this.parentNode.dataset.open=this.open?'1':''"><summary>👁 Images masquées <span class="sub">${hs.length} · importées pour tes objectifs, rêves ou collections, elles n'apparaissent ni ici ni en fond d'accueil</span></summary>
+    <div class="hid-grid">${hs.map(p=>`<div class="hid-it"><img src="${p.src}" alt="" loading="lazy"><div class="hid-a"><button class="btn sm primary" onclick="hidePhoto('${p.id}',false)">Afficher dans la galerie</button><button class="btn sm danger" onclick="delPhoto('${p.id}')" title="Attention : elle disparaît aussi de l'objectif ou du rêve qui l'utilise">Supprimer</button></div></div>`).join('')}</div></details>`:'';
+}
+async function hidePhoto(id,h){const p=PH.find(x=>x.id===id);if(!p)return;if(h){p.hidden=true;p.featured=false;}else delete p.hidden;await photoChanged(p);pIdx=0;renderGallery();toast(h?'Image masquée : elle reste utilisable pour tes objectifs.':'Image affichée dans la galerie et en fond d\'accueil.');}
 function addToCat(c){const i=document.createElement('input');i.type='file';i.accept='image/*';i.multiple=true;i.onchange=()=>addPhotos([...i.files],c);i.click();}
 async function removeTile(kind,id){
   if(kind==='mine')return delPhoto(id);
@@ -4047,7 +4067,7 @@ async function removeTile(kind,id){
 function restoreLib(c){S.settings.libHidden=libHidden().filter(id=>{const e=LIB.find(x=>x.id===id);return !e||e.cat!==c;});save();bgShown=null;renderGallery();}
 /* Agrandir une image (flèches pour passer à la suivante, Échap pour fermer) */
 function openLbox(c,idx){
-  const items=()=>c?galTiles(c):sortedPhotos().filter(p=>!p.cat).map(p=>({kind:'mine',id:p.id,src:p.src,label:p.caption||''}));
+  const items=()=>c?galTiles(c):galMine().map(p=>({kind:'mine',id:p.id,src:p.src,label:p.caption||''}));
   let k=idx;const ov=document.createElement('div');ov.className='lbox';ov.tabIndex=-1;
   const paint=()=>{const a=items();if(!a.length){close();return;}k=(k+a.length)%a.length;const x=a[k];
     ov.innerHTML=`<img src="${x.src}" alt=""><div class="lb-cap">${esc(x.label)} · ${k+1}/${a.length}</div><button class="lb-x" title="Fermer">✕</button><button class="lb-del">${x.kind==='mine'?'Supprimer ma photo':'Retirer cette image'}</button>${a.length>1?'<button class="lb-p" title="Précédente">‹</button><button class="lb-n" title="Suivante">›</button>':''}`;};
@@ -4059,8 +4079,10 @@ function openLbox(c,idx){
     else if(b.classList.contains('lb-del')){const x=items()[k];await removeTile(x.kind,x.id);paint();}});
   addEventListener('keydown',key,true);document.body.appendChild(ov);paint();
 }function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const M=2200;let w=img.width,h=img.height;if(w>M||h>M){const k=M/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',.86));};img.onerror=()=>res(null);img.src=r.result;};r.readAsDataURL(file);});}
-async function addPhotos(files,cat){let t=Date.now();const ids=[];for(const f of files){if(!f.type.startsWith('image/'))continue;const src=await resize(f);if(!src)continue;const p={id:uid(),src,caption:'',featured:false,moment:'',added:t++};if(cat)p.cat=cat;await idbPut(p);PH.push(p);ids.push(p.id);}
-  if(ids.length){toast(ids.length>1?`${ids.length} photos ajoutées.`:'Photo ajoutée.');pIdx=0;bgShown=null;BK.photosDirty=true;bkSchedule();if(cur==='gallery')renderGallery();else if(cur==='home')renderBg(false);}
+/* hidden : image importée ou collée pour un objectif, un rêve, une collection… elle ne s'affiche ni dans la galerie ni en fond d'accueil,
+   sauf si tu choisis « Afficher dans la galerie ». Les images ajoutées depuis la galerie elle-même restent visibles. */
+async function addPhotos(files,cat,hidden){let t=Date.now();const ids=[];for(const f of files){if(!f.type.startsWith('image/'))continue;const src=await resize(f);if(!src)continue;const p={id:uid(),src,caption:'',featured:false,moment:'',added:t++};if(cat)p.cat=cat;if(hidden)p.hidden=true;await idbPut(p);PH.push(p);ids.push(p.id);}
+  if(ids.length){toast(hidden?(ids.length>1?`${ids.length} images ajoutées (pas dans la galerie).`:'Image ajoutée (pas dans la galerie).'):ids.length>1?`${ids.length} photos ajoutées.`:'Photo ajoutée.');pIdx=0;bgShown=null;BK.photosDirty=true;bkSchedule();if(cur==='gallery')renderGallery();else if(cur==='home')renderBg(false);}
   return ids;}
 $('#pfile').addEventListener('change',e=>{addPhotos([...e.target.files]);e.target.value='';});
 const drop=$('#drop');drop.onclick=()=>$('#pfile').click();
