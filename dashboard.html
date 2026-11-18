@@ -567,11 +567,19 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 /* Page d'un livre : les zones de texte enrichi gardent le style de la page */
 .bk-sec .rte.bk-ta,.bk-q .rte.bk-qt{display:block;background:transparent;border:1px solid transparent;border-radius:12px;padding:10px 12px;margin:0 -12px;width:calc(100% + 24px);color:rgba(255,255,255,.92)}
 .bk-sec .rte.bk-ta{font-size:16.5px;line-height:1.75;min-height:70px}
-.bk-q .rte.bk-qt{font-family:var(--display,Georgia),serif;font-style:italic;font-size:17px;line-height:1.6;min-height:44px}
+.bk-q .rte.bk-qt{font-size:16.5px;line-height:1.65;min-height:44px}
 .bk-sec .rte.bk-ta:hover,.bk-q .rte.bk-qt:hover{border-color:var(--line)}
 .bk-sec .rte.bk-ta:focus,.bk-q .rte.bk-qt:focus{background:rgba(0,0,0,.22);border-color:color-mix(in srgb,var(--ac) 45%,transparent)}
 .bk-sec .rte.bk-ta:empty::before,.bk-q .rte.bk-qt:empty::before{color:rgba(255,255,255,.32);font-style:italic}
-/* Thèmes des livres */.th-tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:var(--tc);background:color-mix(in srgb,var(--tc) 16%,transparent);border:1px solid color-mix(in srgb,var(--tc) 40%,transparent);white-space:nowrap}
+/* Barre de mise en forme */
+.fmtbar{position:fixed;z-index:9999;display:none;align-items:center;gap:2px;padding:5px;border-radius:12px;background:rgba(14,18,30,.96);border:1px solid var(--line2);box-shadow:0 12px 32px rgba(0,0,0,.45);backdrop-filter:blur(10px)}
+.fmtbar.on{display:flex}
+.fmtbar button{min-width:32px;height:32px;display:grid;place-items:center;border:0;border-radius:8px;background:none;color:#fff;font:inherit;font-size:15px;cursor:pointer}
+.fmtbar button:hover{background:rgba(255,255,255,.1)}.fmtbar sup{font-size:10px}
+.fmtbar .fdot{width:16px;height:16px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.15)}
+.fmtbar .fsep{width:1px;height:20px;background:var(--line2);margin:0 3px}
+/* Thèmes des livres */
+.th-tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:var(--tc);background:color-mix(in srgb,var(--tc) 16%,transparent);border:1px solid color-mix(in srgb,var(--tc) 40%,transparent);white-space:nowrap}
 .bk-theme{margin-top:10px}.bk-theme .th-tag{font-size:13px;padding:4px 12px}
 .th-bar{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 16px}
 .th-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer;color:var(--tc);background:rgba(255,255,255,.03);border:1px solid color-mix(in srgb,var(--tc) 35%,var(--line));transition:.2s}
@@ -3182,6 +3190,27 @@ document.addEventListener('paste',e=>{const t=e.target.closest&&e.target.closest
   const html=h?cleanRich(h):esc(cd.getData('text/plain')).replace(/\r?\n/g,'<br>');
   document.execCommand('insertHTML',false,html);});
 const rte=(attrs,val,ph,cls='')=>`<div class="rte ${cls}" contenteditable="true" spellcheck="true" ${attrs} data-ph="${esc(ph)}">${richHtml(val)}</div>`;
+/* Barre de mise en forme : apparaît quand on sélectionne du texte dans une zone de texte enrichi (gras, italique, grand, rouge, vert, effacer) */
+const FMT=document.createElement('div');FMT.className='fmtbar';
+FMT.innerHTML=`<button data-f="bold" title="Gras (Ctrl+B)"><b>B</b></button><button data-f="italic" title="Italique (Ctrl+I)"><i>I</i></button><button data-f="big" title="Plus grand">A<sup>+</sup></button><span class="fsep"></span><button data-f="red" title="Rouge"><span class="fdot" style="background:#ff6b6b"></span></button><button data-f="green" title="Vert"><span class="fdot" style="background:#4fd18b"></span></button><span class="fsep"></span><button data-f="clear" title="Enlever la mise en forme">✕</button>`;
+document.body.appendChild(FMT);
+let fmtRte=null;
+function fmtPlace(){const s=getSelection();if(!s.rangeCount||s.isCollapsed){FMT.classList.remove('on');return;}
+  const r=s.getRangeAt(0),n=r.commonAncestorContainer,el=(n.nodeType===1?n:n.parentNode).closest('.rte[contenteditable="true"]');
+  if(!el||el.closest('.ro')){FMT.classList.remove('on');return;}
+  fmtRte=el;const b=r.getBoundingClientRect();FMT.classList.add('on');const w=FMT.offsetWidth,h=FMT.offsetHeight;
+  FMT.style.left=Math.max(8,Math.min(innerWidth-w-8,b.left+b.width/2-w/2))+'px';FMT.style.top=(b.top-h-10<8?b.bottom+10:b.top-h-10)+'px';}
+document.addEventListener('selectionchange',()=>setTimeout(fmtPlace,0));
+addEventListener('scroll',()=>{if(FMT.classList.contains('on'))setTimeout(fmtPlace,0);},true);
+FMT.addEventListener('mousedown',e=>e.preventDefault());
+FMT.addEventListener('click',e=>{const b=e.target.closest('button');fmtPlace();if(!b||!fmtRte)return;const f=b.dataset.f;
+  if(f==='bold'||f==='italic'){document.execCommand('styleWithCSS',false,false);document.execCommand(f);}
+  else if(f==='red'||f==='green'){document.execCommand('styleWithCSS',false,true);document.execCommand('foreColor',false,f==='red'?'#ff6b6b':'#4fd18b');}
+  else if(f==='big'){document.execCommand('styleWithCSS',false,false);document.execCommand('fontSize',false,'7');
+    fmtRte.querySelectorAll('font[size="7"]').forEach(x=>{const sp=document.createElement('span');sp.style.fontSize='22px';sp.append(...x.childNodes);x.replaceWith(sp);});}
+  else if(f==='clear'){document.execCommand('removeFormat');
+    const s=getSelection();if(s.rangeCount){const r=s.getRangeAt(0);fmtRte.querySelectorAll('span[style],b,i,strong,em').forEach(x=>{if(r.intersectsNode(x)&&r.toString().includes(x.textContent))x.replaceWith(...x.childNodes);});}}
+  fmtRte.dispatchEvent(new Event('input',{bubbles:true}));setTimeout(fmtPlace,0);});
 
 document.addEventListener('input',e=>{const t=e.target;
   if(t.dataset&&t.dataset.sk){const s=S.skills.find(x=>x.id===t.dataset.sk);if(!s)return;const v=fieldVal(t);s.stages[+t.dataset.i].note=v;save();autoNote(t);const b=t.closest('.stg').querySelector('.nbtn');b.classList.toggle('has',!!v);b.textContent=v?'📝 Résumé':'✎ Résumé';}
@@ -3826,9 +3855,10 @@ const isSovereign=c=>WORLD.un.includes(c)||c==='XK'||c==='TW';
 const BOOK_THEMES=['Finance','Développement personnel','Culture','Business','Psychologie','Philosophie','Histoire','Science','Biographie','Roman','Santé','Tech'];
 const normTheme=v=>{v=String(v||'').trim().replace(/\s+/g,' ');return v?v.charAt(0).toUpperCase()+v.slice(1):'';};
 const themesOf=c=>{const m=new Map();c.items.forEach(i=>{const t=normTheme(i.theme);if(t)m.set(t.toLowerCase(),t);});return [...m.values()];};
-function themeInput(c,v){const used=themesOf(c),all=[...new Set(used.concat(BOOK_THEMES.filter(x=>!used.some(u=>u.toLowerCase()===x.toLowerCase()))))];
-  return `<input id="f_theme" list="themeList" value="${esc(v||'')}" placeholder="Ex : Finance, Développement personnel, Culture…" autocomplete="off"><datalist id="themeList">${all.map(x=>`<option value="${esc(x)}">`).join('')}</datalist><div class="th-sugg">${all.slice(0,10).map(x=>`<button type="button" class="th-chip" style="--tc:${themeColor(x)}" onclick="document.getElementById('f_theme').value=this.textContent">${esc(x)}</button>`).join('')}</div>`;}
-const themeColor=t=>`hsl(${hash(String(t).toLowerCase())%360} 65% 62%)`;
+function themeInput(c,v){return `<input id="f_theme" value="${esc(v||'')}" placeholder="Ex : Finance, Développement personnel, Culture…" autocomplete="off">`;}
+/* Couleur selon le sens du thème (mots-clés), sinon une couleur stable tirée du nom */
+const THEME_COLORS=[[/financ|argent|invest|bourse|patrimoine|économ|econom|immobil|crypto|trading/,'#e0b54f'],[/dév|dev|perso|productiv|habitude|motivation|mental|discipline|succès|succes|leadership/,'#f2994a'],[/cultur|histoire|art|littér|litter|musique|géopol|geopol|société|societe|civilis/,'#b48cf2'],[/scien|tech|informat|ia\b|intelligence|code|program|math|physique|espace/,'#5aa2e6'],[/psych|philo|spirit|sagesse|stoï|stoi|religion/,'#4fc3c7'],[/santé|sante|sport|nutrition|corps|médec|medec|bien-être|bien etre/,'#43b97f'],[/business|entrepr|management|marketing|vente|startup|carrière|carriere/,'#e5695c'],[/roman|fiction|polar|thriller|fantasy|poésie|poesie|nouvelle/,'#e57ab4'],[/biograph|mémoire|memoire|autobiog/,'#c9a26b']];
+const themeColor=t=>{const s=String(t||'').toLowerCase();for(const [re,c] of THEME_COLORS)if(re.test(s))return c;return `hsl(${hash(s)%360} 65% 62%)`;};
 const themeChip=t=>t?`<span class="th-tag" style="--tc:${themeColor(t)}">${esc(t)}</span>`:'';
 let colTheme='';
 function themeBar(c){const ts=themesOf(c);if(!ts.length)return '';
@@ -4276,7 +4306,7 @@ function renderSettings(){
     <div class="rem"><label><input type="checkbox" id="r_h" ${r.habits.on?'checked':''}> Rappel des habitudes, chaque jour à</label><input type="time" id="r_ht" value="${r.habits.time}"></div>
     <div class="rem w"><label><input type="checkbox" id="r_m" ${S.reminders.monthly.on?'checked':''}> Relevé de patrimoine, chaque mois le</label><select id="r_md">${[...Array(28)].map((_,i)=>`<option value="${i+1}"${+S.reminders.monthly.day===i+1?' selected':''}>${i+1}</option>`).join('')}</select><input type="time" id="r_mt" value="${S.reminders.monthly.time}"></div>
     <div class="rem"><label><input type="checkbox" id="r_f" ${r.focus.on?'checked':''}> Notification à la fin d'une session de focus</label><span></span></div>
-    <div class="rem w"><label><input type="checkbox" id="r_wa" ${r.water.on?'checked':''}> 💧 Boire de l'eau, toutes les 15 min, de</label><input type="time" id="r_waf" value="${r.water.from}"><span class="sub">à</span><input type="time" id="r_wat" value="${r.water.to}"></div>
+    <div class="rem"><label><input type="checkbox" id="r_wa" ${r.water.on?'checked':''}> 💧 Boire de l'eau : un rappel toutes les 15 min, tant que l'ordinateur est allumé</label><span></span></div>
     <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn primary" onclick="saveReminders()">Enregistrer les rappels</button><button class="btn ghost" onclick="notify('Dashboard','Les notifications fonctionnent.','')" ${hOn?'':'disabled'}>Tester une notification</button></div>
     <p class="sub" style="margin-top:10px">Les rappels arrivent même quand le Dashboard est fermé. Un clic sur la notification ouvre le Dashboard.</p></section>
   ${cloudCard()}
@@ -4298,7 +4328,7 @@ function saveReminders(){
   /* Revues du soir et de la semaine retirées (Nolan ne les fait pas) : leurs rappels restent toujours coupés */
   r.habits={on:$('#r_h').checked,time:$('#r_ht').value||'20:00'};r.evening={on:false,time:r.evening.time||'21:00'};
   r.weekly={on:false,day:+r.weekly.day||0,time:r.weekly.time||'18:00'};r.focus={on:$('#r_f').checked};r.monthly={on:$('#r_m').checked,day:+$('#r_md').value,time:$('#r_mt').value||'19:00'};
-  r.water={on:$('#r_wa').checked,from:$('#r_waf').value||'08:00',to:$('#r_wat').value||'22:00'};if(r.water.to<=r.water.from)r.water.to='22:00';save();
+  r.water={on:$('#r_wa').checked};save();
   if(!helperOn()){toast("Rappels enregistrés. Ils fonctionneront une fois le Dashboard installé avec Installer.bat.");return;}
   scheduleReminders('Rappels enregistrés.');
 }
@@ -4309,7 +4339,7 @@ function scheduleReminders(confirm){
     evening:{on:r.evening.on,time:r.evening.time,title:'Revue du soir',text:'Deux minutes pour boucler ta journée et préparer demain.',view:'evening'},
     weekly:{on:r.weekly.on,day:r.weekly.day,time:r.weekly.time,title:'Revue de la semaine',text:'Fais le bilan de ta semaine et fixe ton cap pour la prochaine.',view:'weekly'},
     monthly:{on:r.monthly.on,day:r.monthly.day,time:r.monthly.time,title:'Relevé de patrimoine',text:'Une minute pour recopier tes montants Finary et voir ton patrimoine grandir.',view:'finance'},
-    water:{on:r.water.on,from:r.water.from,to:r.water.to},
+    water:{on:!!r.water.on},
     ...(confirm?{confirm}:{})});
 }
 function editLauncher(id){
@@ -4582,8 +4612,8 @@ if(isWeb()&&'serviceWorker' in navigator&&location.hostname!=='localhost'){addEv
   navFromPop=true;go(VIEWS.some(v=>v[0]===hv)||hv==='settings'||hv==='gallery'?hv:'home');setTimeout(()=>{navFromPop=false;try{history.replaceState(navState(),'');}catch(e){}},0);CL.ready=true;paintCloud();
   const d=today();
   /* Rappel « boire de l'eau » : programmé une fois sur CET ordinateur (repère local, pas synchronisé avec le téléphone) */
-  let waterSched=false;try{waterSched=localStorage.getItem('dash_water_v1')==='1';}catch(e){}
-  if(helperOn()&&!waterSched){window.__reschedule=true;try{localStorage.setItem('dash_water_v1','1');}catch(e){}}
+  let waterSched=false;try{waterSched=localStorage.getItem('dash_water_v2')==='1';}catch(e){}
+  if(helperOn()&&!waterSched){window.__reschedule=true;try{localStorage.setItem('dash_water_v2','1');}catch(e){}}
   if(window.__reschedule&&helperOn()){window.__reschedule=false;save();try{scheduleReminders();}catch(e){}}
   if(!d.morningDone&&!d.skipped&&(!d.priorities.length||d.planned))openMorning();
   // Chrono resté ouvert : si le Dashboard a été fermé (ou l'ordinateur mis en veille), on compte jusqu'au dernier signe de vie
