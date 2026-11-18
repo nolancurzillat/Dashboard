@@ -1,8 +1,8 @@
 /* Dashboard en ligne : la page est demandée au réseau d'abord (toujours la dernière version),
    avec une copie gardée pour ouvrir l'appli sans connexion. Rien d'autre n'est mis en cache
    (ni les données du compte, ni les images externes). */
-const CACHE = 'dashboard-v3'; // v3 : logo Nuit et or
-const FILES = ['dashboard.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
+const CACHE = 'dashboard-v4'; // v4 : icônes du téléphone sous de nouveaux noms (logo Nuit et or)
+const FILES = ['dashboard.html', 'manifest.webmanifest', 'icon-192.png', 'icon-v3-192.png', 'icon-v3-512.png', 'icon-v3-maskable-512.png', 'icon-v3-apple-180.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
