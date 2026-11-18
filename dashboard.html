@@ -61,6 +61,7 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .navr{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .nclock{font-variant-numeric:tabular-nums;font-size:15px;color:rgba(255,255,255,.8)}
 .icbtn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.35);border:1px solid var(--line);font-size:16px}
+.icbtn.galic{background:none;border:0;border-radius:11px;padding:0;overflow:hidden;box-shadow:0 2px 10px rgba(216,27,74,.35);transition:transform .15s}.icbtn.galic:hover{transform:scale(1.07)}.icbtn.galic svg{width:34px;height:34px;display:block}
 .icbtn:hover,.icbtn.on{border-color:var(--gold);color:var(--gold2)}
 .focuspill{display:none;padding:6px 12px;border-radius:999px;background:var(--gold);color:#16120a;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;cursor:pointer}
 @media(max-width:1000px){nav{padding:12px 14px;flex-wrap:wrap}.tabs{order:3;width:100%}}
@@ -364,6 +365,11 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .hmonth .hh.today{color:var(--gold2);font-weight:700}
 .hcell.sm{width:100%;height:24px;border-radius:6px;font-size:12px;line-height:1;padding:0}
 .hcell.sm.on{background:var(--hc)}
+/* Journée parfaite (100 % des habitudes) : colonne en or */
+.cb.cb-gold{background:linear-gradient(135deg,#ffe8a3,#e0b54f);color:#3b2a06;font-weight:800}
+.hh.gold{color:#f6d37a!important;font-weight:800;background:linear-gradient(180deg,rgba(242,205,120,.22),rgba(242,205,120,.06));border-radius:10px;box-shadow:inset 0 0 0 1px rgba(242,205,120,.45)}
+.hcell.on.gold,.hcell.sm.on.gold{background:linear-gradient(135deg,#ffe8a3,#e0b54f 55%,#b8862b);border-color:#f2cd78;color:#3b2a06;box-shadow:0 0 12px rgba(242,205,120,.45)}
+.hcal i.on.gold{background:linear-gradient(135deg,#ffe8a3,#e0b54f 55%,#b8862b)!important;color:#3b2a06!important;box-shadow:0 0 8px rgba(242,205,120,.5)}
 .hcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
 .hcal span.w{font-size:10.5px;color:var(--muted);text-align:center}
 .hcal i{height:30px;border-radius:8px;display:grid;place-items:center;font-style:normal;font-size:12px;color:var(--muted);background:rgba(255,255,255,.04);cursor:pointer;transition:.15s}
@@ -611,11 +617,11 @@ button.cy-m:hover{transform:translateY(-3px);border-color:var(--c)}
 .sring{position:relative;flex:none;display:grid;place-items:center}
 .sring svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--c) 35%,transparent))}
 .sring-v{position:relative;display:flex;align-items:baseline;gap:1px}
-.sring-v b{font-size:26px;line-height:1;color:var(--c);font-variant-numeric:tabular-nums;font-weight:800}
-.sring-v span{font-size:12px;color:var(--muted)}
+.sring .sring-v b{font-size:var(--fs,26px);line-height:1;color:var(--c);font-variant-numeric:tabular-nums;font-weight:800;letter-spacing:-.5px}
+.sring .sring-v span{font-size:var(--fs,26px);margin:0;line-height:1;font-weight:800;color:var(--muted);letter-spacing:-.5px}
 .sring.empty{border-radius:50%;border:8px solid rgba(255,255,255,.07)}.sring.empty b{color:var(--muted)}
 .cy-ring{display:flex;justify-content:center;margin:6px 0 2px}.cy-m .cy-l{text-align:center}
-.cy-head .sring-v b{font-size:30px}
+.cy-head .sring-v b{font-size:var(--fs,30px)}
 /* Finance : calendrier des relevés */
 .fy-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .fy-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:14px}
@@ -694,6 +700,7 @@ body.web .paste-or{display:none}
 .colitems>.tile{min-height:100%}
 /* Livre « sans résumé » : petite case colorée, pas une grande affiche */
 .colitems.port>.tile{min-height:150px;align-self:start}
+.ci-sum{position:absolute;top:8px;right:8px;z-index:3;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(7,10,27,.78);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.4)}.ci-sum svg{width:16px;height:16px;fill:none;stroke:#e0b54f;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}.cs-theme{margin-top:10px}
 .nosum-ck{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);cursor:pointer;font-size:14px}
 @media(max-width:700px){.tilegrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{min-height:130px;padding:14px}.tile h3{font-size:17px}.tl-ic{font-size:84px}}
 /* Page d'un livre */
@@ -1591,7 +1598,7 @@ body.web .win-only{display:none!important}
   <div class="navr">
     <span class="focuspill" id="focuspill" onclick="openDrawer()"></span><span class="focuspill" id="chronopill" title="Cliquer pour arrêter le chrono" onclick="stopChrono()"></span>
     <span class="nclock" id="nclock"></span>
-    <button class="icbtn" id="galbtn" title="Galerie" onclick="go('gallery')">🖼</button>
+    <button class="icbtn galic" id="galbtn" title="Galerie" onclick="go('gallery')"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="galG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6b8a"/><stop offset="1" stop-color="#d81b4a"/></linearGradient></defs><rect width="48" height="48" rx="15" fill="url(#galG)"/><g fill="#fff" transform="translate(24 24)"><ellipse rx="5.6" ry="9.6" transform="rotate(0) translate(0 -7.2)" opacity=".98"/><ellipse rx="5.6" ry="9.6" transform="rotate(90) translate(0 -7.2)" opacity=".86"/><ellipse rx="5.6" ry="9.6" transform="rotate(180) translate(0 -7.2)" opacity=".98"/><ellipse rx="5.6" ry="9.6" transform="rotate(270) translate(0 -7.2)" opacity=".86"/></g><circle cx="24" cy="24" r="3.6" fill="#e0315a"/></svg></button>
     <button class="icbtn" id="gear" title="Réglages" onclick="go('settings')">⚙<span class="cl-dot" id="clDot" style="display:none"></span></button>
   </div>
 </nav>
@@ -2096,7 +2103,7 @@ const QUOTES_MORE=[
 const COL_TYPES={
   books:{label:'Livres',icon:'📚',color:'#d6a94a',unit:['livre','livres'],todo:'À lire',done:'Lus',doneOne:'Lu',add:'Ajouter un livre',ph:'Ex : Les Mémoires d\'Hadrien',
     /* Résumé, passages importants et ce que j'en retiens s'écrivent sur la page du livre */
-    fields:[['title','Titre','text'],['author','Auteur','text'],['theme','Thème','theme'],['date','Année de lecture','year'],['cover','Couverture','photo'],['nosum','Pas de résumé : une simple case, sans fiche à ouvrir','check']]},
+    fields:[['title','Titre','text'],['author','Auteur','text'],['theme','Thème','theme'],['date','Année de lecture','year'],['cover','Couverture','photo'],['nosum','Pas de résumé : une petite fiche avec l’image au lieu de la page de résumé','check']]},
   mountains:{label:'Montagnes',icon:'⛰️',color:'#5aa2e6',unit:['sommet','sommets'],todo:'À gravir',done:'Gravis',doneOne:'Gravi',add:'Ajouter un sommet',ph:'Ex : Mont Blanc',
     fields:[['title','Sommet','text'],['alt','Altitude (m)','number'],['place','Pays ou massif','text'],['date','Année','year']]},
   countries:{label:'Pays',icon:'🌍',color:'#43b97f',unit:['pays','pays'],todo:'À visiter',done:'Visités',doneOne:'Visité',add:'Ajouter un pays',
@@ -2345,7 +2352,7 @@ const pickToGallery=ov=>{const c=ov&&ov.querySelector('.pick-gal-cb');return !!(
 function pickPhoto(cur,cb){
   const ov=document.createElement('div');ov.className='overlay top pick-ov';const list=sortedPhotos();
   ov.__pick=id=>{ov.remove();cb(id);};
-  ov.innerHTML=`<div class="modal wide"><h3>Choisir une image</h3><p class="paste-hint">📋 Astuce : copie une image (clic droit, « Copier l'image ») puis fais <b>Ctrl+V</b> ici pour la coller.</p><label class="pick-gal"><input type="checkbox" class="pick-gal-cb"> Ajouter aussi l'image importée ou collée à ma galerie (elle apparaîtra en fond d'accueil)</label><div class="picker">${list.length?`<h4>Mes photos</h4>${list.map(p=>`<button data-id="${p.id}" class="${p.id===cur?'on':''}" style="${bgStyle(p.src)}"></button>`).join('')}`:''}${LIB_CATS.map(([c,l])=>`<h4>${l}</h4>${libVisible(c).map(e=>`<button data-id="${e.id}" class="${e.id===cur?'on':''}" title="${esc(e.label)}" style="${bgStyle(libUrl(e,400))}"></button>`).join('')}`).join('')}</div><div class="mact"><button class="btn ghost" data-a="none">Aucune image</button><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Annuler</button><button class="btn primary" data-a="imp">Importer une image</button></div></div>`;
+  ov.innerHTML=`<div class="modal wide"><h3>Choisir une image</h3><p class="paste-hint">📋 Astuce : copie une image (clic droit, « Copier l'image ») puis fais <b>Ctrl+V</b> ici pour la coller.</p><label class="pick-gal"><input type="checkbox" class="pick-gal-cb"> Ajouter aussi l'image importée ou collée à ma galerie (elle apparaîtra en fond d'accueil)</label><div class="picker">${LIB_CATS.map(([c,l])=>`<h4>${l}</h4>${libVisible(c).map(e=>`<button data-id="${e.id}" class="${e.id===cur?'on':''}" title="${esc(e.label)}" style="${bgStyle(libUrl(e,400))}"></button>`).join('')}`).join('')}${list.length?`<h4>Mes images importées</h4>${list.map(p=>`<button data-id="${p.id}" class="${p.id===cur?'on':''}" style="${bgStyle(p.src)}"></button>`).join('')}`:''}</div><div class="mact"><button class="btn ghost" data-a="none">Aucune image</button><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Annuler</button><button class="btn primary" data-a="imp">Importer une image</button></div></div>`;
   document.body.appendChild(ov);
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
   ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();ov.remove();}});
@@ -3329,7 +3336,7 @@ function delRes(i){const s=curS();s.res.splice(i,1);save();renderSkillPage();}
 
 /* ================= Calendrier : tout ce que tu as fait, jour par jour ================= */
 let calMonth=0,calDay=null;const calOff=new Set();
-const CAL_KINDS=[['prio','🎯','Objectifs du jour','#f2cd78'],['space','⏱','Sessions','#5aa2e6'],['skill','📘','Apprentissage','#a77be0'],['goal','🏁','Objectifs','#4fc3c7'],['life','⭐','Victoires et journal','#e0c27a'],['fin','💶','Finance','#8fd1a5']];
+const CAL_KINDS=[['prio','🎯','Objectifs du jour','#f2cd78'],['habit','✅','Habitudes','#43b97f'],['space','⏱','Sessions','#5aa2e6'],['skill','📘','Apprentissage','#a77be0'],['goal','🏁','Objectifs','#4fc3c7'],['life','⭐','Victoires et journal','#e0c27a'],['fin','💶','Finance','#8fd1a5']];
 function dayActivity(k){
   const d=S.days[k]||{},a={};
   a.prio=(d.priorities||[]).filter(p=>p.text);
@@ -3342,7 +3349,8 @@ function dayActivity(k){
   a.wins=S.wins.filter(w=>w.date===k);
   a.journal=(d.review||'').trim();a.evening=d.evening&&(d.evening.good||d.evening.learned)?d.evening:null;
   a.fin=S.finance.history.find(h=>h.date===k)||null;
-  const n={prio:a.prio.filter(p=>p.done).length,sport:a.sport.length,space:a.space.length,skill:a.skill.length,goal:a.goal.length,life:a.wins.length+(a.journal||a.evening?1:0),fin:a.fin?1:0};
+  a.habitAll=habitsOn(k);
+  const n={prio:a.prio.filter(p=>p.done).length,habit:a.habit.length,sport:a.sport.length,space:a.space.length,skill:a.skill.length,goal:a.goal.length,life:a.wins.length+(a.journal||a.evening?1:0),fin:a.fin?1:0};
   a.n=n;a.score=Object.entries(n).filter(([kk])=>!calOff.has(kk)).reduce((s,[,v])=>s+v,0);
   return a;
 }
@@ -3376,7 +3384,7 @@ const SCORE_STOPS=[[0,[229,72,77]],[5,[242,140,56]],[10,[242,201,76]],[15,[134,2
 function scoreColor(s){s=Math.max(0,Math.min(20,+s||0));for(let i=1;i<SCORE_STOPS.length;i++){const [a,ca]=SCORE_STOPS[i-1],[b,cb]=SCORE_STOPS[i];if(s<=b){const t=(s-a)/(b-a);return `rgb(${ca.map((v,k)=>Math.round(v+(cb[k]-v)*t)).join(',')})`;}}return 'rgb(30,143,78)';}
 /* Anneau de couleur avec la note au centre */
 function scoreRing(s,size=96,stroke=9){const c=scoreColor(s),R=(size-stroke)/2,C=2*Math.PI*R,p=Math.max(0,Math.min(1,s/20));
-  return `<div class="sring" style="width:${size}px;height:${size}px;--c:${c}"><svg viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${R}" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${R}" fill="none" stroke="${c}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${(C*p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${size/2} ${size/2})"/></svg><div class="sring-v"><b>${scoreTxt(s)}</b><span>/20</span></div></div>`;}
+  return `<div class="sring" style="width:${size}px;height:${size}px;--c:${c};--fs:${Math.round(size*.2)}px"><svg viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${R}" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${R}" fill="none" stroke="${c}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${(C*p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${size/2} ${size/2})"/></svg><div class="sring-v"><b>${scoreTxt(s)}</b><span>/20</span></div></div>`;}
 const scoreTxt=s=>String(s).replace('.',',');
 const scoreWord=s=>s>=17?'Exceptionnel':s>=14?'Très bon mois':s>=11?'Bon mois':s>=8?'Mois moyen':'Mois difficile';
 function renderCalNav(base){
@@ -3418,6 +3426,7 @@ function renderCalendar(){
   const show=k=>!calOff.has(k);
   const cell=({dt,k,a})=>{const fut=dt>todayD,lvl=a.score?Math.min(1,a.score/max):0,b=[];
     if(show('prio')&&a.prio.length){const dn=a.n.prio,tt=a.prio.length;b.push(`<span class="cb" style="--c:#f2cd78" title="Objectifs du jour : ${dn}/${tt}">🎯 ${dn}/${tt}</span>`);}
+    if(show('habit')&&a.habit.length&&a.habitAll.length){const hd=a.habit.length,ht=a.habitAll.length,pf=hd===ht;b.push(`<span class="cb ${pf?'cb-gold':''}" style="--c:#43b97f" title="Habitudes : ${hd}/${ht}${pf?' · journée parfaite':''}">${pf?'★':'✅'} ${hd}/${ht}</span>`);}
     if(show('sport'))a.sport.forEach(s=>{const ty=SPORT_TYPES.find(x=>x[0]===s.type)||SPORT_TYPES[6];b.push(`<span class="cb" style="--c:#e58a5c" title="${esc(ty[2])} · ${s.dur} min">${ty[1]} ${s.dur}′</span>`);});
     if(show('space'))a.space.forEach(([s,v])=>b.push(`<span class="cb" style="--c:#5aa2e6" title="${esc(s.name)} · ${fmtDur(v)}">⏱ ${esc(s.name)}</span>`));
     if(show('skill')&&a.skill.length)b.push(`<span class="cb" style="--c:#a77be0" title="${esc(a.skill.map(([s,x])=>s.name+' : '+x.t).join(' · '))}">📘 ${a.skill.length}</span>`);
@@ -3435,6 +3444,7 @@ function renderCalDay(){
   const li=(txt,ok)=>`<div class="cdi ${ok===false?'no':''}">${ok===undefined?'':ok?'<b>✓</b>':'<b>○</b>'}<span>${txt}</span></div>`;
   const parts=[
     sec('🎯 Objectifs du jour','#f2cd78',a.prio.map(p=>li(esc(p.text),!!p.done)).join('')),
+    sec('✅ Habitudes'+(a.habitAll.length&&a.habit.length===a.habitAll.length?' · journée parfaite ★':''),'#43b97f',a.habitAll.map(h=>li(`<span class="em">${h.icon}</span> ${esc(h.name)}`,!!h.log[calDay])).join('')),
     sec('🏋️ Sport','#e58a5c',a.sport.map(s=>{const ty=SPORT_TYPES.find(x=>x[0]===s.type)||SPORT_TYPES[6];return li(`${ty[1]} ${esc(ty[2])} · ${s.dur} min${s.note?` · <span class="muted">${esc(s.note)}</span>`:''}`);}).join('')),
     sec('⏱ Sessions','#5aa2e6',a.space.map(([s,v])=>li(`${esc(s.name)} · <b class="gold">${fmtDur(v)}</b>`)).join('')),
     sec('📘 Apprentissage','#a77be0',a.skill.map(([s,x])=>li(`<b>${esc(s.name)}</b> · ${esc(x.t)}`,true)).join('')),
@@ -3452,6 +3462,9 @@ const monday=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-(
 const weekCount=(h,mon)=>[...Array(7)].filter((_,i)=>h.log[dk(addDays(mon,i))]).length;
 function streak(h){let n=0,x=new Date();if(!h.log[dk(x)])x=addDays(x,-1);while(h.log[dk(x)]){n++;x=addDays(x,-1);}return n;}
 function bestStreak(h){const ks=Object.keys(h.log).sort();let best=0,run=0,prev=null;for(const k of ks){run=prev&&dk(addDays(parse(prev),1))===k?run+1:1;best=Math.max(best,run);prev=k;}return best;}
+/* Jour parfait : toutes les habitudes qui existaient ce jour-là sont cochées (colonne dorée) */
+const habitsOn=k=>S.habits.filter(h=>h.log[k]||(h.created||'0000-00-00')<=k);
+const perfectDay=k=>{const hs=habitsOn(k);return hs.length>0&&hs.every(h=>h.log[k]);};
 /* Jour passé non réalisé (depuis la création de l'habitude) : croix rouge */
 const missed=(h,k,t)=>k<t&&!h.log[k]&&k>=(h.created||t);
 const rate=(h,n=30)=>[...Array(n)].filter((_,i)=>h.log[dk(addDays(new Date(),-i))]).length/n;
@@ -3501,18 +3514,18 @@ function renderHabits(){
     <div class="acts wnav"><button class="btn sm" onclick="${isM?'hMonth--':'hWeek--'};renderHabits()">‹</button><span id="wlabel">${lab}</span><button class="btn sm" ${atNow?'disabled style="opacity:.3"':''} onclick="${isM?'hMonth++':'hWeek++'};renderHabits()">›</button><button class="btn sm" onclick="hWeek=0;hMonth=0;renderHabits()">Aujourd'hui</button></div>`;
   if(!S.habits.length){$('#htable').innerHTML=`<div class="empty">Aucune habitude.<br><button class="btn primary" onclick="editHabit()">Ajouter une habitude</button></div>`;$('#heats').innerHTML='';$('#heatnav').innerHTML='';return;}
   if(!isM){
-  $('#htable').innerHTML=`<div class="htable"><div class="hh l">Habitude</div>${days.map(d=>`<div class="hh ${dk(d)===t?'today':''}">${d.toLocaleDateString('fr-FR',{weekday:'short'}).replace('.','')}<br>${d.getDate()}</div>`).join('')}<div class="hh">Semaine</div><div class="hh x">Série</div><div class="hh x">30 j</div><div class="hsep"></div>
+  $('#htable').innerHTML=`<div class="htable"><div class="hh l">Habitude</div>${days.map(d=>`<div class="hh ${dk(d)===t?'today':''} ${perfectDay(dk(d))?'gold':''}" ${perfectDay(dk(d))?'title="Journée parfaite : 100 % des habitudes"':''}>${d.toLocaleDateString('fr-FR',{weekday:'short'}).replace('.','')}<br>${d.getDate()}</div>`).join('')}<div class="hh">Semaine</div><div class="hh x">Série</div><div class="hh x">30 j</div><div class="hsep"></div>
    ${S.habits.map(h=>{const wc=weekCount(h,mon);return `<div class="hrow" style="--hc:${h.color}"><div class="hname" onclick="editHabit('${h.id}')"><span class="em">${h.icon}</span><span style="min-width:0"><div class="nm">${esc(h.name)}</div><div class="tg">${h.target}× par semaine</div></span></div>
-     ${days.map(d=>{const k=dk(d);return `<button class="hcell ${h.log[k]?'on':missed(h,k,t)?'miss':''} ${k===t?'today':''}" ${d>todayD?'disabled':''} onclick="toggleHabit('${h.id}','${k}')">${h.log[k]?'✓':missed(h,k,t)?'✕':''}</button>`;}).join('')}
+     ${days.map(d=>{const k=dk(d);return `<button class="hcell ${h.log[k]?'on':missed(h,k,t)?'miss':''} ${k===t?'today':''} ${h.log[k]&&perfectDay(k)?'gold':''}" ${d>todayD?'disabled':''} onclick="toggleHabit('${h.id}','${k}')">${h.log[k]?'✓':missed(h,k,t)?'✕':''}</button>`;}).join('')}
      <div class="wk"><div class="hv"><b style="color:${wc>=h.target?h.color:'inherit'}">${wc}/${h.target}</b></div><div class="dots">${[...Array(Math.min(h.target,7))].map((_,i)=>`<i class="${i<wc?'on':''}"></i>`).join('')}</div></div>
      <div class="hv x"><b>${streak(h)}</b><small>jours</small></div><div class="hv x"><b>${Math.round(rate(h)*100)}%</b><small>régularité</small></div></div>`;}).join('')}</div>`;
   }else{
   /* Vue mois : une colonne par jour du mois */
   const md=[...Array(mDays)].map((_,i)=>new Date(mStart.getFullYear(),mStart.getMonth(),i+1));
   const past=md.filter(d=>d<=todayD).length;
-  $('#htable').innerHTML=`<div class="hmonth-wrap"><div class="hmonth" style="--n:${mDays}"><div class="hh l">Habitude</div>${md.map(d=>`<div class="hh ${dk(d)===t?'today':''} ${[0,6].includes(d.getDay())?'we':''}">${d.toLocaleDateString('fr-FR',{weekday:'narrow'})}<br>${d.getDate()}</div>`).join('')}<div class="hh">Mois</div>
+  $('#htable').innerHTML=`<div class="hmonth-wrap"><div class="hmonth" style="--n:${mDays}"><div class="hh l">Habitude</div>${md.map(d=>`<div class="hh ${dk(d)===t?'today':''} ${[0,6].includes(d.getDay())?'we':''} ${perfectDay(dk(d))?'gold':''}">${d.toLocaleDateString('fr-FR',{weekday:'narrow'})}<br>${d.getDate()}</div>`).join('')}<div class="hh">Mois</div>
    ${S.habits.map(h=>{const n=md.filter(d=>h.log[dk(d)]).length,goal=Math.round(h.target*past/7);return `<div class="hname" style="--hc:${h.color}" onclick="editHabit('${h.id}')"><span class="em">${h.icon}</span><span style="min-width:0"><div class="nm">${esc(h.name)}</div><div class="tg">${h.target}× par semaine</div></span></div>
-     ${md.map(d=>{const k=dk(d);return `<button class="hcell sm ${h.log[k]?'on':missed(h,k,t)?'miss':''} ${k===t?'today':''}" style="--hc:${h.color}" ${d>todayD?'disabled':''} onclick="toggleHabit('${h.id}','${k}')" title="${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}">${h.log[k]?'✓':missed(h,k,t)?'✕':''}</button>`;}).join('')}
+     ${md.map(d=>{const k=dk(d);return `<button class="hcell sm ${h.log[k]?'on':missed(h,k,t)?'miss':''} ${k===t?'today':''} ${h.log[k]&&perfectDay(k)?'gold':''}" style="--hc:${h.color}" ${d>todayD?'disabled':''} onclick="toggleHabit('${h.id}','${k}')" title="${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}">${h.log[k]?'✓':missed(h,k,t)?'✕':''}</button>`;}).join('')}
      <div class="hv"><b style="color:${goal&&n>=goal?h.color:'inherit'}">${n}</b><small>${past?`sur ${past} j`:'à venir'}</small></div>`;}).join('')}</div></div>`;
   }
   /* Cases du bas : un calendrier du mois par habitude, avec ses propres flèches */
@@ -3520,7 +3533,7 @@ function renderHabits(){
   $('#heatnav').innerHTML=`<button class="btn sm" onclick="hHeat--;renderHabits()">‹</button><span>${hs.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase())}</span><button class="btn sm" ${hHeat>=0?'disabled style="opacity:.3"':''} onclick="hHeat++;renderHabits()">›</button>`;
   $('#heats').innerHTML=S.habits.map(h=>{const md=[...Array(hn)].map((_,i)=>new Date(hs.getFullYear(),hs.getMonth(),i+1)),n=md.filter(d=>h.log[dk(d)]).length;
     return `<div class="card" style="--hc:${h.color}"><div class="ch" style="margin-bottom:4px"><h2 style="color:var(--text);text-transform:none;letter-spacing:0;font-size:15px">${h.icon} ${esc(h.name)}</h2><div class="acts small muted">${n} jour${n>1?'s':''} ce mois-ci</div></div>
-     <div class="hcal">${['L','M','M','J','V','S','D'].map(x=>`<span class="w">${x}</span>`).join('')}${'<span></span>'.repeat(off)}${md.map(d=>{const k=dk(d);return d>todayD?`<i class="f">${d.getDate()}</i>`:`<i class="${h.log[k]?'on':missed(h,k,t)?'miss':''} ${k===t?'t':''}" onclick="toggleHabit('${h.id}','${k}')" title="${d.toLocaleDateString('fr-FR')}">${d.getDate()}</i>`;}).join('')}</div>
+     <div class="hcal">${['L','M','M','J','V','S','D'].map(x=>`<span class="w">${x}</span>`).join('')}${'<span></span>'.repeat(off)}${md.map(d=>{const k=dk(d);return d>todayD?`<i class="f">${d.getDate()}</i>`:`<i class="${h.log[k]?'on':missed(h,k,t)?'miss':''} ${k===t?'t':''} ${h.log[k]&&perfectDay(k)?'gold':''}" onclick="toggleHabit('${h.id}','${k}')" title="${d.toLocaleDateString('fr-FR')}">${d.getDate()}</i>`;}).join('')}</div>
      <div class="legend"><span>record ${bestStreak(h)} j d'affilée</span><span>${Object.keys(h.log).length} jours au total</span></div></div>`;}).join('');
 }
 function editHabit(id){
@@ -3889,8 +3902,8 @@ function openCol(id){colOpen=id;colItem=null;colTheme='';colTab='done';colQ='';c
 /* Clic sur un élément : un livre ouvre sa page, un pays ou un sommet s'ouvre en modification, le reste en fiche */
 function openColItem(cid,iid){const c=colById(cid);if(!c)return;
   const it=c.items.find(i=>i.id===iid);
-  /* Livre « sans résumé » : pas de fiche, on ouvre directement la modification */
-  if(c.type==='books'&&it&&it.nosum)editColItem(cid,iid);
+  /* Livre « sans résumé » : pas de page de résumé, une petite fiche avec l'image (comme les jeux) */
+  if(c.type==='books'&&it&&it.nosum)showColItem(cid,iid);
   else if(c.type==='books'){colItem=iid;renderCollection();window.scrollTo(0,0);}
   else if(c.type==='countries'||c.type==='mountains')editColItem(cid,iid);else showColItem(cid,iid);}
 
@@ -3976,8 +3989,10 @@ function renderColItems(c){
   const anyImg=list.some(it=>itemImg(c,it,300));
   if(c.type==='custom'&&!anyImg){box.innerHTML=`<div class="tilegrid">${list.map(tile).join('')}</div>`;queueAutoImgs(c);return;}
   const port=c.type==='books'||c.type==='custom';
-  const card=it=>{const src=itemImg(c,it,700);if(c.type==='custom'&&!src)return tile(it);if(c.type==='books'&&it.nosum)return tile(it);
-    return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${src?`<img src="${esc(src)}" alt="" onerror="this.remove()">`:''}<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div></div>
+  const card=it=>{const src=itemImg(c,it,700);if(c.type==='custom'&&!src)return tile(it);
+    /* Petit livre ouvert : ce livre a une page de résumé */
+    const sumIc=c.type==='books'&&!it.nosum?`<span class="ci-sum" title="Livre avec résumé"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10 5 7.2 4.5 4 4.8v13.4c3.2-.3 6 .2 8 1.8 2-1.6 4.8-2.1 8-1.8V4.8c-3.2-.3-6 .2-8 1.7Z"/><path d="M12 6.5V20"/></svg></span>`:'';
+    return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${sumIc}${src?`<img src="${esc(src)}" alt="" onerror="this.remove()">`:''}<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div></div>
       <div class="ci-cap"><h3>${esc(itemTitle(c,it))}</h3>${itemSub(c,it)?`<p>${esc(itemSub(c,it))}</p>`:''}<div class="ci-meta">${themeChip(it.theme)}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}</div></div></button>`;};
   if(c.type==='books'&&colSort==='theme'){
     /* Tri par thème : un titre par thème (pastille de couleur + nombre de livres), puis ses livres */
@@ -4035,15 +4050,16 @@ async function queueAutoImgs(c){
 /* --- Fiche d'un élément --- */
 function showColItem(cid,iid){
   const c=colById(cid),it=c&&c.items.find(i=>i.id===iid);if(!it)return;
-  const fs=colFields(c),T=COL_TYPES[c.type],src=it.cover?photoSrc(it.cover,1400):'';
+  /* Image choisie OU trouvée automatiquement (avant, seule l'image importée s'affichait) */
+  const fs=colFields(c),T=COL_TYPES[c.type],src=itemImg(c,it,1400);
   const inSub={books:['author'],mountains:['alt','place'],countries:['city']}[c.type]||fs.filter(f=>f[0].startsWith('x_')).map(f=>f[0]);
   const meta=fs.filter(([k,,t])=>['text','number','date','year'].includes(t)&&k!=='title'&&!inSub.includes(k)&&it[k]).map(([k,l,t])=>`<div class="cs-m"><span>${esc(l)}</span><b>${esc(t==='date'?colDate(it[k]):t==='number'&&k==='alt'?(+it[k]).toLocaleString('fr-FR')+' m':it[k])}</b></div>`).join('');
   const texts=fs.filter(([k,,t])=>t==='textarea'&&it[k]).map(([k,l])=>`<div class="cs-t"><h4>${esc(l)}</h4><p>${esc(it[k])}</p></div>`).join('');
   const ov=document.createElement('div');ov.className='overlay';
   ov.innerHTML=`<div class="modal wide col-sheet" style="--ac:${esc(c.color)}">
-    ${c.type==='countries'?`<div class="cs-flag"><img src="${flagUrl(it.code)}" alt=""></div>`:''}${src?`<div class="cs-img ${c.type==='books'?'port':''}"><img src="${src}" alt=""></div>`:''}
+    ${c.type==='countries'?`<div class="cs-flag"><img src="${flagUrl(it.code)}" alt=""></div>`:''}${src?`<div class="cs-img ${c.type==='books'?'port':''}"><img src="${esc(src)}" alt="" onerror="this.parentNode.remove()"></div>`:''}
     <div class="cs-body"><div class="cs-st ${it.status==='todo'?'t':''}">${it.status==='todo'?esc(T.todo):'✓ '+esc(T.doneOne)}</div><h2 class="display">${esc(itemTitle(c,it))}</h2>${itemSub(c,it)?`<div class="cs-sub">${esc(itemSub(c,it))}</div>`:''}${starsHtml(it.rating,'big')}
-      ${meta?`<div class="cs-meta">${meta}</div>`:''}${texts||`<p class="cs-empty">Ajoute ${c.type==='books'?'un résumé':'un récit ou un souvenir'} en cliquant sur Modifier.</p>`}</div>
+      ${c.type==='books'&&normTheme(it.theme)?`<div class="cs-theme">${themeChip(it.theme)}</div>`:''}${meta?`<div class="cs-meta">${meta}</div>`:''}${texts||(c.type==='books'?'':`<p class="cs-empty">Ajoute un récit ou un souvenir en cliquant sur Modifier.</p>`)}</div>
     <div class="mact"><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Fermer</button><button class="btn primary" data-a="edit">Modifier</button></div></div>`;
   document.body.appendChild(ov);
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
