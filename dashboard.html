@@ -584,6 +584,31 @@ button.cy-m:hover{transform:translateY(-3px);border-color:var(--c)}
 .cy-l{font-size:12.5px;color:var(--muted)}
 @media(max-width:900px){.cy-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.cy-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cy-m{min-height:120px;padding:12px 14px}.cy-s b{font-size:30px}.cal-sum .ms-card{grid-column:1/-1}.cy-head{flex-wrap:wrap;padding:14px}}
+/* Anneau de note */
+.sring{position:relative;flex:none;display:grid;place-items:center}
+.sring svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--c) 35%,transparent))}
+.sring-v{position:relative;display:flex;align-items:baseline;gap:1px}
+.sring-v b{font-size:26px;line-height:1;color:var(--c);font-variant-numeric:tabular-nums;font-weight:800}
+.sring-v span{font-size:12px;color:var(--muted)}
+.sring.empty{border-radius:50%;border:8px solid rgba(255,255,255,.07)}.sring.empty b{color:var(--muted)}
+.cy-ring{display:flex;justify-content:center;margin:6px 0 2px}.cy-m .cy-l{text-align:center}
+.cy-head .sring-v b{font-size:30px}
+/* Finance : calendrier des relevés */
+.fy-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fy-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:14px}
+.fy-m{display:flex;flex-direction:column;gap:4px;text-align:left;color:inherit;font:inherit;padding:12px 14px;border-radius:14px;min-height:96px;border:1px solid var(--line);background:rgba(255,255,255,.03);cursor:pointer;transition:transform .2s var(--ease),border-color .2s}
+.fy-m:hover{transform:translateY(-2px)}
+.fy-m.up{border-color:rgba(67,185,127,.55);background:linear-gradient(160deg,rgba(67,185,127,.22),rgba(67,185,127,.05))}
+.fy-m.down{border-color:rgba(229,105,92,.55);background:linear-gradient(160deg,rgba(229,105,92,.22),rgba(229,105,92,.05))}
+.fy-m.fut{opacity:.4;cursor:default}.fy-m.fut:hover,.fy-m.none:hover{transform:none}
+.fy-m.none{cursor:pointer;border-style:dashed}
+.fy-n{font-size:13px;font-weight:700;text-transform:capitalize}
+.fy-v{margin-top:auto;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.fy-p{font-size:12.5px;font-weight:700}.fy-m.up .fy-p{color:#6fd39f}.fy-m.down .fy-p{color:#f08a7e}
+.fy-e{font-size:12px;color:var(--muted);margin-top:auto}
+.fy-tot{font-size:13px;color:var(--muted);margin-left:auto}.fy-tot b.up{color:#6fd39f}.fy-tot b.down{color:#f08a7e}
+@media(max-width:1100px){.fy-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:700px){.fy-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.fy-m{padding:10px;min-height:84px}.fy-v{font-size:13.5px}.fy-tot{margin-left:0;width:100%}}
 /* Images masquées de la galerie */
 .pick-gal{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:-4px 0 12px;cursor:pointer}
 .hid-ph{margin-top:22px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025);padding:4px 16px}
@@ -1650,6 +1675,7 @@ body.web .win-only{display:none!important}
   <div class="ph"><div><div class="eyebrow">Le chemin vers la liberté</div><h1 class="display">Liberté financière</h1></div><div class="acts"><button class="btn" onclick="finSettings()">Réglages</button></div></div>
   <div id="finHero"></div>
   <div class="grid" id="finViz" style="margin-bottom:18px"></div>
+  <div class="grid" style="margin-bottom:18px"><section class="card s12" id="finYear"></section></div>
   <div class="grid" style="margin-bottom:18px"><section class="card s12" id="finPos"></section></div>
   <div class="grid" style="margin-bottom:18px"><section class="card s12 aff-card" id="finAfford"></section></div>
   <div class="grid" style="margin-bottom:22px"><section class="card s12 road-card" id="finRoad"></section></div>
@@ -3272,22 +3298,26 @@ function monthScore(y,m){
   const prio=A.reduce((s,a)=>s+a.n.prio,0);
   let hDone=0,hExp=0;S.habits.forEach(h=>{const c=h.created||'0000-00-00',ks=keys.filter(k=>k>=c);hExp+=(+h.target||0)*ks.length/7;hDone+=ks.filter(k=>h.log[k]).length;});
   const sec=A.reduce((s,a)=>s+a.space.reduce((x,[,v])=>x+v,0),0);
-  const sport=A.reduce((s,a)=>s+a.sport.length,0),sT=+S.sport.target||3;
-  const prog=A.reduce((s,a)=>s+a.skill.length+a.goal.length+a.wins.length,0)+(S.lifeGoals||[]).filter(g=>g.done&&keys.includes(g.doneAt)).length;
-  if(!prio&&!hDone&&!sec&&!sport&&!prog)return {empty:true};
+  /* Apprentissage : chaque séance d'étude (un jour avec du temps noté sur une matière) + chaque étape de matière validée */
+  const learn=S.skills.reduce((s,sk)=>s+keys.filter(k=>((sk.days||{})[k]||0)>0).length,0)+A.reduce((s,a)=>s+a.skill.length,0);
+  if(!prio&&!hDone&&!sec&&!learn)return {empty:true};
   const r=(v,t)=>Math.min(1,v/t);
   const parts=[
     ['🎯','Objectifs du jour',5,3*nd,prio,`${prio} réalisé${prio>1?'s':''} · objectif : 3 par jour`],
     ['✅','Habitudes',5,hExp,hDone,hExp?`${hDone} cochée${hDone>1?'s':''} sur ${Math.round(hExp)} prévue${Math.round(hExp)>1?'s':''}`:'Aucune habitude suivie'],
-    ['⏱','Sessions de travail',5,40*3600*nd/dim,sec,`${fmtDur(sec)} · objectif : 40 h par mois`],
-    ['🏋️','Sport',3,sT*nd/7,sport,`${sport} séance${sport>1?'s':''} · objectif : ${sT} par semaine`],
-    ['⭐','Progrès',2,4*nd/dim,prog,`${prog} étape${prog>1?'s':''}, victoire${prog>1?'s':''} ou objectif${prog>1?'s':''} de vie`]
+    ['⏱','Sessions de travail',5,30*3600*nd/dim,sec,`${fmtDur(sec)} · objectif : 30 h par mois`],
+    ['📘','Apprentissage',5,15*nd/dim,learn,`${learn} apprentissage${learn>1?'s':''} · objectif : 15 par mois`]
   ].map(([ic,l,max,target,val,txt])=>({ic,l,max,target,val,txt,pts:target>0?max*r(val,target):null}));
   const on=parts.filter(p=>p.pts!==null),maxSum=on.reduce((s,p)=>s+p.max,0),got=on.reduce((s,p)=>s+p.pts,0);
   const score=maxSum?Math.round(got/maxSum*20*2)/2:0;
   return {score,parts,current:end>=today};
 }
-const scoreColor=s=>`hsl(${Math.round(Math.max(0,Math.min(20,s))/20*130)} 62% 55%)`;
+/* Couleur de la note : rouge (0) → orange → jaune → vert clair → vert foncé (20), en dégradé progressif */
+const SCORE_STOPS=[[0,[229,72,77]],[5,[242,140,56]],[10,[242,201,76]],[15,[134,211,110]],[20,[30,143,78]]];
+function scoreColor(s){s=Math.max(0,Math.min(20,+s||0));for(let i=1;i<SCORE_STOPS.length;i++){const [a,ca]=SCORE_STOPS[i-1],[b,cb]=SCORE_STOPS[i];if(s<=b){const t=(s-a)/(b-a);return `rgb(${ca.map((v,k)=>Math.round(v+(cb[k]-v)*t)).join(',')})`;}}return 'rgb(30,143,78)';}
+/* Anneau de couleur avec la note au centre */
+function scoreRing(s,size=96,stroke=9){const c=scoreColor(s),R=(size-stroke)/2,C=2*Math.PI*R,p=Math.max(0,Math.min(1,s/20));
+  return `<div class="sring" style="width:${size}px;height:${size}px;--c:${c}"><svg viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${R}" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${R}" fill="none" stroke="${c}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${(C*p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${size/2} ${size/2})"/></svg><div class="sring-v"><b>${scoreTxt(s)}</b><span>/20</span></div></div>`;}
 const scoreTxt=s=>String(s).replace('.',',');
 const scoreWord=s=>s>=17?'Exceptionnel':s>=14?'Très bon mois':s>=11?'Bon mois':s>=8?'Mois moyen':'Mois difficile';
 function renderCalNav(base){
@@ -3301,11 +3331,11 @@ function renderCalYear(){
   const ms=[...Array(12)].map((_,m)=>({m,s:monthScore(y,m)}));
   const rated=ms.filter(x=>x.s.score!==undefined),avg=rated.length?Math.round(rated.reduce((a,x)=>a+x.s.score,0)/rated.length*2)/2:null;
   const best=rated.slice().sort((a,b)=>b.s.score-a.s.score)[0];
-  $('#calYearBox').innerHTML=`<div class="cy-head">${avg!==null?`<div class="cy-avg" style="--c:${scoreColor(avg)}"><b>${scoreTxt(avg)}</b><span>/20</span></div><div><div class="eyebrow">Moyenne de l'année ${y}</div><div class="cy-w">${scoreWord(avg)}</div><div class="sub">${rated.length} mois noté${rated.length>1?'s':''}${best?` · meilleur mois : ${new Date(y,best.m,1).toLocaleDateString('fr-FR',{month:'long'})} (${scoreTxt(best.s.score)}/20)`:''}</div></div>`:`<div class="sub">Aucun mois noté pour ${y}.</div>`}</div>
+  $('#calYearBox').innerHTML=`<div class="cy-head">${avg!==null?`${scoreRing(avg,104,10)}<div><div class="eyebrow">Moyenne de l'année ${y}</div><div class="cy-w">${scoreWord(avg)}</div><div class="sub">${rated.length} mois noté${rated.length>1?'s':''}${best?` · meilleur mois : ${new Date(y,best.m,1).toLocaleDateString('fr-FR',{month:'long'})} (${scoreTxt(best.s.score)}/20)`:''}</div></div>`:`<div class="sub">Aucun mois noté pour ${y}.</div>`}</div>
   <div class="cy-grid">${ms.map(({m,s})=>{const name=new Date(y,m,1).toLocaleDateString('fr-FR',{month:'long'}).replace(/^./,c=>c.toUpperCase());
-    if(s.score===undefined)return `<div class="cy-m ${s.future?'fut':'none'}"><div class="cy-n">${name}</div><div class="cy-s">—</div><div class="cy-l">${s.future?'À venir':'Rien d’enregistré'}</div></div>`;
+    if(s.score===undefined)return `<div class="cy-m ${s.future?'fut':'none'}"><div class="cy-n">${name}</div><div class="cy-ring"><div class="sring empty" style="width:92px;height:92px"><div class="sring-v"><b>—</b></div></div></div><div class="cy-l">${s.future?'À venir':'Rien d’enregistré'}</div></div>`;
     const c=scoreColor(s.score),off=(now.getFullYear()-y)*12+(now.getMonth()-m);
-    return `<button class="cy-m" style="--c:${c}" onclick="calView='month';calMonth=${-off};calDay=null;renderCalendar()" title="${esc(s.parts.filter(p=>p.pts!==null).map(p=>`${p.l} : ${scoreTxt(Math.round(p.pts*10)/10)}/${p.max}`).join(' · '))}"><div class="cy-n">${name}${s.current?' <small>en cours</small>':''}</div><div class="cy-s"><b>${scoreTxt(s.score)}</b><span>/20</span></div><div class="cy-bar"><i style="width:${s.score/20*100}%"></i></div><div class="cy-l">${scoreWord(s.score)}</div></button>`;}).join('')}</div>`;
+    return `<button class="cy-m" style="--c:${c}" onclick="calView='month';calMonth=${-off};calDay=null;renderCalendar()" title="${esc(s.parts.filter(p=>p.pts!==null).map(p=>`${p.l} : ${scoreTxt(Math.round(p.pts*10)/10)}/${p.max}`).join(' · '))}"><div class="cy-n">${name}${s.current?' <small>en cours</small>':''}</div><div class="cy-ring">${scoreRing(s.score,92,8)}</div><div class="cy-l">${scoreWord(s.score)}</div></button>`;}).join('')}</div>`;
 }
 function renderCalendar(){
   const isY=calView==='year';$('#calMonthBox').style.display=isY?'none':'';$('#calYearBox').style.display=isY?'':'none';
@@ -3322,7 +3352,7 @@ function renderCalendar(){
   const hab=days.reduce((s,x)=>s+x.a.habit.length,0),sec=days.reduce((s,x)=>s+x.a.space.reduce((a,[,v])=>a+v,0),0),stg=days.reduce((s,x)=>s+x.a.skill.length+x.a.goal.length,0);
   const pastDays=days.filter(x=>x.dt<=todayD).length||nd;
   const MS=monthScore(y,m);
-  const scoreCard=MS.score!==undefined?`<div class="cs ms-card" style="--c:${scoreColor(MS.score)}" title="${esc(MS.parts.filter(p=>p.pts!==null).map(p=>`${p.l} : ${scoreTxt(Math.round(p.pts*10)/10)}/${p.max} (${p.txt})`).join('\n'))}"><div class="ms-big"><b>${scoreTxt(MS.score)}</b><span>/20</span></div><div class="ms-r"><div class="ms-w">${scoreWord(MS.score)}${MS.current?' <small>(mois en cours)</small>':''}</div><div class="ms-parts">${MS.parts.filter(p=>p.pts!==null).map(p=>`<span title="${esc(p.txt)}">${p.ic} ${scoreTxt(Math.round(p.pts*10)/10)}<small>/${p.max}</small></span>`).join('')}</div></div></div>`:'';
+  const scoreCard=MS.score!==undefined?`<div class="cs ms-card" style="--c:${scoreColor(MS.score)}" title="${esc(MS.parts.filter(p=>p.pts!==null).map(p=>`${p.l} : ${scoreTxt(Math.round(p.pts*10)/10)}/${p.max} (${p.txt})`).join('\n'))}">${scoreRing(MS.score,96,9)}<div class="ms-r"><div class="ms-w">${scoreWord(MS.score)}${MS.current?' <small>(mois en cours)</small>':''}</div><div class="ms-parts">${MS.parts.filter(p=>p.pts!==null).map(p=>`<span title="${esc(p.txt)}">${p.ic} ${scoreTxt(Math.round(p.pts*10)/10)}<small>/${p.max}</small></span>`).join('')}</div></div></div>`:'';
   $('#calSum').innerHTML=scoreCard+[['🔥',`${active} jour${active>1?'s':''} actif${active>1?'s':''}`,active/pastDays,'#f2cd78'],['🎯',pt?`${Math.round(pd/pt*100)} % d'objectifs du jour`:'Aucun objectif du jour',pt?pd/pt:0,'#f2cd78'],['⏱',`${fmtDur(sec)} en sessions`,Math.min(1,sec/(40*3600)),'#5aa2e6'],['📘',`${stg} étape${stg>1?'s':''} franchie${stg>1?'s':''}`,Math.min(1,stg/8),'#a77be0']]
     .map(([ic,l,p,c])=>`<div class="cs" style="--c:${c}"><span>${ic}</span><b>${l}</b><div class="thin"><i style="width:${Math.round(p*100)}%"></i></div></div>`).join('');
   $('#calFilters').innerHTML=CAL_KINDS.map(([k,ic,l,c])=>`<button class="fchip ${calOff.has(k)?'':'on'}" style="--c:${c}" onclick="calOff.has('${k}')?calOff.delete('${k}'):calOff.add('${k}');renderCalendar()">${ic} ${l}</button>`).join('');
@@ -3511,7 +3541,26 @@ function renderFinance(){
   $('#ss').oninput=()=>upd(true);$('#sr').oninput=()=>upd(true);upd(false);
   $('#finHist').innerHTML=f.history.length?[...f.history].reverse().map(h=>`<div class="kv" onclick="updateWealth('${h.date}')"><span>${fmtDate(h.date)}</span><b>${eur(h.value)}</b></div>`).join(''):`<div class="empty">Aucun relevé.<br><button class="btn primary" onclick="updateWealth()">Faire mon relevé</button></div>`;
   $('#simStart').textContent=`Départ : ${eur(cur)} (${curWealth().src})`;
-  renderFinViz();renderAfford();renderPositions();renderRoad();
+  renderFinViz();renderFinYear();renderAfford();renderPositions();renderRoad();
+}
+/* Calendrier annuel des relevés : un relevé par mois (le premier du mois), évolution par rapport au mois d'avant, case verte ou rouge */
+let finYearOff=0;
+function finMonthValues(){const by={};[...S.finance.history].sort((a,b)=>a.date.localeCompare(b.date)).forEach(h=>{const k=h.date.slice(0,7);if(!by[k])by[k]=h;});return by;}
+function renderFinYear(){
+  const el=$('#finYear');if(!el)return;
+  const now=new Date(),y=now.getFullYear()+finYearOff,by=finMonthValues(),ks=Object.keys(by).sort();
+  const prevOf=k=>{const p=ks.filter(x=>x<k);return p.length?by[p[p.length-1]]:null;};
+  const pct=(a,b)=>b&&b.value?((a.value-b.value)/Math.abs(b.value))*100:null;
+  const fmtP=p=>(p>0?'▲ +':p<0?'▼ ':'')+(Math.round(p*10)/10).toLocaleString('fr-FR')+' %';
+  const yk=ks.filter(k=>k.startsWith(y+'-')),first=yk.length?(prevOf(yk[0])||by[yk[0]]):null,last=yk.length?by[yk[yk.length-1]]:null,yp=first&&last&&first!==last?pct(last,first):null;
+  const cells=[...Array(12)].map((_,m)=>{const k=`${y}-${String(m+1).padStart(2,'0')}`,name=new Date(y,m,1).toLocaleDateString('fr-FR',{month:'long'}),h=by[k];
+    const future=new Date(y,m,1)>now;
+    if(future)return `<div class="fy-m fut"><div class="fy-n">${name}</div><div class="fy-e">À venir</div></div>`;
+    if(!h)return `<button class="fy-m none" onclick="updateWealth('${k}-01')" title="Ajouter le relevé de ${name}"><div class="fy-n">${name}</div><div class="fy-e">Pas de relevé · ajouter</div></button>`;
+    const p=pct(h,prevOf(k)),cls=p==null?'':p>=0?'up':'down';
+    return `<button class="fy-m ${cls}" onclick="updateWealth('${h.date}')" title="Relevé du ${fmtDate(h.date)}"><div class="fy-n">${name}</div><div class="fy-v">${eur(h.value)}</div><div class="fy-p">${p==null?'<span class="muted">premier relevé</span>':fmtP(p)}</div></button>`;}).join('');
+  el.innerHTML=`<div class="ch fy-head"><h2>Mon patrimoine mois par mois</h2><div class="acts" style="display:flex;align-items:center;gap:8px"><button class="btn sm" onclick="finYearOff--;renderFinYear()">‹</button><b>${y}</b><button class="btn sm" ${finYearOff>=0?'disabled style="opacity:.3"':''} onclick="finYearOff++;renderFinYear()">›</button></div>${yp!=null?`<span class="fy-tot">Sur l'année : <b class="${yp>=0?'up':'down'}">${fmtP(yp)}</b> (${eur(last.value-first.value)})</span>`:''}</div>
+    <div class="fy-grid">${cells}</div>`;
 }
 
 /* ================= Le chemin vers la liberté (visuel, peu de chiffres) ================= */
