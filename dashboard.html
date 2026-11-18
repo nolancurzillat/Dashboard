@@ -61,7 +61,7 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .navr{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .nclock{font-variant-numeric:tabular-nums;font-size:15px;color:rgba(255,255,255,.8)}
 .icbtn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.35);border:1px solid var(--line);font-size:16px}
-.icbtn.galic{background:none;border:0;border-radius:11px;padding:0;overflow:hidden;box-shadow:0 2px 10px rgba(216,27,74,.35);transition:transform .15s}.icbtn.galic:hover{transform:scale(1.07)}.icbtn.galic svg{width:34px;height:34px;display:block}
+.icbtn.galic{background:none;border:0;border-radius:13px;padding:0;overflow:hidden;opacity:.85;transition:transform .15s,opacity .15s}.icbtn.galic:hover{opacity:1}.icbtn.galic:hover{transform:scale(1.07)}.icbtn.galic svg{width:34px;height:34px;display:block}
 .icbtn:hover,.icbtn.on{border-color:var(--gold);color:var(--gold2)}
 .focuspill{display:none;padding:6px 12px;border-radius:999px;background:var(--gold);color:#16120a;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;cursor:pointer}
 @media(max-width:1000px){nav{padding:12px 14px;flex-wrap:wrap}.tabs{order:3;width:100%}}
@@ -273,7 +273,8 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .vb-add:hover{border-color:var(--gold);color:var(--gold2)}
 .vb-add-s{width:28px;height:28px;border-radius:50%;border:1px dashed var(--line2);color:var(--muted);font-size:16px;line-height:1;align-self:center}
 .vb-add-s:hover{border-color:var(--gold);color:var(--gold2)}
-.dh-btn{font-size:19px;width:40px;height:40px}
+#daily .sec-h .acts{display:flex;align-items:center;gap:16px;flex-wrap:nowrap}
+.dh-btn{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:#e0b54f;transition:.15s}.dh-btn:hover{background:rgba(242,205,120,.12);border-color:rgba(242,205,120,.45)}.dh-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- Compétences ---------- */
 .skgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
@@ -1598,7 +1599,7 @@ body.web .win-only{display:none!important}
   <div class="navr">
     <span class="focuspill" id="focuspill" onclick="openDrawer()"></span><span class="focuspill" id="chronopill" title="Cliquer pour arrêter le chrono" onclick="stopChrono()"></span>
     <span class="nclock" id="nclock"></span>
-    <button class="icbtn galic" id="galbtn" title="Galerie" onclick="go('gallery')"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="galG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6b8a"/><stop offset="1" stop-color="#d81b4a"/></linearGradient></defs><rect width="48" height="48" rx="15" fill="url(#galG)"/><g fill="#fff" transform="translate(24 24)"><ellipse rx="5.6" ry="9.6" transform="rotate(0) translate(0 -7.2)" opacity=".98"/><ellipse rx="5.6" ry="9.6" transform="rotate(90) translate(0 -7.2)" opacity=".86"/><ellipse rx="5.6" ry="9.6" transform="rotate(180) translate(0 -7.2)" opacity=".98"/><ellipse rx="5.6" ry="9.6" transform="rotate(270) translate(0 -7.2)" opacity=".86"/></g><circle cx="24" cy="24" r="3.6" fill="#e0315a"/></svg></button>
+    <button class="icbtn galic" id="galbtn" title="Galerie" onclick="go('gallery')"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="galG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a3d44"/><stop offset="1" stop-color="#16181d"/></linearGradient></defs><path d="M24 2C38 2 46 10 46 24S38 46 24 46 2 38 2 24 10 2 24 2Z" fill="url(#galG)"/><g fill="#f2f2f2" opacity=".92"><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(0 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(60 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(120 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(180 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(240 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(300 24 24)"/></g><circle cx="24" cy="24" r="4.6" fill="#16181d"/></svg></button>
     <button class="icbtn" id="gear" title="Réglages" onclick="go('settings')">⚙<span class="cl-dot" id="clDot" style="display:none"></span></button>
   </div>
 </nav>
@@ -2863,7 +2864,7 @@ function paintDailyHist(){
 function renderDaily(){
   const t=dk(),today=dayItems(t),st=dailyStats(),past=st.keys.filter(k=>k<t);
   const row=dailyRow;
-  $('#daily').innerHTML=`<div class="sec-h" style="margin-top:0"><h2 class="display">Objectifs du jour</h2><span class="sub">fixés chaque matin, gardés pour toujours</span><div class="acts"><button class="icbtn dh-btn" title="Voir mes anciens objectifs du jour (${past.length} jour${past.length>1?'s':''})" onclick="openDailyHistory()">🗂</button><button class="btn primary" onclick="openMorning(1)">${today.length?'Modifier':'Fixer mes objectifs du jour'}</button></div></div>
+  $('#daily').innerHTML=`<div class="sec-h" style="margin-top:0"><h2 class="display">Objectifs du jour</h2><span class="sub">fixés chaque matin, gardés pour toujours</span><div class="acts"><button class="icbtn dh-btn" title="Voir mes anciens objectifs du jour (${past.length} jour${past.length>1?'s':''})" onclick="openDailyHistory()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v9.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V9"/><path d="M10 13h4"/></svg></button><button class="btn primary" onclick="openMorning(1)">${today.length?'Modifier':'Fixer mes objectifs du jour'}</button></div></div>
   <div class="grid">
     <section class="card s7"><div class="ch"><h2>${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</h2><div class="acts"><span class="sub">${today.filter(p=>p.done).length}/${today.length} réalisés</span></div></div>
       ${today.length?today.map((p,i)=>row(t,p,i)).join('')+`<div class="pbar">${today.map(p=>`<i class="${p.done?'on':''}"></i>`).join('')}</div>`:`<div class="empty">Pas encore d'objectifs pour aujourd'hui.<br><button class="btn primary" onclick="openMorning(1)">Les fixer maintenant</button></div>`}</section>
