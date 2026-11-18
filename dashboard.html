@@ -564,8 +564,21 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .mt-alt{position:relative;font-size:30px;font-weight:700;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}.mt-alt small{font-size:15px;font-weight:600;opacity:.8}
 .mtcard h3{position:relative;font-size:18px;font-weight:600;margin-top:6px}
 .mt-meta{position:relative;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
-/* Calendrier : note du mois et vue Année */
-.cal-seg{margin-right:6px}
+/* Page d'un livre : les zones de texte enrichi gardent le style de la page */
+.bk-sec .rte.bk-ta,.bk-q .rte.bk-qt{display:block;background:transparent;border:1px solid transparent;border-radius:12px;padding:10px 12px;margin:0 -12px;width:calc(100% + 24px);color:rgba(255,255,255,.92)}
+.bk-sec .rte.bk-ta{font-size:16.5px;line-height:1.75;min-height:70px}
+.bk-q .rte.bk-qt{font-family:var(--display,Georgia),serif;font-style:italic;font-size:17px;line-height:1.6;min-height:44px}
+.bk-sec .rte.bk-ta:hover,.bk-q .rte.bk-qt:hover{border-color:var(--line)}
+.bk-sec .rte.bk-ta:focus,.bk-q .rte.bk-qt:focus{background:rgba(0,0,0,.22);border-color:color-mix(in srgb,var(--ac) 45%,transparent)}
+.bk-sec .rte.bk-ta:empty::before,.bk-q .rte.bk-qt:empty::before{color:rgba(255,255,255,.32);font-style:italic}
+/* Thèmes des livres */.th-tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:var(--tc);background:color-mix(in srgb,var(--tc) 16%,transparent);border:1px solid color-mix(in srgb,var(--tc) 40%,transparent);white-space:nowrap}
+.bk-theme{margin-top:10px}.bk-theme .th-tag{font-size:13px;padding:4px 12px}
+.th-bar{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 16px}
+.th-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer;color:var(--tc);background:rgba(255,255,255,.03);border:1px solid color-mix(in srgb,var(--tc) 35%,var(--line));transition:.2s}
+.th-chip small{opacity:.7}.th-chip:hover{background:color-mix(in srgb,var(--tc) 12%,transparent)}
+.th-chip.on{background:color-mix(in srgb,var(--tc) 22%,transparent);border-color:var(--tc);color:#fff}
+.th-sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.th-sugg .th-chip{padding:4px 10px;font-size:12px}
+/* Calendrier : note du mois et vue Année */.cal-seg{margin-right:6px}
 .cal-sum .ms-card{grid-column:1/-1;flex-direction:row;display:flex;align-items:center;gap:16px;border-color:color-mix(in srgb,var(--c) 45%,var(--line));background:linear-gradient(120deg,color-mix(in srgb,var(--c) 16%,transparent),transparent 70%)}
 .ms-big{display:flex;align-items:baseline;gap:2px;flex:none}.ms-big b{font-size:40px;line-height:1;color:var(--c);font-variant-numeric:tabular-nums}.ms-big span{color:var(--muted);font-size:15px}
 .ms-r{min-width:0}.ms-w{font-weight:700;font-size:15px}.ms-w small{font-weight:400;color:var(--muted)}
@@ -710,10 +723,10 @@ body.web .paste-or{display:none}
 .wc-t{font-size:22px;line-height:1.2;color:var(--ink,#fff)}
 .wc-q{font-size:13.5px;color:var(--muted);margin-top:3px}
 .wc-n{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap;padding-top:4px}
-.why .wcard textarea{position:relative;z-index:1;display:block;background:transparent;border:1px solid transparent;border-radius:14px;padding:12px 14px;margin:0 -14px;width:calc(100% + 28px);font-family:inherit;font-size:16.5px;line-height:1.7;min-height:150px;color:rgba(255,255,255,.92);resize:none}
-.why .wcard textarea::placeholder{color:rgba(255,255,255,.34);font-style:italic}
-.why .wcard textarea:hover{background:rgba(255,255,255,.025);border-color:var(--line)}
-.why .wcard textarea:focus{background:rgba(0,0,0,.22);border-color:color-mix(in srgb,var(--ac) 45%,transparent);outline:0}
+.why .wcard .rte{position:relative;z-index:1;display:block;background:transparent;border:1px solid transparent;border-radius:14px;padding:12px 14px;margin:0 -14px;width:calc(100% + 28px);font-size:16.5px;line-height:1.7;min-height:150px;color:rgba(255,255,255,.92)}
+.why .wcard .rte:empty::before{color:rgba(255,255,255,.34);font-style:italic}
+.why .wcard .rte:hover{background:rgba(255,255,255,.025);border-color:var(--line)}
+.why .wcard .rte:focus{background:rgba(0,0,0,.22);border-color:color-mix(in srgb,var(--ac) 45%,transparent);outline:0}
 @media(max-width:900px){.wgrid{grid-template-columns:1fr}.wcard{padding:20px 18px 14px}.wc-t{font-size:19px}}
 .letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .env{position:relative;height:170px;border-radius:18px;padding:20px;background:linear-gradient(160deg,#2a2418,#17140e);border:1px solid rgba(214,169,74,.3);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
@@ -1194,7 +1207,7 @@ body.web .paste-or{display:none}
 .rte{min-height:96px;padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:rgba(0,0,0,.25);font-size:14.5px;line-height:1.6;color:var(--text);outline:none;white-space:pre-wrap;word-wrap:break-word;cursor:text}
 .rte:focus{border-color:var(--gold)}
 .rte:empty::before{content:attr(data-ph);color:var(--muted);pointer-events:none}
-.rte *{font-family:inherit!important;font-size:inherit!important;line-height:inherit!important;letter-spacing:normal!important}
+.rte *{font-family:inherit!important;line-height:inherit!important;letter-spacing:normal!important}
 .rte p,.rte div{margin:0 0 .35em}
 .rte ul,.rte ol{margin:.2em 0 .5em 1.4em;white-space:normal}
 .rte b,.rte strong{font-weight:700}
@@ -1707,10 +1720,10 @@ body.web .win-only{display:none!important}
   <div id="dreams"></div>
   <div class="sec-h"><h2 class="display">Mon pourquoi</h2><span class="sub">Écris directement dans les cadres, tout est enregistré automatiquement.</span></div>
   <div class="wgrid">
-    <section class="wcard" style="--ac:#d6a94a"><div class="wc-h"><span class="wc-ic">✦</span><div><div class="wc-t display">Mon pourquoi</div><div class="wc-q">Ce qui te fait avancer, même les jours sans envie.</div></div><span class="wc-n" data-n="why"></span></div><textarea data-k="why" placeholder="Pourquoi la liberté financière compte pour toi ? Qui veux-tu devenir ? Qu'est-ce que tu veux offrir aux gens que tu aimes ?"></textarea></section>
-    <section class="wcard" style="--ac:#e5695c"><div class="wc-h"><span class="wc-ic">⊘</span><div><div class="wc-t display">Ce que je refuse</div><div class="wc-q">La vie que tu ne veux pas subir.</div></div><span class="wc-n" data-n="anti"></span></div><textarea data-k="anti" placeholder="La vie que tu ne veux surtout pas avoir dans 10 ans si tu ne changes rien."></textarea></section>
-    <section class="wcard" style="--ac:#5aa2e6"><div class="wc-h"><span class="wc-ic">◆</span><div><div class="wc-t display">Mes valeurs et mes règles</div><div class="wc-q">Ce que tu t'engages à toujours respecter.</div></div><span class="wc-n" data-n="values"></span></div><textarea data-k="values" placeholder="Ex : Je ne vends jamais dans la panique. Je tiens mes engagements envers moi-même. J'apprends chaque jour."></textarea></section>
-    <section class="wcard" style="--ac:#9b8afb"><div class="wc-h"><span class="wc-ic">➚</span><div><div class="wc-t display">Qui je serai dans 5 ans</div><div class="wc-q">La personne que tu es en train de construire.</div></div><span class="wc-n" data-n="letter"></span></div><textarea data-k="letter" placeholder="Décris la personne que tu seras dans 5 ans : ta journée type, ce que tu sais faire, ce que tu as construit."></textarea></section>
+    <section class="wcard" style="--ac:#d6a94a"><div class="wc-h"><span class="wc-ic">✦</span><div><div class="wc-t display">Mon pourquoi</div><div class="wc-q">Ce qui te fait avancer, même les jours sans envie.</div></div><span class="wc-n" data-n="why"></span></div><div class="rte" contenteditable="true" spellcheck="true" data-k="why" data-ph="Pourquoi la liberté financière compte pour toi ? Qui veux-tu devenir ? Qu'est-ce que tu veux offrir aux gens que tu aimes ?"></div></section>
+    <section class="wcard" style="--ac:#e5695c"><div class="wc-h"><span class="wc-ic">⊘</span><div><div class="wc-t display">Ce que je refuse</div><div class="wc-q">La vie que tu ne veux pas subir.</div></div><span class="wc-n" data-n="anti"></span></div><div class="rte" contenteditable="true" spellcheck="true" data-k="anti" data-ph="La vie que tu ne veux surtout pas avoir dans 10 ans si tu ne changes rien."></div></section>
+    <section class="wcard" style="--ac:#5aa2e6"><div class="wc-h"><span class="wc-ic">◆</span><div><div class="wc-t display">Mes valeurs et mes règles</div><div class="wc-q">Ce que tu t'engages à toujours respecter.</div></div><span class="wc-n" data-n="values"></span></div><div class="rte" contenteditable="true" spellcheck="true" data-k="values" data-ph="Ex : Je ne vends jamais dans la panique. Je tiens mes engagements envers moi-même. J'apprends chaque jour."></div></section>
+    <section class="wcard" style="--ac:#9b8afb"><div class="wc-h"><span class="wc-ic">➚</span><div><div class="wc-t display">Qui je serai dans 5 ans</div><div class="wc-q">La personne que tu es en train de construire.</div></div><span class="wc-n" data-n="letter"></span></div><div class="rte" contenteditable="true" spellcheck="true" data-k="letter" data-ph="Décris la personne que tu seras dans 5 ans : ta journée type, ce que tu sais faire, ce que tu as construit."></div></section>
   </div>
   <div class="sec-h"><h2 class="display">Mes objectifs de vie</h2><span class="sub">Les expériences à vivre au moins une fois. Coche-les quand c'est fait.</span></div>
   <div id="lifeGoals"></div>
@@ -2068,7 +2081,7 @@ const QUOTES_MORE=[
 const COL_TYPES={
   books:{label:'Livres',icon:'📚',color:'#d6a94a',unit:['livre','livres'],todo:'À lire',done:'Lus',doneOne:'Lu',add:'Ajouter un livre',ph:'Ex : Les Mémoires d\'Hadrien',
     /* Résumé, passages importants et ce que j'en retiens s'écrivent sur la page du livre */
-    fields:[['title','Titre','text'],['author','Auteur','text'],['date','Année de lecture','year'],['cover','Couverture','photo']]},
+    fields:[['title','Titre','text'],['author','Auteur','text'],['theme','Thème','theme'],['date','Année de lecture','year'],['cover','Couverture','photo']]},
   mountains:{label:'Montagnes',icon:'⛰️',color:'#5aa2e6',unit:['sommet','sommets'],todo:'À gravir',done:'Gravis',doneOne:'Gravi',add:'Ajouter un sommet',ph:'Ex : Mont Blanc',
     fields:[['title','Sommet','text'],['alt','Altitude (m)','number'],['place','Pays ou massif','text'],['date','Année','year']]},
   countries:{label:'Pays',icon:'🌍',color:'#43b97f',unit:['pays','pays'],todo:'À visiter',done:'Visités',doneOne:'Visité',add:'Ajouter un pays',
@@ -2786,7 +2799,7 @@ function renderMiniGoals(){
 }
 function bump(id,n){const g=S.goals.find(x=>x.id===id);g.progress=Math.max(0,Math.min(100,g.progress+n));if(g.progress===100&&n>0){toast('Objectif atteint : '+g.title);xpPop(XP_RULES.goal,'Objectif');}save();if(cur==='goals')renderGoals();if(drawerOpen())renderMiniGoals();}
 function renderMiniWhy(){
-  $('#miniWhy').innerHTML=S.why?`<div class="whysnip">${esc(S.why)}</div>`:`<div class="empty" style="padding:10px">Écris ton pourquoi, c'est lui qui te portera les jours sans motivation.<br><button class="btn primary" onclick="go('motivation')">L'écrire</button></div>`;
+  $('#miniWhy').innerHTML=S.why?`<div class="whysnip">${richHtml(S.why)}</div>`:`<div class="empty" style="padding:10px">Écris ton pourquoi, c'est lui qui te portera les jours sans motivation.<br><button class="btn primary" onclick="go('motivation')">L'écrire</button></div>`;
   const m=memoryWin();$('#miniWin').innerHTML=m?`<div class="memory"><div class="eyebrow">Souvenir · ${fmtDate(m.date)}</div>${esc(m.text)}</div>`:'';
 }
 function renderMiniChal(){
@@ -3102,12 +3115,21 @@ const autoNote=t=>{if(!t||t.tagName!=='TEXTAREA')return;t.style.height='auto';t.
 const isHtml=v=>/<\/?(b|i|u|s|br|p|div|span|ul|ol|li)\b/i.test(v||'');
 const richHtml=v=>!v?'':isHtml(v)?safeRich(v):esc(v).replace(/\r?\n/g,'<br>');
 /* Ne garde que les balises de mise en forme et quelques propriétés de style (jamais de script, lien ou attribut) */
-const RTE_OK=/^(B|I|U|S|BR|P|DIV|UL|OL|LI|SPAN|STRONG|EM)$/,STYLE_OK=['color','background-color','font-weight','font-style','text-decoration'];
+const RTE_OK=/^(B|I|U|S|BR|P|DIV|UL|OL|LI|SPAN|STRONG|EM)$/,STYLE_OK=['color','background-color','font-weight','font-style','text-decoration','font-size'];
+/* Taille copiée : gardée en pixels (bornée), sauf si elle est proche de la taille normale du texte (on laisse alors la taille de l'appli) */
+function pasteSize(st,n){
+  let px=null;const fs=String((st&&st.fontSize)||'');
+  const KW={'xx-small':9,'x-small':10,'small':13,'medium':16,'large':18,'x-large':24,'xx-large':32,'xxx-large':40,'smaller':12,'larger':19};
+  let m;if((m=fs.match(/^([\d.]+)px$/)))px=+m[1];else if((m=fs.match(/^([\d.]+)pt$/)))px=+m[1]*4/3;else if((m=fs.match(/^([\d.]+)(em|rem)$/)))px=+m[1]*16;else if((m=fs.match(/^([\d.]+)%$/)))px=+m[1]/100*16;else if(KW[fs])px=KW[fs];
+  if(px==null&&n.tagName==='FONT'&&n.getAttribute('size')){px={1:10,2:13,3:16,4:18,5:24,6:32,7:40}[String(n.getAttribute('size')).replace('+','')]||null;}
+  if(px==null||(px>=12.5&&px<=17.5))return '';
+  return Math.round(Math.max(10,Math.min(36,px)))+'px';
+}
 function safeRich(v){
   const doc=new DOMParser().parseFromString(v,'text/html');
   [...doc.body.querySelectorAll('*')].reverse().forEach(el=>{
     if(!RTE_OK.test(el.tagName)){if(/^(SCRIPT|STYLE|IFRAME|OBJECT|EMBED|SVG|MATH|TEMPLATE)$/.test(el.tagName))el.remove();else el.replaceWith(...el.childNodes);return;}
-    const keep=STYLE_OK.map(p=>{const x=el.style.getPropertyValue(p);return x&&!/url|expression/i.test(x)?`${p}:${x}`:'';}).filter(Boolean).join(';');
+    const keep=STYLE_OK.map(p=>{const x=el.style.getPropertyValue(p);if(p==='font-size')return /^\d{1,2}px$/.test(x)?`${p}:${Math.max(10,Math.min(36,parseInt(x)))}px`:'';return x&&!/url|expression/i.test(x)?`${p}:${x}`:'';}).filter(Boolean).join(';');
     [...el.attributes].forEach(a=>el.removeAttribute(a.name));if(keep)el.setAttribute('style',keep);});
   return doc.body.innerHTML;
 }
@@ -3126,7 +3148,7 @@ function cleanRich(html){
     if(n.nodeType===3){dst.appendChild(document.createTextNode(n.nodeValue.replace(/\s+/g,' ')));continue;}
     if(n.nodeType!==1||/^(SCRIPT|STYLE|META|LINK|TITLE|HEAD|IMG|SVG|IFRAME|OBJECT|INPUT|BUTTON|SELECT|TEXTAREA|NOSCRIPT)$/.test(n.tagName))continue;
     let m=RTE_MAP[n.tagName]||'span';const st=n.style||{},fw=String(st.fontWeight||''),td=String(st.textDecorationLine||st.textDecoration||'');
-    if(m==='h'){const b=document.createElement('b'),dv=document.createElement('div');dv.appendChild(b);walk(n,b);dst.appendChild(dv);continue;}
+    if(m==='h'){const b=document.createElement('b'),dv=document.createElement('div');const hs={H1:26,H2:22,H3:19,H4:17}[n.tagName];const own=pasteSize(st,n);if(own||hs)b.setAttribute('style','font-size:'+(own||hs+'px'));dv.appendChild(b);walk(n,b);dst.appendChild(dv);continue;}
     if(m==='b'&&(fw==='normal'||fw==='400'))m='span';
     const el=document.createElement(m),css=[];
     if(m!=='b'&&(fw==='bold'||+fw>=600))css.push('font-weight:700');
@@ -3135,6 +3157,7 @@ function cleanRich(html){
     if(m!=='s'&&/line-through/.test(td))css.push('text-decoration:line-through');
     const col=st.color||n.getAttribute('color');if(col){const c=textColor(col);if(c)css.push('color:'+c);}
     const bg=st.backgroundColor;if(bg){const c=bgColor(bg);if(c)css.push('background-color:'+c);}
+    const sz=pasteSize(st,n);if(sz)css.push('font-size:'+sz);
     if(css.length)el.setAttribute('style',css.join(';'));
     walk(n,el);dst.appendChild(el);}};
   walk(doc.body,out);
@@ -3749,8 +3772,8 @@ function editDream(id){
       save();renderDreams();bgShown=null;},
     onDelete:id?()=>{S.dreams=S.dreams.filter(x=>x.id!==id);save();renderDreams();}:null});
 }
-function whyCount(k){const e=document.querySelector(`#v-motivation [data-n="${k}"]`);if(!e)return;const n=(S[k]||'').trim().split(/\s+/).filter(Boolean).length;e.textContent=n?`${n} mot${n>1?'s':''}`:'';}
-function renderWhy(){document.querySelectorAll('#v-motivation textarea').forEach(t=>{t.value=S[t.dataset.k]||'';autoH(t);whyCount(t.dataset.k);});renderLetters();renderLifeGoals();}
+function whyCount(k){const e=document.querySelector(`#v-motivation [data-n="${k}"]`);if(!e)return;const n=plainText(S[k]||'').trim().split(/\s+/).filter(Boolean).length;e.textContent=n?`${n} mot${n>1?'s':''}`:'';}
+function renderWhy(){document.querySelectorAll('#v-motivation .wcard .rte').forEach(t=>{if(document.activeElement!==t)t.innerHTML=richHtml(S[t.dataset.k]||'');whyCount(t.dataset.k);});renderLetters();renderLifeGoals();}
 /* Objectifs de vie : expériences à vivre une fois (tableau 2 colonnes, les réalisés passent en bas) */
 function renderLifeGoals(){
   const box=$('#lifeGoals');if(!box)return;
@@ -3799,6 +3822,18 @@ const colDate=d=>d?String(d).slice(0,4):'';
 /* Pays au sens strict (ONU + Vatican + Palestine, Kosovo, Taïwan) ; le reste = territoires (Guadeloupe, Réunion…) */
 const isSovereign=c=>WORLD.un.includes(c)||c==='XK'||c==='TW';
 /* Notes en étoiles retirées des collections (demande de Nolan) : les anciennes notes restent dans les données mais ne s'affichent plus */
+/* Thème d'un livre (Finance, Développement personnel…) : suggestions + thèmes déjà utilisés, une couleur stable par thème */
+const BOOK_THEMES=['Finance','Développement personnel','Culture','Business','Psychologie','Philosophie','Histoire','Science','Biographie','Roman','Santé','Tech'];
+const normTheme=v=>{v=String(v||'').trim().replace(/\s+/g,' ');return v?v.charAt(0).toUpperCase()+v.slice(1):'';};
+const themesOf=c=>{const m=new Map();c.items.forEach(i=>{const t=normTheme(i.theme);if(t)m.set(t.toLowerCase(),t);});return [...m.values()];};
+function themeInput(c,v){const used=themesOf(c),all=[...new Set(used.concat(BOOK_THEMES.filter(x=>!used.some(u=>u.toLowerCase()===x.toLowerCase()))))];
+  return `<input id="f_theme" list="themeList" value="${esc(v||'')}" placeholder="Ex : Finance, Développement personnel, Culture…" autocomplete="off"><datalist id="themeList">${all.map(x=>`<option value="${esc(x)}">`).join('')}</datalist><div class="th-sugg">${all.slice(0,10).map(x=>`<button type="button" class="th-chip" style="--tc:${themeColor(x)}" onclick="document.getElementById('f_theme').value=this.textContent">${esc(x)}</button>`).join('')}</div>`;}
+const themeColor=t=>`hsl(${hash(String(t).toLowerCase())%360} 65% 62%)`;
+const themeChip=t=>t?`<span class="th-tag" style="--tc:${themeColor(t)}">${esc(t)}</span>`:'';
+let colTheme='';
+function themeBar(c){const ts=themesOf(c);if(!ts.length)return '';
+  const n=t=>c.items.filter(i=>normTheme(i.theme).toLowerCase()===t.toLowerCase()).length;
+  return `<div class="th-bar"><button class="th-chip ${colTheme?'':'on'}" style="--tc:#c8d0dc" onclick="colTheme='';renderCollection()">Tous les thèmes</button>${ts.sort((a,b)=>n(b)-n(a)).map(t=>`<button class="th-chip ${colTheme.toLowerCase()===t.toLowerCase()?'on':''}" style="--tc:${themeColor(t)}" onclick="colTheme=${esc(JSON.stringify(t))};renderCollection()">${esc(t)} <small>${n(t)}</small></button>`).join('')}</div>`;}
 const starsHtml=()=>'';
 /* Les plus récents d'abord selon l'année saisie (puis l'ajout), pas selon l'ordre d'ajout */
 const byDateDesc=(a,b)=>String(b.date||'').localeCompare(String(a.date||''))||(b.at||0)-(a.at||0);
@@ -3813,7 +3848,7 @@ function colStats(c){
 }
 function renderCollection(){setTimeout(navPush,0);const c=colOpen&&colById(colOpen);if(!c){colOpen=null;colItem=null;renderColHome();return;}
   const it=colItem&&c.items.find(i=>i.id===colItem);if(it&&c.type==='books'){renderBookPage(c,it);return;}colItem=null;renderColDetail(c);}
-function openCol(id){colOpen=id;colItem=null;colTab='done';colQ='';colSort='date';colRegion='monde';renderCollection();window.scrollTo(0,0);}
+function openCol(id){colOpen=id;colItem=null;colTheme='';colTab='done';colQ='';colSort='date';colRegion='monde';renderCollection();window.scrollTo(0,0);}
 /* Clic sur un élément : un livre ouvre sa page, un pays ou un sommet s'ouvre en modification, le reste en fiche */
 function openColItem(cid,iid){const c=colById(cid);if(!c)return;
   if(c.type==='books'){colItem=iid;renderCollection();window.scrollTo(0,0);}
@@ -3871,21 +3906,21 @@ function renderColDetail(c){
     ${c.type==='countries'?colMapBlock(c):''}
     <div class="col-bar"><div class="seg"><button class="${colTab==='done'?'on':''}" onclick="colTab='done';renderCollection()">${esc(T.done)} <small>${nd}</small></button><button class="${colTab==='todo'?'on':''}" onclick="colTab='todo';renderCollection()">${esc(T.todo)} <small>${nt}</small></button></div>
       <input type="search" class="col-q" id="colQ" placeholder="Rechercher…" value="${esc(colQ)}"><select id="colSort">${sorts.map(([k,l])=>`<option value="${k}"${k===colSort?' selected':''}>Trier : ${l}</option>`).join('')}</select></div>
-    <div id="colItems"></div>`;
+    ${c.type==='books'?themeBar(c):''}<div id="colItems"></div>`;
   $('#colQ').addEventListener('input',e=>{colQ=e.target.value;renderColItems(c);});
   $('#colSort').addEventListener('change',e=>{colSort=e.target.value;renderColItems(c);});
   renderColItems(c);if(c.type==='countries')bindMap(c);
 }
 function colSorted(c,list){
   const q=colQ.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-  if(q)list=list.filter(it=>[itemTitle(c,it),itemSub(c,it),it.summary,it.note,it.quote,...(it.passages||[]).map(p=>p.t)].join(' ').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').includes(q));
+  if(q)list=list.filter(it=>[itemTitle(c,it),itemSub(c,it),it.theme,it.summary,it.note,it.quote,...(it.passages||[]).map(p=>p.t)].join(' ').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').includes(q));
   const nm=(a,b)=>itemTitle(c,a).localeCompare(itemTitle(c,b),'fr');
   const f={date:(a,b)=>(b.date||b.doneAt||'').localeCompare(a.date||a.doneAt||'')||(b.at||0)-(a.at||0),rating:(a,b)=>(+b.rating||0)-(+a.rating||0)||nm(a,b),name:nm,added:(a,b)=>(b.at||0)-(a.at||0)}[colSort]||nm;
   return list.slice().sort(f);
 }
 function renderColItems(c){
   const T=COL_TYPES[c.type],box=$('#colItems');if(!box)return;
-  const list=colSorted(c,c.items.filter(i=>colTab==='todo'?i.status==='todo':i.status!=='todo'));
+  const list=colSorted(c,c.items.filter(i=>(colTab==='todo'?i.status==='todo':i.status!=='todo')&&(!colTheme||normTheme(i.theme).toLowerCase()===colTheme.toLowerCase())));
   if(!list.length){box.innerHTML=`<div class="card empty">${colQ?'Aucun résultat.':colTab==='todo'?`Rien dans « ${esc(T.todo)} » pour le moment.`:`Ta collection commence ici.`}<br>${colQ?'':`<button class="btn primary" onclick="editColItem('${c.id}',null,'${colTab}')">+ ${esc(T.add)}</button>`}</div>`;return;}
   if(colTab==='todo'){box.innerHTML=`<div class="lg-table">${list.map(it=>`<div class="lg-row col-todo" data-id="${it.id}"><div class="lg-c1" onclick="openColItem('${c.id}','${it.id}')">${c.type==='countries'?`<img class="ctflag" src="${flagUrl(it.code)}" alt="">`:''}<span class="lg-txt">${esc(itemTitle(c,it))}</span>${itemSub(c,it)?`<span class="lg-date">${esc(itemSub(c,it))}</span>`:''}</div><div class="lg-c2"><button class="check" title="${esc(T.doneOne)}" onclick="doneColItem('${c.id}','${it.id}')"></button><button class="lg-del" title="Supprimer" onclick="delColItem('${c.id}','${it.id}')">✕</button></div></div>`).join('')}</div>`;return;}
   if(c.type==='countries'){box.innerHTML=`<div class="flags">${list.map(it=>`<button class="flagcard" onclick="openColItem('${c.id}','${it.id}')"><img src="${flagUrl(it.code)}" alt="" loading="lazy"><div><b>${esc(countryName(it.code))}</b><span>${esc([isSovereign(it.code)?'':'Outre-mer',it.date?colDate(it.date):''].filter(Boolean).join(' · '))}</span></div></button>`).join('')}</div>`;return;}
@@ -3901,7 +3936,7 @@ function renderColItems(c){
   const port=c.type==='books'||c.type==='custom';
   box.innerHTML=`<div class="colitems ${port?'port':''}">${list.map(it=>{const src=itemImg(c,it,700);if(c.type==='custom'&&!src)return tile(it);
     return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${src?`<img src="${esc(src)}" alt="" onerror="this.remove()">`:''}<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div></div>
-      <div class="ci-cap"><h3>${esc(itemTitle(c,it))}</h3>${itemSub(c,it)?`<p>${esc(itemSub(c,it))}</p>`:''}<div class="ci-meta">${starsHtml(it.rating)}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}</div></div></button>`;}).join('')}</div>`;
+      <div class="ci-cap"><h3>${esc(itemTitle(c,it))}</h3>${itemSub(c,it)?`<p>${esc(itemSub(c,it))}</p>`:''}<div class="ci-meta">${themeChip(it.theme)}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}</div></div></button>`;}).join('')}</div>`;
   queueAutoImgs(c);
 }
 /* ---- Image trouvée automatiquement à partir du titre ----
@@ -3979,6 +4014,7 @@ function editColItem(cid,iid,status,preset){
     if(t==='photo')return {key:k,label:l,type:'photo',value:it[k]||''};
     if(t==='textarea')return {key:k,label:l,type:'textarea',rows:k==='summary'?7:4,value:it[k]||''};
     if(t==='year')return {key:k,label:l,type:'number',value:it[k]||'',placeholder:`Ex : ${new Date().getFullYear()}`};
+    if(t==='theme')return {key:k,label:l,type:'html',html:themeInput(c,it[k])};
     return {key:k,label:l,type:t==='number'?'number':'text',value:it[k]||'',placeholder:k==='title'?(T.ph||''):''};});
   fields.splice(1,0,{key:'status',label:'Statut',type:'select',value:it.status==='todo'?'todo':'done',options:[['done',T.doneOne],['todo',T.todo]]});
   /* Image trouvée automatiquement : aperçu + « Autre image » / « Retirer » */
@@ -3986,7 +4022,7 @@ function editColItem(cid,iid,status,preset){
     fields.push({key:'_auto',label:"Image trouvée à partir du titre",type:'html',html:`<div class="aimg" id="aimgBox">${a?`<img src="${esc(a)}" alt="">`:'<span class="aimg-none">Aucune image</span>'}<div class="aimg-b"><button type="button" class="btn sm" onclick="nextAutoImg('${cid}','${iid}')">${a?'Autre image':'Chercher une image'}</button>${a?`<button type="button" class="btn ghost sm" onclick="removeAutoImg('${cid}','${iid}')">Retirer</button>`:''}</div></div>`});}
   const oldTitle=itemTitle(c,it),oldAuthor=it.author||'';
   modal({title:iid?'Modifier':T.add,wide:true,fields,
-    onSave:(v,ov)=>{const o={};fs.forEach(([k,,t])=>{o[k]=t==='stars'?+ov.querySelector('#f_'+k).dataset.v||0:t==='number'?(v[k]||''):t==='year'?(v[k]?String(Math.round(v[k])):''):v[k];});
+    onSave:(v,ov)=>{const o={};fs.forEach(([k,,t])=>{o[k]=t==='theme'?normTheme(ov.querySelector('#f_'+k).value):t==='stars'?+ov.querySelector('#f_'+k).dataset.v||0:t==='number'?(v[k]||''):t==='year'?(v[k]?String(Math.round(v[k])):''):v[k];});
       if(o.date&&!/^\d{4}$/.test(o.date)){alert("Écris l'année avec 4 chiffres, par exemple 2024.");return false;}
       if(c.type==='countries'?!o.code:!String(o.title||'').trim()){alert(c.type==='countries'?'Choisis un pays.':'Donne-lui un nom.');return false;}
       const was=it.status;o.status=v.status;o.doneAt=o.status==='done'?(it.doneAt||dk()):'';
@@ -4014,7 +4050,8 @@ function removeAutoImg(cid,iid){const c=colById(cid),it=c&&c.items.find(i=>i.id=
 function renderBookPage(c,it){
   if(!Array.isArray(it.passages))it.passages=[];
   const src=itemImg(c,it,900),T=COL_TYPES.books;setTimeout(()=>queueAutoImgs(c),0);
-  const ta=(k,ph)=>`<textarea class="bk-ta" data-bk="${k}" placeholder="${esc(ph)}">${esc(it[k]||'')}</textarea>`;
+  /* Zones de texte enrichi : un texte collé garde gras, taille et couleurs (la police reste celle de l'appli) */
+  const ta=(k,ph)=>rte(`data-bk="${k}"`,it[k],ph,'bk-ta');
   $('#colPage').innerHTML=`<button class="btn ghost sm col-back" onclick="colItem=null;renderCollection()">← ${esc(c.name)}</button>
   <div class="bk" style="--ac:${esc(c.color)}">
     <aside class="bk-side">
@@ -4024,27 +4061,27 @@ function renderBookPage(c,it){
       <div class="bk-btns">${it.status==='todo'?`<button class="btn primary" onclick="doneColItem('${c.id}','${it.id}')">✓ Je l'ai lu</button>`:''}<button class="btn" onclick="editColItem('${c.id}','${it.id}')">Modifier titre, note, couverture</button></div>
     </aside>
     <div class="bk-main">
-      <h1 class="display">${esc(it.title||'')}</h1>${it.author?`<div class="bk-author">${esc(it.author)}</div>`:''}
+      <h1 class="display">${esc(it.title||'')}</h1>${it.author?`<div class="bk-author">${esc(it.author)}</div>`:''}${it.theme?`<div class="bk-theme">${themeChip(it.theme)}</div>`:''}
       <section class="bk-sec"><h2><span>📖</span>Résumé</h2>${ta('summary','De quoi parle ce livre ? Les grandes idées, chapitre par chapitre si tu veux.')}</section>
       <section class="bk-sec"><h2><span>❝</span>Passages importants<small id="bkPn"></small></h2><div id="bkPassages"></div><button class="btn sm bk-add" onclick="addPassage()">+ Ajouter un passage</button></section>
       <section class="bk-sec"><h2><span>💡</span>Ce que j'en retiens</h2>${ta('quote',"Ce que tu vas appliquer dans ta vie, ce qui t'a marqué.")}</section>
     </div>
   </div>`;
-  document.querySelectorAll('#colPage .bk-ta').forEach(t=>{autoH(t);t.addEventListener('input',()=>{it[t.dataset.bk]=t.value;save();autoH(t);});});
+  document.querySelectorAll('#colPage .bk-ta').forEach(t=>t.addEventListener('input',()=>{it[t.dataset.bk]=rteVal(t);save();}));
   renderPassages(it);
 }
 function bookItem(){const c=colById(colOpen);return c&&c.items.find(i=>i.id===colItem);}
 function renderPassages(it){
   const box=$('#bkPassages');if(!box)return;const P=it.passages;
   $('#bkPn').textContent=P.length?String(P.length):'';
-  box.innerHTML=P.length?P.map(p=>`<div class="bk-q" data-pid="${p.id}"><textarea class="bk-qt" placeholder="Recopie le passage…">${esc(p.t||'')}</textarea><div class="bk-qf"><input class="bk-qp" placeholder="Page" value="${esc(p.p||'')}" maxlength="8"><button class="lg-del" title="Supprimer ce passage" onclick="delPassage('${p.id}')">✕</button></div></div>`).join('')
+  box.innerHTML=P.length?P.map(p=>`<div class="bk-q" data-pid="${p.id}">${rte('','',"Recopie le passage…",'bk-qt')}<div class="bk-qf"><input class="bk-qp" placeholder="Page" value="${esc(p.p||'')}" maxlength="8"><button class="lg-del" title="Supprimer ce passage" onclick="delPassage('${p.id}')">✕</button></div></div>`).join('')
     :`<div class="bk-empty">Les phrases qui t'ont marqué, avec leur page si tu veux.</div>`;
   box.querySelectorAll('.bk-q').forEach(q=>{const p=P.find(x=>x.id===q.dataset.pid),t=q.querySelector('.bk-qt'),pg=q.querySelector('.bk-qp');
-    autoH(t);t.style.minHeight='0';t.style.height='auto';t.style.height=Math.max(60,t.scrollHeight+4)+'px';
-    t.addEventListener('input',()=>{p.t=t.value;save();t.style.height='auto';t.style.height=Math.max(60,t.scrollHeight+4)+'px';});
+    t.innerHTML=richHtml(p.t);
+    t.addEventListener('input',()=>{p.t=rteVal(t);save();});
     pg.addEventListener('input',()=>{p.p=pg.value;save();});});
 }
-function addPassage(){const it=bookItem();if(!it)return;const p={id:uid(),t:'',p:''};it.passages.push(p);save();renderPassages(it);const q=document.querySelector(`.bk-q[data-pid="${p.id}"] textarea`);if(q)q.focus();}
+function addPassage(){const it=bookItem();if(!it)return;const p={id:uid(),t:'',p:''};it.passages.push(p);save();renderPassages(it);const q=document.querySelector(`.bk-q[data-pid="${p.id}"] .bk-qt`);if(q)q.focus();}
 function delPassage(pid){const it=bookItem();if(!it)return;const p=it.passages.find(x=>x.id===pid);if(p&&p.t&&!confirm('Supprimer ce passage ?'))return;it.passages=it.passages.filter(x=>x.id!==pid);save();renderPassages(it);}
 function doneColItem(cid,iid){const c=colById(cid),it=c&&c.items.find(i=>i.id===iid);if(!it)return;
   const row=document.querySelector(`.col-todo[data-id="${iid}"]`);if(row){row.classList.add('out');row.querySelector('.check').textContent='✓';}
@@ -4071,7 +4108,7 @@ function editCollection(id){
       save();renderCollection();},
     onDelete:c?()=>{if(c.items.length&&!confirm(`La collection « ${c.name} » contient ${c.items.length} élément(s). Tout supprimer ?`))return;S.collections=S.collections.filter(x=>x.id!==c.id);colOpen=null;save();renderCollection();}:null});
 }
-document.querySelectorAll('#v-motivation textarea').forEach(t=>t.addEventListener('input',()=>{S[t.dataset.k]=t.value;save();autoH(t);whyCount(t.dataset.k);}));
+document.querySelectorAll('#v-motivation .wcard .rte').forEach(t=>t.addEventListener('input',()=>{S[t.dataset.k]=rteVal(t);save();whyCount(t.dataset.k);}));
 const lettersReady=()=>S.letters.filter(l=>!l.opened&&l.openOn<=dk());
 function renderLetters(){
   const ls=[...S.letters].sort((a,b)=>a.openOn.localeCompare(b.openOn));
