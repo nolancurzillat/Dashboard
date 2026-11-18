@@ -582,6 +582,8 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .th-tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:var(--tc);background:color-mix(in srgb,var(--tc) 16%,transparent);border:1px solid color-mix(in srgb,var(--tc) 40%,transparent);white-space:nowrap}
 .bk-theme{margin-top:10px}.bk-theme .th-tag{font-size:13px;padding:4px 12px}
 .th-bar{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 16px}
+.th-group{margin-bottom:26px}.th-gh{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.th-gh .th-tag{font-size:14px;padding:5px 14px}
 .th-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer;color:var(--tc);background:rgba(255,255,255,.03);border:1px solid color-mix(in srgb,var(--tc) 35%,var(--line));transition:.2s}
 .th-chip small{opacity:.7}.th-chip:hover{background:color-mix(in srgb,var(--tc) 12%,transparent)}
 .th-chip.on{background:color-mix(in srgb,var(--tc) 22%,transparent);border-color:var(--tc);color:#fff}
@@ -3857,7 +3859,7 @@ const normTheme=v=>{v=String(v||'').trim().replace(/\s+/g,' ');return v?v.charAt
 const themesOf=c=>{const m=new Map();c.items.forEach(i=>{const t=normTheme(i.theme);if(t)m.set(t.toLowerCase(),t);});return [...m.values()];};
 function themeInput(c,v){return `<input id="f_theme" value="${esc(v||'')}" placeholder="Ex : Finance, Développement personnel, Culture…" autocomplete="off">`;}
 /* Couleur selon le sens du thème (mots-clés), sinon une couleur stable tirée du nom */
-const THEME_COLORS=[[/financ|argent|invest|bourse|patrimoine|économ|econom|immobil|crypto|trading/,'#e0b54f'],[/dév|dev|perso|productiv|habitude|motivation|mental|discipline|succès|succes|leadership/,'#f2994a'],[/cultur|histoire|art|littér|litter|musique|géopol|geopol|société|societe|civilis/,'#b48cf2'],[/scien|tech|informat|ia\b|intelligence|code|program|math|physique|espace/,'#5aa2e6'],[/psych|philo|spirit|sagesse|stoï|stoi|religion/,'#4fc3c7'],[/santé|sante|sport|nutrition|corps|médec|medec|bien-être|bien etre/,'#43b97f'],[/business|entrepr|management|marketing|vente|startup|carrière|carriere/,'#e5695c'],[/roman|fiction|polar|thriller|fantasy|poésie|poesie|nouvelle/,'#e57ab4'],[/biograph|mémoire|memoire|autobiog/,'#c9a26b']];
+const THEME_COLORS=[[/financ|argent|invest|bourse|patrimoine|économ|econom|immobil|crypto|trading/,'#e0b54f'],[/dév|dev|perso|productiv|habitude|motivation|mental|discipline|succès|succes|leadership/,'#f2994a'],[/cultur|histoire|art|littér|litter|musique|géopol|geopol|société|societe|civilis/,'#b48cf2'],[/scien|tech|informat|ia\b|intelligence|code|program|math|physique|espace/,'#5aa2e6'],[/psych|philo|spirit|sagesse|stoï|stoi|religion/,'#4fc3c7'],[/santé|sante|sport|nutrition|corps|médec|medec|bien-être|bien etre/,'#43b97f'],[/business|entrepr|management|marketing|vente|startup|carrière|carriere/,'#e5695c'],[/roman|fiction|polar|thriller|fantasy|poésie|poesie|nouvelle/,'#e57ab4'],[/biograph|mémoire|memoire|autobiog/,'#8fd14f']];
 const themeColor=t=>{const s=String(t||'').toLowerCase();for(const [re,c] of THEME_COLORS)if(re.test(s))return c;return `hsl(${hash(s)%360} 65% 62%)`;};
 const themeChip=t=>t?`<span class="th-tag" style="--tc:${themeColor(t)}">${esc(t)}</span>`:'';
 let colTheme='';
@@ -3928,7 +3930,7 @@ function bindMap(c){
 /* --- Page d'une collection --- */
 function renderColDetail(c){
   const T=COL_TYPES[c.type],nd=c.items.filter(i=>i.status!=='todo').length,nt=c.items.length-nd;
-  const sorts=[['date','Date'],['name','Nom'],['added','Ajout récent']];
+  const sorts=[['date','Date'],...(c.type==='books'?[['theme','Thème']]:[]),['name','Nom'],['added','Ajout récent']];
   if(!sorts.some(s=>s[0]===colSort))colSort='date';
   $('#colPage').innerHTML=`<button class="btn ghost sm col-back" onclick="openCol(null)">← Ma collection</button>
     <div class="col-head" style="--ac:${esc(c.color)}"><span class="cc-ic big">${esc(c.icon||'⭐')}</span><div class="ch-txt"><h1 class="display">${esc(c.name)}</h1><div class="col-stats">${colStats(c).map(s=>`<span>${s}</span>`).join('')}</div></div>
@@ -3936,7 +3938,7 @@ function renderColDetail(c){
     ${c.type==='countries'?colMapBlock(c):''}
     <div class="col-bar"><div class="seg"><button class="${colTab==='done'?'on':''}" onclick="colTab='done';renderCollection()">${esc(T.done)} <small>${nd}</small></button><button class="${colTab==='todo'?'on':''}" onclick="colTab='todo';renderCollection()">${esc(T.todo)} <small>${nt}</small></button></div>
       <input type="search" class="col-q" id="colQ" placeholder="Rechercher…" value="${esc(colQ)}"><select id="colSort">${sorts.map(([k,l])=>`<option value="${k}"${k===colSort?' selected':''}>Trier : ${l}</option>`).join('')}</select></div>
-    ${c.type==='books'?themeBar(c):''}<div id="colItems"></div>`;
+    <div id="colItems"></div>`;
   $('#colQ').addEventListener('input',e=>{colQ=e.target.value;renderColItems(c);});
   $('#colSort').addEventListener('change',e=>{colSort=e.target.value;renderColItems(c);});
   renderColItems(c);if(c.type==='countries')bindMap(c);
@@ -3945,12 +3947,14 @@ function colSorted(c,list){
   const q=colQ.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
   if(q)list=list.filter(it=>[itemTitle(c,it),itemSub(c,it),it.theme,it.summary,it.note,it.quote,...(it.passages||[]).map(p=>p.t)].join(' ').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').includes(q));
   const nm=(a,b)=>itemTitle(c,a).localeCompare(itemTitle(c,b),'fr');
-  const f={date:(a,b)=>(b.date||b.doneAt||'').localeCompare(a.date||a.doneAt||'')||(b.at||0)-(a.at||0),rating:(a,b)=>(+b.rating||0)-(+a.rating||0)||nm(a,b),name:nm,added:(a,b)=>(b.at||0)-(a.at||0)}[colSort]||nm;
+  const f={date:(a,b)=>(b.date||b.doneAt||'').localeCompare(a.date||a.doneAt||'')||(b.at||0)-(a.at||0),rating:(a,b)=>(+b.rating||0)-(+a.rating||0)||nm(a,b),name:nm,added:(a,b)=>(b.at||0)-(a.at||0),
+    /* Par thème : thèmes dans l'ordre alphabétique (livres sans thème à la fin), puis les plus récents */
+    theme:(a,b)=>{const x=normTheme(a.theme),y=normTheme(b.theme);return (!x)-(!y)||x.localeCompare(y,'fr')||String(b.date||'').localeCompare(String(a.date||''))||(b.at||0)-(a.at||0);}}[colSort]||nm;
   return list.slice().sort(f);
 }
 function renderColItems(c){
   const T=COL_TYPES[c.type],box=$('#colItems');if(!box)return;
-  const list=colSorted(c,c.items.filter(i=>(colTab==='todo'?i.status==='todo':i.status!=='todo')&&(!colTheme||normTheme(i.theme).toLowerCase()===colTheme.toLowerCase())));
+  const list=colSorted(c,c.items.filter(i=>colTab==='todo'?i.status==='todo':i.status!=='todo'));
   if(!list.length){box.innerHTML=`<div class="card empty">${colQ?'Aucun résultat.':colTab==='todo'?`Rien dans « ${esc(T.todo)} » pour le moment.`:`Ta collection commence ici.`}<br>${colQ?'':`<button class="btn primary" onclick="editColItem('${c.id}',null,'${colTab}')">+ ${esc(T.add)}</button>`}</div>`;return;}
   if(colTab==='todo'){box.innerHTML=`<div class="lg-table">${list.map(it=>`<div class="lg-row col-todo" data-id="${it.id}"><div class="lg-c1" onclick="openColItem('${c.id}','${it.id}')">${c.type==='countries'?`<img class="ctflag" src="${flagUrl(it.code)}" alt="">`:''}<span class="lg-txt">${esc(itemTitle(c,it))}</span>${itemSub(c,it)?`<span class="lg-date">${esc(itemSub(c,it))}</span>`:''}</div><div class="lg-c2"><button class="check" title="${esc(T.doneOne)}" onclick="doneColItem('${c.id}','${it.id}')"></button><button class="lg-del" title="Supprimer" onclick="delColItem('${c.id}','${it.id}')">✕</button></div></div>`).join('')}</div>`;return;}
   if(c.type==='countries'){box.innerHTML=`<div class="flags">${list.map(it=>`<button class="flagcard" onclick="openColItem('${c.id}','${it.id}')"><img src="${flagUrl(it.code)}" alt="" loading="lazy"><div><b>${esc(countryName(it.code))}</b><span>${esc([isSovereign(it.code)?'':'Outre-mer',it.date?colDate(it.date):''].filter(Boolean).join(' · '))}</span></div></button>`).join('')}</div>`;return;}
@@ -3964,9 +3968,15 @@ function renderColItems(c){
   const anyImg=list.some(it=>itemImg(c,it,300));
   if(c.type==='custom'&&!anyImg){box.innerHTML=`<div class="tilegrid">${list.map(tile).join('')}</div>`;queueAutoImgs(c);return;}
   const port=c.type==='books'||c.type==='custom';
-  box.innerHTML=`<div class="colitems ${port?'port':''}">${list.map(it=>{const src=itemImg(c,it,700);if(c.type==='custom'&&!src)return tile(it);
+  const card=it=>{const src=itemImg(c,it,700);if(c.type==='custom'&&!src)return tile(it);
     return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${src?`<img src="${esc(src)}" alt="" onerror="this.remove()">`:''}<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div></div>
-      <div class="ci-cap"><h3>${esc(itemTitle(c,it))}</h3>${itemSub(c,it)?`<p>${esc(itemSub(c,it))}</p>`:''}<div class="ci-meta">${themeChip(it.theme)}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}</div></div></button>`;}).join('')}</div>`;
+      <div class="ci-cap"><h3>${esc(itemTitle(c,it))}</h3>${itemSub(c,it)?`<p>${esc(itemSub(c,it))}</p>`:''}<div class="ci-meta">${themeChip(it.theme)}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}</div></div></button>`;};
+  if(c.type==='books'&&colSort==='theme'){
+    /* Tri par thème : un titre par thème (pastille de couleur + nombre de livres), puis ses livres */
+    const groups=[];list.forEach(it=>{const t=normTheme(it.theme)||'Sans thème';let g=groups.find(x=>x.t.toLowerCase()===t.toLowerCase());if(!g)groups.push(g={t,items:[]});g.items.push(it);});
+    box.innerHTML=groups.map(g=>`<div class="th-group"><div class="th-gh">${g.t==='Sans thème'?`<span class="th-tag" style="--tc:#8a93a6">Sans thème</span>`:themeChip(g.t)}<span class="sub">${g.items.length} livre${g.items.length>1?'s':''}</span></div><div class="colitems port">${g.items.map(card).join('')}</div></div>`).join('');
+    queueAutoImgs(c);return;}
+  box.innerHTML=`<div class="colitems ${port?'port':''}">${list.map(card).join('')}</div>`;
   queueAutoImgs(c);
 }
 /* ---- Image trouvée automatiquement à partir du titre ----
