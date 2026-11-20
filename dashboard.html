@@ -1236,6 +1236,17 @@ body.web .paste-or{display:none}
 .rte b,.rte strong{font-weight:700}
 .dp-synth .rte{min-height:160px}
 .dp-path .note .rte{min-height:90px}
+/* Résumés d'Apprentissage : une vraie fiche de lecture, aérée et lisible */
+.dp-path .stg .note{margin:8px 0 18px 26px;padding:18px 24px 20px;border-radius:18px;background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.012));border:1px solid var(--line);border-left:3px solid var(--c);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.note-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.note-n{min-width:24px;height:24px;padding:0 6px;border-radius:999px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--text);font-size:12px;letter-spacing:0}
+.dp-path .note .rte,.dp-synth .rte{display:block;max-width:920px;font-size:16px;line-height:1.75;color:rgba(255,255,255,.92);background:transparent;border:1px solid transparent;padding:10px 12px;margin:0 -12px;width:calc(100% + 24px)}
+.dp-path .note .rte{min-height:120px}
+.dp-path .note .rte:hover,.dp-synth .rte:hover{border-color:var(--line)}
+.dp-path .note .rte:focus,.dp-synth .rte:focus{background:rgba(0,0,0,.2);border-color:color-mix(in srgb,var(--c) 50%,transparent)}
+.dp-path .note .rte b,.dp-path .note .rte strong,.dp-synth .rte b,.dp-synth .rte strong{color:#fff}
+.dp-synth{padding:26px 30px}.dp-synth .eyebrow{font-size:13px;margin-bottom:10px}
+.nbtn{padding:5px 12px;font-size:12.5px}
 /* Compétences acquises séparées en bas */
 .sk-sep{grid-column:1/-1;display:flex;align-items:baseline;gap:12px;margin:26px 0 2px;padding-top:22px;border-top:1px solid var(--line)}
 .sk-sep h2{font-size:22px;font-weight:600}
@@ -1301,6 +1312,22 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .hsm{position:relative;margin:0;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:20px;background:rgba(8,12,32,.42);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 50px rgba(0,0,0,.3);cursor:pointer;min-height:0;transition:border-color .2s,transform .3s var(--ease)}
 .hsm:hover{border-color:rgba(242,205,120,.5);transform:translateY(-2px)}
 .hsm .hf-mat{border-radius:13px}
+/* ===== Accueil : cases fondues dans le fond d'écran (verre teinté, reflet en haut, ombre douce colorée) ===== */
+#v-home .glass,#v-home .hero .hframe,#v-home .hsm,#v-home .hero .space{
+  background:linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 45%,rgba(120,140,255,.035));
+  backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
+  border:1px solid rgba(255,255,255,.11);border-top-color:rgba(255,255,255,.2);
+  box-shadow:0 18px 50px rgba(6,8,40,.28),inset 0 1px 0 rgba(255,255,255,.06)}
+#v-home .glass{border-radius:22px}
+#v-home .glass .ch h2{color:rgba(255,255,255,.62)!important;letter-spacing:1.4px}
+#v-home .hf-mat{background:rgba(5,8,30,.18)}
+/* Sessions : l'image se fond dans le verre au lieu d'un bloc noir */
+#v-home .hero .space{border-radius:22px}
+#v-home .hero .space .sp-img{opacity:.88;-webkit-mask-image:linear-gradient(180deg,#000 55%,rgba(0,0,0,.55));mask-image:linear-gradient(180deg,#000 55%,rgba(0,0,0,.55))}
+#v-home .hero .space .sp-ov{background:linear-gradient(180deg,rgba(8,10,40,0) 25%,rgba(8,10,40,.62))}
+#v-home .hero .space:hover{box-shadow:0 24px 60px rgba(6,8,40,.4),inset 0 1px 0 rgba(255,255,255,.08);border-color:rgba(242,205,120,.45)}
+#v-home .hero .space.running{border-color:var(--gold);box-shadow:0 0 0 2px rgba(214,169,74,.4),0 24px 60px rgba(6,8,40,.4)}
+#v-home .tadd{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1)}
 .hsm img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .9s ease}
 .hsm img.out{opacity:0}
 .hsm figcaption{min-height:20px;padding:0 4px;display:flex}
@@ -1599,7 +1626,7 @@ body.web .win-only{display:none!important}
   <div class="navr">
     <span class="focuspill" id="focuspill" onclick="openDrawer()"></span><span class="focuspill" id="chronopill" title="Cliquer pour arrêter le chrono" onclick="stopChrono()"></span>
     <span class="nclock" id="nclock"></span>
-    <button class="icbtn galic" id="galbtn" title="Galerie" onclick="go('gallery')"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="galG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a3d44"/><stop offset="1" stop-color="#16181d"/></linearGradient></defs><path d="M24 2C38 2 46 10 46 24S38 46 24 46 2 38 2 24 10 2 24 2Z" fill="url(#galG)"/><g fill="#f2f2f2" opacity=".92"><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(0 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(60 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(120 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(180 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(240 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(300 24 24)"/></g><circle cx="24" cy="24" r="4.6" fill="#16181d"/></svg></button>
+    <button class="icbtn galic" id="galbtn" title="Galerie" onclick="go('gallery')"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="galG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a3d44"/><stop offset="1" stop-color="#16181d"/></linearGradient></defs><path d="M24 2C38 2 46 10 46 24S38 46 24 46 2 38 2 24 10 2 24 2Z" fill="url(#galG)"/><g fill="#f2f2f2" opacity=".92" transform="translate(24 24) scale(.8) translate(-24 -24)"><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(0 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(60 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(120 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(180 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(240 24 24)"/><ellipse cx="24" cy="13.2" rx="5.3" ry="8.2" transform="rotate(300 24 24)"/></g><circle cx="24" cy="24" r="3.7" fill="#16181d"/></svg></button>
     <button class="icbtn" id="gear" title="Réglages" onclick="go('settings')">⚙<span class="cl-dot" id="clDot" style="display:none"></span></button>
   </div>
 </nav>
@@ -2206,7 +2233,9 @@ function load(){
   return d;
 }
 let S=load();
-function save(){try{syncGoals(S);}catch(e){}try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert("Le stockage est plein. Fais une sauvegarde depuis les réglages.");}bkSchedule();try{refreshLevel();}catch(e){}try{cloudDirty();}catch(e){}}
+/* Compteur de modifications : la synchronisation sait si quelque chose a changé ici pendant qu'elle attendait le serveur */
+let clEdits=0;
+function save(){clEdits++;try{syncGoals(S);}catch(e){}try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert("Le stockage est plein. Fais une sauvegarde depuis les réglages.");}bkSchedule();try{refreshLevel();}catch(e){}try{cloudDirty();}catch(e){}}
 
 /* Base locale : photos + réglages de sauvegarde */
 let PH=[],DBP=null;
@@ -2486,10 +2515,18 @@ function bgList(){
   const dreamItems=S.dreams.filter(d=>!d.done&&d.cover).map(d=>({id:'dream:'+d.id,src:photoSrc(d.cover,2400),label:d.title,dream:true}));
   const mineItems=dreamItems.concat(mine.map(p=>({id:p.id,src:p.src,label:p.caption||''})));
   const lib=libVisible().filter(e=>S.settings.libCats.includes(e.cat)).map(e=>({id:e.id,src:libUrl(e,2400),label:e.label}));
-  const seed=hash(dk());lib.sort((a,b)=>hash(a.id+seed)-hash(b.id+seed));
+  /* Ordre tiré au hasard à chaque ouverture de l'appli (stable tant qu'elle reste ouverte, pour ‹ ›),
+     et les images vues récemment passent après les autres : chaque ouverture montre de nouvelles images */
+  const key=x=>(bgSeen0.has(x.id)?1:0)+bgRandOf(x.id);
+  mineItems.sort((a,b)=>key(a)-key(b));lib.sort((a,b)=>key(a)-key(b));
   const out=[];const n=Math.max(mineItems.length,lib.length);for(let i=0;i<n;i++){if(mineItems[i])out.push(mineItems[i]);if(lib[i])out.push(lib[i]);}
+  /* Les rêves restent mélangés aux autres images, sans passer toujours en premier */
   return out;
 }
+const BG_RAND={};const bgRandOf=id=>BG_RAND[id]??(BG_RAND[id]=Math.random());
+let bgSeen0=new Set();try{bgSeen0=new Set(JSON.parse(localStorage.getItem('dash_bg_seen')||'[]'));}catch(e){}
+/* Mémorise les images affichées (les plus récentes en dernier), pour les éviter à la prochaine ouverture */
+function bgMarkSeen(ids,total){try{let a=JSON.parse(localStorage.getItem('dash_bg_seen')||'[]');a=a.filter(x=>!ids.includes(x)).concat(ids);const cap=Math.max(3,Math.floor(total*.6));if(a.length>cap)a=a.slice(a.length-cap);localStorage.setItem('dash_bg_seen',JSON.stringify(a));}catch(e){}}
 function renderBg(advance){
   const m=momentNow();
   $('#tint').className='tint m-'+m;
@@ -2513,6 +2550,7 @@ function renderBg(advance){
   [1,2].forEach(k=>{const f=$('#hsm'+k);if(!f||list.length<3)return;const q=list[(pIdx+k)%list.length],im=f.querySelector('img');
     if(f.dataset.shown!==q.id){f.dataset.shown=q.id;im.classList.add('out');const n2=new Image();n2.onload=()=>{if(f.dataset.shown!==q.id)return;im.src=q.src;im.classList.remove('out');};n2.onerror=()=>im.classList.remove('out');n2.src=q.src;}
     f.querySelector('figcaption').innerHTML=capLabel(q);});
+  bgMarkSeen([0,1,2].slice(0,Math.min(3,list.length)).map(k=>list[(pIdx+k)%list.length].id),list.length);
 }
 /* Légende d'une image : un rêve est signalé par une petite étiquette dorée */
 const capLabel=p=>p.dream?`<span class="t"><b class="dtag">✦ Rêve</b> ${esc(p.label)}</span>`:p.label?`<span class="t">${esc(p.label)}</span>`:'<span class="t"></span>';
@@ -2714,8 +2752,8 @@ function openMorning(startAt=0){
     {html:()=>`<div class="eyebrow">${greet()} ${esc(S.settings.name)} · Jour ${dayNumber()}</div><h2 class="rt-h display">Tes 3 objectifs du jour</h2><p class="rt-p">Si tu ne fais que ça, la journée sera réussie.</p>${prioRows(st.prio)}`,
      read:ov=>{st.prio=readPrio(ov,d.priorities);}}
   ],
-  finish:()=>{d.priorities=st.prio;d.morningDone=true;delete d.planned;save();if(cur==='home')renderHome();else if(cur==='goals')renderGoals();},
-  skip:()=>{if(!d.morningDone){d.skipped=true;save();}if(cur==='home')renderHome();}});
+  finish:()=>{const d=today();d.priorities=st.prio;d.morningDone=true;delete d.planned;save();if(cur==='home')renderHome();else if(cur==='goals')renderGoals();},
+  skip:()=>{const d=today();if(!d.morningDone){d.skipped=true;save();}if(cur==='home')renderHome();}});
 }
 
 /* Revue du soir */
@@ -2731,7 +2769,7 @@ function openEvening(){
      read:ov=>{st.tom=readPrio(ov);}}
   ],
   finish:()=>{
-    const wasDone=d.eveningDone;if(!wasDone)xpPop(XP_RULES.evening,'Journée bouclée');d.evening={good:st.good,learned:st.learned};d.eveningDone=true;
+    const d=today();const wasDone=d.eveningDone;if(!wasDone)xpPop(XP_RULES.evening,'Journée bouclée');d.evening={good:st.good,learned:st.learned};d.eveningDone=true;
     if(st.win&&st.good&&!wasDone)S.wins.push({id:uid(),text:st.good,date:dk()});
     if(st.tom.length){const t=S.days[tk]||(S.days[tk]={priorities:[],review:''});t.priorities=st.tom;if(!t.morningDone)t.planned=true;}
     save();toast('Journée bouclée. Repose-toi bien.');if(cur==='home')renderHome();
@@ -3207,9 +3245,9 @@ document.addEventListener('paste',e=>{const t=e.target.closest&&e.target.closest
 const rte=(attrs,val,ph,cls='')=>`<div class="rte ${cls}" contenteditable="true" spellcheck="true" ${attrs} data-ph="${esc(ph)}">${richHtml(val)}</div>`;
 /* Barre de mise en forme : apparaît quand on sélectionne du texte dans une zone de texte enrichi (gras, italique, grand, rouge, vert, effacer) */
 const FMT=document.createElement('div');FMT.className='fmtbar';
-FMT.innerHTML=`<button data-f="bold" title="Gras (Ctrl+B)"><b>B</b></button><button data-f="italic" title="Italique (Ctrl+I)"><i>I</i></button><button data-f="big" title="Plus grand">A<sup>+</sup></button><span class="fsep"></span><button data-f="red" title="Rouge"><span class="fdot" style="background:#ff6b6b"></span></button><button data-f="green" title="Vert"><span class="fdot" style="background:#4fd18b"></span></button><span class="fsep"></span><button data-f="clear" title="Enlever la mise en forme">✕</button>`;
+FMT.innerHTML=`<button data-f="bold" title="Gras (Ctrl+B)"><b>B</b></button><button data-f="italic" title="Italique (Ctrl+I)"><i>I</i></button><button data-f="big" title="Plus grand">A<sup>+</sup></button><span class="fsep"></span><button data-f="red" title="Rouge"><span class="fdot" style="background:#ff6b6b"></span></button><button data-f="green" title="Vert"><span class="fdot" style="background:#4fd18b"></span></button><button data-f="blue" title="Bleu (ex. finance)"><span class="fdot" style="background:#5aa2ff"></span></button><button data-f="orange" title="Jaune orangé (ex. technique, science)"><span class="fdot" style="background:#f5a623"></span></button><span class="fsep"></span><button data-f="clear" title="Enlever la mise en forme">✕</button>`;
 document.body.appendChild(FMT);
-let fmtRte=null;
+let fmtRte=null;const FMT_COL={red:'#ff6b6b',green:'#4fd18b',blue:'#5aa2ff',orange:'#f5a623'};
 function fmtPlace(){const s=getSelection();if(!s.rangeCount||s.isCollapsed){FMT.classList.remove('on');return;}
   const r=s.getRangeAt(0),n=r.commonAncestorContainer,el=(n.nodeType===1?n:n.parentNode).closest('.rte[contenteditable="true"]');
   if(!el||el.closest('.ro')){FMT.classList.remove('on');return;}
@@ -3220,7 +3258,7 @@ addEventListener('scroll',()=>{if(FMT.classList.contains('on'))setTimeout(fmtPla
 FMT.addEventListener('mousedown',e=>e.preventDefault());
 FMT.addEventListener('click',e=>{const b=e.target.closest('button');fmtPlace();if(!b||!fmtRte)return;const f=b.dataset.f;
   if(f==='bold'||f==='italic'){document.execCommand('styleWithCSS',false,false);document.execCommand(f);}
-  else if(f==='red'||f==='green'){document.execCommand('styleWithCSS',false,true);document.execCommand('foreColor',false,f==='red'?'#ff6b6b':'#4fd18b');}
+  else if(FMT_COL[f]){document.execCommand('styleWithCSS',false,true);document.execCommand('foreColor',false,FMT_COL[f]);}
   else if(f==='big'){document.execCommand('styleWithCSS',false,false);document.execCommand('fontSize',false,'7');
     fmtRte.querySelectorAll('font[size="7"]').forEach(x=>{const sp=document.createElement('span');sp.style.fontSize='22px';sp.append(...x.childNodes);x.replaceWith(sp);});}
   else if(f==='clear'){document.execCommand('removeFormat');
@@ -3316,8 +3354,9 @@ function renderSkillPage(){
   <div class="card dp-lvcard" style="--c:${s.color}"><div class="eyebrow">Mon niveau</div>${skillLevels(s)}</div>
   <div class="grid dp-grid" style="--c:${s.color}">
     <section class="card s12"><div class="ch"><h2>Mon parcours</h2><div class="acts"><span class="sub">${done}/${s.stages.length} étapes · ${notes} résumé${notes>1?'s':''}</span></div></div>
-      ${s.stages.length?`<div class="path dp-path">${s.stages.map((x,i)=>`<div class="stg ${x.done?'on':''} ${noteOpen.has(s.id+'|'+i)?'open':''}"><div class="stg-row"><button class="pt ${x.done?'on':''} ${i===ci?'cur':''} ${i===s.stages.length-1&&s.stages.length>2?'boss':''}" onclick="toggleStage('${s.id}',${i})"><i></i><span>${esc(x.t)}</span></button><button class="nbtn ${x.note?'has':''}" onclick="toggleNote(this,'${s.id}',${i})">${x.note?'📝 Résumé':'✎ Résumé'}</button><button class="dp-x" title="Retirer l'étape" onclick="delStage(${i})">×</button></div><div class="note">${rte(`data-sk="${s.id}" data-i="${i}"`,x.note,'Ton résumé de cette étape : notions clés, ce que tu as compris, liens utiles... Tu peux coller un texte avec sa mise en forme.')}</div></div>`).join('')}</div>`:'<div class="sub" style="margin-bottom:10px">Découpe cette compétence en étapes : chapitres, cours, projets. La dernière devient le boss final.</div>'}
+      ${s.stages.length?`<div class="path dp-path">${s.stages.map((x,i)=>`<div class="stg ${x.done?'on':''} ${noteOpen.has(s.id+'|'+i)?'open':''}"><div class="stg-row"><button class="pt ${x.done?'on':''} ${i===ci?'cur':''} ${i===s.stages.length-1&&s.stages.length>2?'boss':''}" onclick="toggleStage('${s.id}',${i})"><i></i><span>${esc(x.t)}</span></button><button class="nbtn ${x.note?'has':''}" onclick="toggleNote(this,'${s.id}',${i})">${x.note?'📝 Résumé':'✎ Résumé'}</button><button class="dp-x" title="Retirer l'étape" onclick="delStage(${i})">×</button></div><div class="note"><div class="note-h"><span class="note-n">${i===s.stages.length-1&&s.stages.length>2?'👑':i+1}</span><span>Résumé · ${esc(x.t)}</span></div>${rte(`data-sk="${s.id}" data-i="${i}"`,x.note,'Ton résumé de cette étape : notions clés, ce que tu as compris, liens utiles... Tu peux coller un texte avec sa mise en forme.')}</div></div>`).join('')}</div>`:'<div class="sub" style="margin-bottom:10px">Découpe cette compétence en étapes : chapitres, cours, projets. La dernière devient le boss final.</div>'}
       <input class="dp-add" placeholder="+ Ajouter une étape puis Entrée" onkeydown="if(event.key==='Enter'&&this.value.trim())addStage(this.value.trim())"></section>
+    <section class="card s12 dp-synth"><div class="eyebrow">🎓 Synthèse finale</div>${rte(`data-synth="${s.id}"`,s.synth,"Ta synthèse de toute la compétence : l'essentiel à retenir, comment les étapes s'articulent, ce que tu saurais expliquer à quelqu'un.",'dp-ta')}</section>
     <div class="s12 dp-side ${goals.length?'three':''}">
       <section class="card"><div class="eyebrow">Pourquoi j'apprends ça</div>${rte('data-sf="desc"',s.desc,'Ce que tu veux savoir faire, et pourquoi ça compte pour ton avenir.','dp-ta')}</section>
       <section class="card"><div class="ch"><h2>Ressources</h2></div>
@@ -3325,7 +3364,6 @@ function renderSkillPage(){
         <input class="dp-add" placeholder="+ Titre | lien, puis Entrée" onkeydown="if(event.key==='Enter'&&this.value.trim())addRes(this.value.trim())"></section>
       ${goals.length?`<section class="card"><div class="ch"><h2>Objectifs liés</h2></div>${goals.map(g=>`<button class="dp-glink" onclick="openGoal('${g.id}')"><span>${esc(g.title)}</span><b>${g.progress} %</b></button>`).join('')}</section>`:''}
     </div>
-    <section class="card s12 dp-synth"><div class="eyebrow">🎓 Synthèse finale</div>${rte(`data-synth="${s.id}"`,s.synth,"Ta synthèse de toute la compétence : l'essentiel à retenir, comment les étapes s'articulent, ce que tu saurais expliquer à quelqu'un.",'dp-ta')}</section>
   </div>`;
   $('#skillPage').querySelectorAll('.dp-ta,.stg.open textarea').forEach(autoNote);
 }
@@ -4524,11 +4562,13 @@ function cloudAdopt(data){
   if(clEditing()||anyOverlay())CL.needRender=true;else{CL.needRender=false;try{refreshCur();}catch(e){}}
 }
 async function cloudSyncState(){
-  const uidc=clSession.user.id,enc=encodeURIComponent(uidc);
+  const uidc=clSession.user.id,enc=encodeURIComponent(uidc),e0=clEdits;
   const rows=await clRest('dash_state?select=data,rev&user_id=eq.'+enc);
   const remote=rows&&rows[0]||null,localRev=+localStorage.getItem(CL_REV)||0,dirty=localStorage.getItem(CL_DIRTY)==='1';
   const local=JSON.parse(JSON.stringify(S));
-  const done=async(data,rev)=>{localStorage.setItem(CL_REV,String(rev));localStorage.removeItem(CL_DIRTY);try{await kvPut('cloudBase',data);}catch(e){}};
+  /* Modifié ici pendant l'attente du serveur (ex. objectifs du jour enregistrés à ce moment-là) : on ne remplace rien, on recommence avec la version à jour */
+  const changed=()=>clEdits!==e0;
+  const done=async(data,rev)=>{localStorage.setItem(CL_REV,String(rev));localStorage.removeItem(CL_DIRTY);try{await kvPut('cloudBase',data);}catch(e){}if(changed()){localStorage.setItem(CL_DIRTY,'1');cloudSchedule(1500);}};
   if(!remote){
     /* Personne n'a encore rien envoyé : seul l'ordinateur crée la copie en ligne, jamais un téléphone vide */
     if(isWeb()){CL.err='empty';return;}
@@ -4545,11 +4585,12 @@ async function cloudSyncState(){
   if(!localRev){
     /* Premier passage de cet appareil : on prend la version en ligne, en gardant une copie de ce qu'il y avait ici */
     try{if(!isWeb()&&(S.goals.length||S.dreams.length))localStorage.setItem(CL_BACKUP,localStorage.getItem(KEY)||'');}catch(e){}
-    cloudAdopt(remote.data);return done(remote.data,remote.rev);
+    if(changed())return cloudSyncState();cloudAdopt(remote.data);return done(remote.data,remote.rev);
   }
-  if(!dirty){cloudAdopt(remote.data);return done(remote.data,remote.rev);}
+  if(!dirty){if(changed())return cloudSyncState();cloudAdopt(remote.data);return done(remote.data,remote.rev);}
   /* Modifié des deux côtés : fusion */
   let base=null;try{base=await kvGet('cloudBase');}catch(e){}
+  if(changed())return cloudSyncState();
   const merged=merge3(base,local,remote.data);
   cloudAdopt(merged);
   const up=await clRest('dash_state?user_id=eq.'+enc+'&rev=eq.'+remote.rev,{method:'PATCH',prefer:'return=representation',body:{data:merged,rev:remote.rev+1,updated_at:new Date().toISOString()}});
