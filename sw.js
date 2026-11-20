@@ -1,8 +1,8 @@
 /* Dashboard en ligne : la page est demandée au réseau d'abord (toujours la dernière version),
    avec une copie gardée pour ouvrir l'appli sans connexion. Rien d'autre n'est mis en cache
    (ni les données du compte, ni les images externes). */
-const CACHE = 'dashboard-v5'; // v5 : notifications sur le téléphone
-const FILES = ['dashboard.html', 'manifest.webmanifest', 'icon-192.png', 'icon-v3-192.png', 'icon-v3-512.png', 'icon-v3-maskable-192.png', 'icon-v3-maskable-512.png', 'icon-v3-apple-180.png'];
+const CACHE = 'dashboard-v6'; // v6 : icônes regroupées (seulement les icon-v3)
+const FILES = ['dashboard.html', 'manifest.webmanifest', 'icon-v3-192.png', 'icon-v3-512.png', 'icon-v3-maskable-192.png', 'icon-v3-maskable-512.png', 'icon-v3-apple-180.png'];
 
 /* Notifications envoyées par la fonction Supabase « dashboard-notifs » (même appli fermée) */
 self.addEventListener('push', e => {

@@ -1634,7 +1634,7 @@ body.web .win-only{display:none!important}
 </div>
 
 <nav id="nav">
-  <div class="logo"><img src="icon-192.png" alt="" class="logo-ic">Dashboard</div>
+  <div class="logo"><img src="icon-v3-192.png" alt="" class="logo-ic">Dashboard</div>
   <div class="tabs" id="tabs"></div>
   <div class="navr">
     <span class="focuspill" id="focuspill" onclick="openDrawer()"></span><span class="focuspill" id="chronopill" title="Cliquer pour arrêter le chrono" onclick="stopChrono()"></span>
@@ -4721,7 +4721,7 @@ function cloudGate(resume){
   if($('.cl-gate'))return true;
   document.body.classList.add('cl-locked');
   const g=document.createElement('div');g.className='cl-gate';
-  g.innerHTML=`<div class="cl-box"><img class="cl-logo-img" src="icon-192.png" alt=""><h2 class="display">Dashboard</h2><p class="sub">Espace privé. Connecte-toi pour continuer.</p>${loginFormHtml()}</div>`;
+  g.innerHTML=`<div class="cl-box"><img class="cl-logo-img" src="icon-v3-192.png" alt=""><h2 class="display">Dashboard</h2><p class="sub">Espace privé. Connecte-toi pour continuer.</p>${loginFormHtml()}</div>`;
   document.body.appendChild(g);setTimeout(()=>{const i=g.querySelector('input');if(i)i.focus();},50);
   return true;
 }
