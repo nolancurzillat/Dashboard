@@ -623,6 +623,64 @@ button.cy-m:hover{transform:translateY(-3px);border-color:var(--c)}
 .sring.empty{border-radius:50%;border:8px solid rgba(255,255,255,.07)}.sring.empty b{color:var(--muted)}
 .cy-ring{display:flex;justify-content:center;margin:6px 0 2px}.cy-m .cy-l{text-align:center}
 .cy-head .sring-v b{font-size:var(--fs,30px)}
+/* ===== Finance : état du marché et stratégie ===== */
+.fg-main{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:28px;align-items:start}
+.fg-gw{position:relative;max-width:300px;margin:6px auto 0}
+.fg-g{display:block;width:100%;height:auto}
+.fg-v{text-align:center;margin-top:2px}
+.fg-v b{display:block;font-size:44px;line-height:1;font-weight:800;color:var(--z);font-variant-numeric:tabular-nums}
+.fg-v span{display:block;margin-top:4px;font-size:14px;font-weight:700;color:var(--z)}
+.fg-cmp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:22px}
+.fg-c{text-align:center;padding:8px 4px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.fg-c span{display:block;font-size:10.5px;color:var(--muted);line-height:1.2}
+.fg-c b{display:block;font-size:19px;margin:3px 0 1px;font-variant-numeric:tabular-nums}
+.fg-c small{display:block;font-size:10.5px;color:var(--muted);line-height:1.15}
+.fg-sph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+.fg-sph .sub{text-transform:none;letter-spacing:0;font-weight:500}
+.fg-sp{display:block;width:100%;height:90px;border-radius:10px;background:rgba(0,0,0,.15)}
+.fg-subs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;margin-top:14px}
+.fg-s{display:flex;align-items:center;gap:9px;font-size:13px;padding:5px 0;border-bottom:1px solid var(--line);cursor:default}
+.fg-s i{width:9px;height:9px;border-radius:50%;flex:none}
+.fg-s span{flex:1;min-width:0;color:rgba(255,255,255,.82)}
+.fg-s b{font-size:12px;font-weight:700;white-space:nowrap}
+.fg-rule{margin-top:18px;padding:14px 18px;border-radius:14px;background:color-mix(in srgb,var(--z) 10%,transparent);border:1px solid color-mix(in srgb,var(--z) 40%,transparent)}
+.fg-rule>b{display:block;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--z);margin-bottom:4px}
+.fg-rule .rte{min-height:0;padding:0;border:0;background:none;font-size:15px}
+.mk-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:22px}
+.mk-t{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border-radius:16px;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--line)}
+.mk-t>span{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.mk-t>b{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+.mk-t em{font-style:normal;font-size:13px}.mk-t small{font-size:12px;color:var(--muted)}
+.mk-t .up{color:var(--green)}.mk-t .down{color:var(--red)}.mk-t .inv .up{color:var(--red)}.mk-t .inv .down{color:var(--green)}
+.mk-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.mk-src{margin-top:14px;font-size:11.5px;color:var(--muted)}
+.sg-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.sg-f{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.sg-f>span{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.sg-f>b{font-size:22px}.sg-f select{width:100%}
+.sg-prof{display:flex;flex-wrap:wrap;gap:6px}
+.sg-prof button{padding:6px 11px;border-radius:999px;border:1px solid var(--line2);background:none;color:var(--muted);font:inherit;font-size:13px;cursor:pointer}
+.sg-prof button.on{background:color-mix(in srgb,var(--pc) 22%,transparent);border-color:var(--pc);color:#fff;font-weight:600}
+.sg-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-bottom:18px}
+.sg-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.sg-col{min-width:0}
+.sg-h{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sg-ta{min-height:110px;font-size:15px;line-height:1.65}
+.al-list{display:flex;flex-direction:column;gap:9px}
+.al-r{display:grid;grid-template-columns:150px minmax(0,1fr) 120px 50px;gap:10px;align-items:center;font-size:13.5px}
+.al-l{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.al-l i,.al-edit i{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.al-bar{position:relative;height:10px;border-radius:99px;background:rgba(255,255,255,.07)}
+.al-bar>i{position:absolute;left:0;top:0;bottom:0;border-radius:99px}
+.al-tg{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.6)}
+.al-v{font-variant-numeric:tabular-nums;font-weight:600}.al-v small{color:var(--muted);font-weight:500}
+.al-d{text-align:right;font-weight:700;font-size:12.5px}.al-d.ok{color:var(--green)}.al-d.off{color:var(--gold2)}
+.al-warn{text-transform:none;letter-spacing:0;font-weight:600;color:var(--gold2)}
+.al-edit{display:flex;flex-direction:column;gap:8px}
+.al-edit label{display:grid;grid-template-columns:minmax(0,1fr) 90px 20px;align-items:center;gap:10px}
+.al-edit label span{display:flex;align-items:center;gap:8px}
+.al-sum{margin-top:12px;text-align:right;font-size:15px}
+@media(max-width:900px){.fg-main,.sg-grid,.sg-grid.three,.sg-top{grid-template-columns:1fr}.fg-subs{grid-template-columns:1fr}.al-r{grid-template-columns:110px minmax(0,1fr) 90px 44px}}
 /* Finance : calendrier des relevés */
 .fy-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .fy-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:14px}
@@ -1751,6 +1809,8 @@ body.web .win-only{display:none!important}
   <div class="ph"><div><div class="eyebrow">Le chemin vers la liberté</div><h1 class="display">Liberté financière</h1></div><div class="acts"><button class="btn" onclick="finSettings()">Réglages</button></div></div>
   <div id="finHero"></div>
   <div class="grid" id="finViz" style="margin-bottom:18px"></div>
+  <div class="grid" style="margin-bottom:18px"><section class="card s12 mk-card" id="finMarket"></section></div>
+  <div class="grid" style="margin-bottom:18px"><section class="card s12 sg-card" id="finStrat"></section></div>
   <div class="grid" style="margin-bottom:18px"><section class="card s12" id="finYear"></section></div>
   <div class="grid" style="margin-bottom:18px"><section class="card s12" id="finPos"></section></div>
   <div class="grid" style="margin-bottom:18px"><section class="card s12 aff-card" id="finAfford"></section></div>
@@ -3671,7 +3731,7 @@ function renderFinance(){
   $('#ss').oninput=()=>upd(true);$('#sr').oninput=()=>upd(true);upd(false);
   $('#finHist').innerHTML=f.history.length?[...f.history].reverse().map(h=>`<div class="kv" onclick="updateWealth('${h.date}')"><span>${fmtDate(h.date)}</span><b>${eur(h.value)}</b></div>`).join(''):`<div class="empty">Aucun relevé.<br><button class="btn primary" onclick="updateWealth()">Faire mon relevé</button></div>`;
   $('#simStart').textContent=`Départ : ${eur(cur)} (${curWealth().src})`;
-  renderFinViz();renderFinYear();renderAfford();renderPositions();renderRoad();
+  renderFinViz();paintMarket();paintStrategy();mktFetch(false);renderFinYear();renderAfford();renderPositions();renderRoad();
 }
 /* Calendrier annuel des relevés : un relevé par mois (le premier du mois), évolution par rapport au mois d'avant, case verte ou rouge */
 let finYearOff=0;
@@ -3693,6 +3753,123 @@ function renderFinYear(){
     <div class="fy-grid">${cells}</div>`;
 }
 
+/* ================= État du marché =================
+   Sources gratuites, sans clé, lues directement depuis l'appli : CNN (Fear & Greed + ses 7 indicateurs, S&P 500, VIX),
+   alternative.me (Fear & Greed des cryptos), CoinGecko (Bitcoin), Frankfurter (euro / dollar, Banque centrale européenne).
+   Gardé 30 min sur cet appareil (pas synchronisé : ce sont des données publiques). */
+const MKT_KEY='dash_market',MKT_TTL=30*60*1000;
+let MKT=null,mktBusy=false;try{MKT=JSON.parse(localStorage.getItem(MKT_KEY)||'null');}catch(e){}
+const FG_ZONES=[[25,'Peur extrême','#e5484d'],[45,'Peur','#f28c38'],[55,'Neutre','#c9b458'],[75,'Avidité','#86d36e'],[101,'Avidité extrême','#1e8f4e']];
+const fgZone=v=>FG_ZONES.find(z=>v<z[0])||FG_ZONES[4];
+const FG_RATING={'extreme fear':0,'fear':1,'neutral':2,'greed':3,'extreme greed':4};
+const fgRate=r=>FG_ZONES[FG_RATING[String(r||'').toLowerCase()]??2];
+const FG_SUBS=[['market_momentum_sp500','Élan du marché','S&P 500 par rapport à sa moyenne sur 125 jours'],['stock_price_strength','Force des actions','Actions au plus haut sur 52 semaines, contre celles au plus bas'],['stock_price_breadth','Ampleur du marché','Volume des actions en hausse, contre celles en baisse'],['put_call_options','Options put / call','Achats de protections à la baisse, contre paris à la hausse'],['market_volatility_vix','Volatilité (VIX)','La « peur » mesurée sur les options du S&P 500'],['safe_haven_demand','Valeurs refuges','Actions contre obligations d’État sur 20 jours'],['junk_bond_demand','Obligations risquées','Écart de rendement entre obligations risquées et sûres']];
+async function mktFetch(force){
+  if(mktBusy)return;if(!force&&MKT&&Date.now()-MKT.at<MKT_TTL)return;
+  mktBusy=true;paintMarket();
+  const get=async u=>{const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.json();};
+  const [cnn,cr,btc,fx]=await Promise.allSettled([get('https://production.dataviz.cnn.io/index/fearandgreed/graphdata'),get('https://api.alternative.me/fng/?limit=8'),get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur,usd&include_24hr_change=true'),get('https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD')]);
+  const o={at:Date.now()},old=MKT||{};
+  const last=a=>a&&a.length?a[a.length-1]:null;
+  if(cnn.status==='fulfilled'){const j=cnn.value,f=j.fear_and_greed||{};
+    o.fg={v:+f.score,r:f.rating,d:+f.previous_close,w:+f.previous_1_week,m:+f.previous_1_month,y:+f.previous_1_year,t:f.timestamp};
+    o.fgHist=((j.fear_and_greed_historical||{}).data||[]).map(p=>[p.x,Math.round(p.y*10)/10]);
+    o.subs=FG_SUBS.map(([k])=>{const s=j[k]||{};return {k,score:+s.score,r:s.rating,v:(last(s.data)||{}).y};});
+    const sp=(j.market_momentum_sp500||{}).data||[],sp125=last((j.market_momentum_sp125||{}).data||[]),vix=(j.market_volatility_vix||{}).data||[],vix50=last((j.market_volatility_vix_50||{}).data||[]),pc=last((j.put_call_options||{}).data||[]);
+    /* Séance précédente = dernier point d'un autre jour (la source répète parfois le jour en cours) */
+    const prevDay=a=>{const l=a[a.length-1],d=new Date(l.x).toDateString();for(let i=a.length-2;i>=0;i--)if(new Date(a[i].x).toDateString()!==d&&a[i].y!==l.y)return a[i].y;return null;};
+    if(sp.length>1)o.spx={v:sp[sp.length-1].y,p:prevDay(sp),ma:sp125&&sp125.y,t:sp[sp.length-1].x,h:sp.slice(-130).map(p=>p.y)};
+    if(vix.length>1)o.vix={v:vix[vix.length-1].y,p:prevDay(vix),ma:vix50&&vix50.y};
+    if(pc)o.pc=pc.y;
+  }else{['fg','fgHist','subs','spx','vix','pc'].forEach(k=>{if(old[k])o[k]=old[k];});o.cnnErr=true;}
+  if(cr.status==='fulfilled'){const d=cr.value.data||[];if(d[0])o.cfg={v:+d[0].value,p:d[1]?+d[1].value:null,w:d[7]?+d[7].value:null};}else if(old.cfg)o.cfg=old.cfg;
+  if(btc.status==='fulfilled'&&btc.value.bitcoin){const b=btc.value.bitcoin;o.btc={eur:b.eur,usd:b.usd,ch:b.eur_24h_change};}else if(old.btc)o.btc=old.btc;
+  if(fx.status==='fulfilled'&&fx.value.rates){o.fx={v:fx.value.rates.USD,d:fx.value.date};}else if(old.fx)o.fx=old.fx;
+  MKT=o;try{localStorage.setItem(MKT_KEY,JSON.stringify(o));}catch(e){}
+  mktBusy=false;paintMarket();
+}
+/* Jauge en demi-cercle : 5 zones colorées et une aiguille */
+function fgGauge(v){
+  const W=260,H=150,cx=130,cy=135,R=110,w=22,ang=p=>Math.PI*(1-p/100),pt=(p,r)=>[cx+r*Math.cos(ang(p)),cy-r*Math.sin(ang(p))];
+  let lo=0;const arcs=FG_ZONES.map(([hi,,c])=>{const a=lo,b=Math.min(100,hi);lo=b;const [x1,y1]=pt(a+.6,R),[x2,y2]=pt(b-.6,R);return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}A${R} ${R} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="${c}" stroke-width="${w}" fill="none" opacity="${v>=a&&v<b+(b===100?1:0)?1:.28}"/>`;}).join('');
+  const [nx,ny]=pt(v,R-w/2-14);
+  return `<svg class="fg-g" viewBox="0 0 ${W} ${H}" aria-hidden="true">${arcs}<line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#fff"/></svg>`;
+}
+/* Courbe de l'année : fond coloré par zones, sans texte dans le dessin */
+function fgSpark(h){
+  if(!h||h.length<2)return '';const W=600,H=90,X=i=>i/(h.length-1)*W,Y=v=>H-v/100*H;
+  const bands=FG_ZONES.map(([hi,,c],i)=>{const lo=i?FG_ZONES[i-1][0]:0,top=Math.min(100,hi);return `<rect x="0" y="${Y(top).toFixed(1)}" width="${W}" height="${(Y(lo)-Y(top)).toFixed(1)}" fill="${c}" opacity=".08"/>`;}).join('');
+  const d=h.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(p[1]).toFixed(1)).join('');
+  return `<svg class="fg-sp" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${bands}<path d="${d}" fill="none" stroke="#f2cd78" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;
+}
+const mktPct=(a,b)=>b?(a-b)/b*100:null;
+const mktFmtP=p=>p==null||!isFinite(p)?'':`<span class="${p>=0?'up':'down'}">${p>=0?'▲ +':'▼ '}${Math.abs(p).toLocaleString('fr-FR',{maximumFractionDigits:2})} %</span>`;
+const mktNum=(v,d=2)=>v==null||!isFinite(v)?'—':(+v).toLocaleString('fr-FR',{maximumFractionDigits:d,minimumFractionDigits:d>0?Math.min(d,2):0});
+const vixWord=v=>v<15?['Marché calme','#43b97f']:v<20?['Normal','#86d36e']:v<25?['Un peu nerveux','#c9b458']:v<35?['Tendu','#f28c38']:['Panique','#e5484d'];
+function paintMarket(){
+  const el=$('#finMarket');if(!el)return;const M=MKT;
+  const head=`<div class="ch"><h2>État du marché</h2><div class="acts"><span class="sub">${mktBusy?'Mise à jour…':M?`mis à jour à ${new Date(M.at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`:''}</span><button class="btn sm" ${mktBusy?'disabled':''} onclick="mktFetch(true)">↻ Actualiser</button></div></div>`;
+  if(!M||!M.fg&&!M.cfg){el.innerHTML=head+`<div class="empty">${mktBusy?'Chargement des indicateurs du marché…':'Impossible de charger les données du marché pour le moment (connexion ?).'}</div>`;return;}
+  const tiles=[];
+  if(M.spx){const p=mktPct(M.spx.v,M.spx.p),ma=mktPct(M.spx.v,M.spx.ma);tiles.push(`<div class="mk-t"><span>S&amp;P 500</span><b>${mktNum(M.spx.v,0)}</b><em>${mktFmtP(p)} <small>sur la séance</small></em><small>${ma==null?'':`${ma>=0?'Au-dessus':'En dessous'} de sa moyenne 125 j (${ma>=0?'+':''}${mktNum(ma,1)} %)`}</small></div>`);}
+  if(M.vix){const [w,c]=vixWord(M.vix.v);tiles.push(`<div class="mk-t"><span>VIX · la peur des marchés</span><b style="color:${c}">${mktNum(M.vix.v,1)}</b><em class="inv">${mktFmtP(mktPct(M.vix.v,M.vix.p))}</em><small><i class="mk-dot" style="background:${c}"></i>${w}${M.vix.ma?` · moyenne 50 j : ${mktNum(M.vix.ma,1)}`:''}</small></div>`);}
+  if(M.cfg){const z=fgZone(M.cfg.v);tiles.push(`<div class="mk-t"><span>Fear &amp; Greed crypto</span><b style="color:${z[2]}">${M.cfg.v}</b><em>${M.cfg.p!=null?`hier ${M.cfg.p}`:''}${M.cfg.w!=null?` · il y a 7 j ${M.cfg.w}`:''}</em><small><i class="mk-dot" style="background:${z[2]}"></i>${z[1]}</small></div>`);}
+  if(M.btc)tiles.push(`<div class="mk-t"><span>Bitcoin</span><b>${eur(M.btc.eur)}</b><em>${mktFmtP(M.btc.ch)} <small>sur 24 h</small></em><small>${mktNum(M.btc.usd,0)} $</small></div>`);
+  if(M.fx)tiles.push(`<div class="mk-t"><span>Euro / dollar</span><b>${mktNum(M.fx.v,4)}</b><em><small>1 € = ${mktNum(M.fx.v,3)} $</small></em><small>cours BCE du ${fmtDate(M.fx.d,{day:'numeric',month:'long'})}</small></div>`);
+  if(M.pc!=null)tiles.push(`<div class="mk-t"><span>Ratio put / call</span><b>${mktNum(M.pc,2)}</b><em><small>${M.pc>1?'beaucoup de protections achetées':M.pc<.7?'beaucoup de paris à la hausse':'équilibré'}</small></em><small>au-dessus de 1 : prudence</small></div>`);
+  let main='';
+  if(M.fg&&isFinite(M.fg.v)){const v=Math.round(M.fg.v),z=fgZone(v);
+    const cmp=[['Hier',M.fg.d],['Il y a 1 semaine',M.fg.w],['Il y a 1 mois',M.fg.m],['Il y a 1 an',M.fg.y]].filter(x=>isFinite(x[1])).map(([l,x])=>{const zz=fgZone(x);return `<div class="fg-c"><span>${l}</span><b style="color:${zz[2]}">${Math.round(x)}</b><small>${zz[1]}</small></div>`;}).join('');
+    const subs=(M.subs||[]).filter(s=>s.r).map(s=>{const info=FG_SUBS.find(x=>x[0]===s.k),z2=fgRate(s.r);return `<div class="fg-s" title="${esc(info[2])}"><i style="background:${z2[2]}"></i><span>${esc(info[1])}</span><b style="color:${z2[2]}">${z2[1]}</b></div>`;}).join('');
+    /* Rappel de ta propre règle quand le marché est dans une zone extrême */
+    const st=finStrat(),rule=v<=25&&plainText(st.fear).trim()?['En peur extrême, ta règle :',st.fear]:v>=75&&plainText(st.greed).trim()?['En avidité extrême, ta règle :',st.greed]:null;
+    main=`<div class="fg-main" style="--z:${z[2]}"><div class="fg-left"><div class="eyebrow">Fear &amp; Greed Index · actions américaines</div><div class="fg-gw">${fgGauge(v)}<div class="fg-v"><b>${v}</b><span>${z[1]}</span></div></div><div class="fg-cmp">${cmp}</div></div>
+      <div class="fg-right"><div class="fg-sph"><span>Sur un an</span><span class="sub">0 = peur extrême · 100 = avidité extrême</span></div>${fgSpark(M.fgHist)}<div class="fg-subs">${subs}</div></div></div>
+      ${rule?`<div class="fg-rule" style="--z:${z[2]}"><b>${rule[0]}</b><div class="rte ro">${richHtml(rule[1])}</div></div>`:''}`;}
+  else if(M.cnnErr)main=`<p class="sub">L'indice Fear &amp; Greed de CNN n'a pas pu être chargé. Réessaie avec « Actualiser ».</p>`;
+  el.innerHTML=head+main+(tiles.length?`<div class="mk-tiles">${tiles.join('')}</div>`:'')+`<p class="mk-src">Sources : CNN Business, alternative.me, CoinGecko, Banque centrale européenne. Données publiques, parfois en léger différé. Ce ne sont pas des conseils d'investissement.</p>`;
+}
+
+/* ================= Ma stratégie financière =================
+   S.finance.strategy = { horizon, profile, alloc:{catégorie:% cible}, rules, fear, greed, text } (synchronisé avec le reste) */
+const STRAT_DEF={horizon:'',profile:'',alloc:{},rules:'',fear:'',greed:'',text:''};
+function finStrat(){const f=S.finance;if(!f.strategy||typeof f.strategy!=='object')f.strategy={};const s=f.strategy;for(const k in STRAT_DEF)if(s[k]==null)s[k]=k==='alloc'?{}:'';return s;}
+const STRAT_HOR=[['','À choisir'],['court','Moins de 3 ans'],['moyen','3 à 8 ans'],['long','8 à 15 ans'],['tres','Plus de 15 ans']];
+const STRAT_PROF=[['','À choisir','#8d97a6'],['prudent','Prudent','#5aa2e6'],['equilibre','Équilibré','#43b97f'],['dynamique','Dynamique','#f2a33a'],['offensif','Offensif','#e5695c']];
+function paintStrategy(){
+  const el=$('#finStrat');if(!el)return;const st=finStrat(),f=S.finance;
+  const hp=withParts(),last=hp[hp.length-1],tot=last?Object.values(last.parts).reduce((a,v)=>a+(+v||0),0):0;
+  const cats=S.finance.cats.filter(c=>c.on||(st.alloc[c.k]>0)||(last&&last.parts[c.k]>0));
+  const sumT=Object.values(st.alloc).reduce((a,v)=>a+(+v||0),0);
+  const rows=cats.map(c=>{const t=+st.alloc[c.k]||0,a=tot?(last.parts[c.k]||0)/tot*100:0;if(!t&&!a)return '';const d=a-t,ok=!t||Math.abs(d)<=5;
+    return `<div class="al-r"><span class="al-l"><i style="background:${c.c}"></i>${esc(c.l)}</span><div class="al-bar"><i style="width:${Math.min(100,a)}%;background:${c.c}"></i>${t?`<b class="al-tg" style="left:${Math.min(100,t)}%" title="Cible : ${t} %"></b>`:''}</div><span class="al-v">${Math.round(a)} %${t?` <small>cible ${t} %</small>`:''}</span><span class="al-d ${ok?'ok':'off'}">${t?(Math.abs(d)<.5?'✓':`${d>0?'+':''}${Math.round(d)} pt`):''}</span></div>`;}).join('');
+  const prof=STRAT_PROF.find(p=>p[0]===st.profile)||STRAT_PROF[0];
+  el.innerHTML=`<div class="ch"><h2>Ma stratégie financière</h2><div class="acts"><button class="btn sm" onclick="editAlloc()">Répartition cible</button></div></div>
+    <div class="sg-top">
+      <label class="sg-f"><span>Horizon de placement</span><select onchange="finStrat().horizon=this.value;save()">${STRAT_HOR.map(([k,l])=>`<option value="${k}" ${st.horizon===k?'selected':''}>${l}</option>`).join('')}</select></label>
+      <div class="sg-f"><span>Profil de risque</span><div class="sg-prof">${STRAT_PROF.slice(1).map(([k,l,c])=>`<button class="${st.profile===k?'on':''}" style="--pc:${c}" onclick="finStrat().profile=finStrat().profile==='${k}'?'':'${k}';save();paintStrategy()">${l}</button>`).join('')}</div></div>
+      <div class="sg-f"><span>J'investis chaque mois</span><b class="gold">${eur(f.sim.save)}</b><small class="sub">réglé dans le simulateur</small></div>
+    </div>
+    <div class="sg-grid">
+      <div class="sg-col"><div class="sg-h">Répartition actuelle et cible${sumT&&sumT!==100?` <span class="al-warn">cibles : ${sumT} % au total</span>`:''}</div>
+        ${rows?`<div class="al-list">${rows}</div><p class="sub" style="margin-top:8px">${last?`D'après ton relevé du ${fmtDate(last.date,{day:'numeric',month:'long'})}.`:''} ${sumT?'Le trait blanc marque ta cible.':'Clique sur « Répartition cible » pour fixer la part visée de chaque placement.'}</p>`:`<p class="sub">Fais un relevé détaillé et fixe ta répartition cible pour comparer.</p>`}</div>
+      <div class="sg-col"><div class="sg-h">Ma stratégie en quelques lignes</div>${rte('data-fst="text"',st.text,'Ex : Je construis un portefeuille d’ETF monde en DCA chaque mois, je garde 6 mois de dépenses de côté et je ne touche pas à mes placements avant 15 ans.','sg-ta')}</div>
+    </div>
+    <div class="sg-grid three">
+      <div class="sg-col"><div class="sg-h">Mes règles d'investissement</div>${rte('data-fst="rules"',st.rules,'Ex : Jamais plus de 10 % sur une seule action. Je n’investis que dans ce que je comprends. Je ne vends jamais sur un coup de panique.','sg-ta')}</div>
+      <div class="sg-col" style="--z:#e5484d"><div class="sg-h"><i class="mk-dot" style="background:#e5484d"></i>Quand le marché a très peur</div>${rte('data-fst="fear"',st.fear,'Ce que je fais en peur extrême. Ex : je garde mon plan, et je renforce un peu si j’ai des liquidités.','sg-ta')}</div>
+      <div class="sg-col"><div class="sg-h"><i class="mk-dot" style="background:#1e8f4e"></i>Quand le marché s'emballe</div>${rte('data-fst="greed"',st.greed,'Ce que je fais en avidité extrême. Ex : je ne poursuis pas la hausse, je rééquilibre vers ma cible.','sg-ta')}</div>
+    </div>
+    <p class="mk-src">Ces deux dernières règles s'affichent dans « État du marché » quand l'indice Fear &amp; Greed entre en zone extrême.</p>`;
+}
+document.addEventListener('input',e=>{const t=e.target;if(!t.dataset||!t.dataset.fst)return;finStrat()[t.dataset.fst]=fieldVal(t);save();});
+function editAlloc(){
+  const st=finStrat(),cats=S.finance.cats.filter(c=>c.on||st.alloc[c.k]>0);
+  modal({title:'Ma répartition cible',fields:[{key:'info',label:'',type:'html',html:`<p class="sub" style="margin:-4px 0 12px">La part de ton patrimoine que tu vises pour chaque placement. Le total devrait faire 100 %.</p><div class="al-edit">${cats.map(c=>`<label><span><i style="background:${c.c}"></i>${esc(c.l)}</span><input type="number" min="0" max="100" step="1" class="al-in" data-k="${c.k}" value="${st.alloc[c.k]||''}" placeholder="0"><b>%</b></label>`).join('')}</div><div class="al-sum">Total : <b id="alSum"></b></div>`}],
+    onSave:(v,ov)=>{const a={};ov.querySelectorAll('.al-in').forEach(i=>{const n=Math.max(0,Math.min(100,Math.round(+i.value||0)));if(n)a[i.dataset.k]=n;});st.alloc=a;save();paintStrategy();}});
+  const ov=[...document.querySelectorAll('.overlay')].pop(),sum=()=>{const s=[...ov.querySelectorAll('.al-in')].reduce((a,i)=>a+(+i.value||0),0);const b=ov.querySelector('#alSum');b.textContent=s+' %';b.style.color=s===100?'var(--green)':'var(--gold2)';};
+  ov.addEventListener('input',sum);sum();
+}
 /* ================= Le chemin vers la liberté (visuel, peu de chiffres) ================= */
 const ROAD_STEPS=[[10,'Premier palier','🌱'],[25,'Un quart du chemin','⛰️'],[50,'Mi-chemin','🧭'],[75,'Ligne droite','🚀'],[100,'Liberté financière','🏝️']];
 function renderRoad(){
