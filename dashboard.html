@@ -665,7 +665,7 @@ button.cy-m:hover{transform:translateY(-3px);border-color:var(--c)}
 .sg-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .sg-col{min-width:0}
 .sg-h{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.sg-ta{min-height:110px;font-size:15px;line-height:1.65}
+.sg-ta{min-height:180px;font-size:15.5px;line-height:1.7}.sg-box{padding:16px 18px;border-radius:16px;background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.012));border:1px solid var(--line);border-top:3px solid var(--z)}.sg-box .sg-grid{margin:0}.sg-box .rte.sg-ta{display:block;min-height:200px;font-size:15.5px;line-height:1.7;background:transparent;border:1px solid transparent;padding:8px 10px;margin:0 -10px;width:calc(100% + 20px);color:rgba(255,255,255,.92)}.sg-box .rte.sg-ta:hover{border-color:var(--line)}.sg-box .rte.sg-ta:focus{background:rgba(0,0,0,.2);border-color:color-mix(in srgb,var(--z) 50%,transparent)}
 .al-list{display:flex;flex-direction:column;gap:9px}
 .al-r{display:grid;grid-template-columns:150px minmax(0,1fr) 120px 50px;gap:10px;align-items:center;font-size:13.5px}
 .al-l{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -3822,7 +3822,7 @@ function paintMarket(){
     const cmp=[['Hier',M.fg.d],['Il y a 1 semaine',M.fg.w],['Il y a 1 mois',M.fg.m],['Il y a 1 an',M.fg.y]].filter(x=>isFinite(x[1])).map(([l,x])=>{const zz=fgZone(x);return `<div class="fg-c"><span>${l}</span><b style="color:${zz[2]}">${Math.round(x)}</b><small>${zz[1]}</small></div>`;}).join('');
     const subs=(M.subs||[]).filter(s=>s.r).map(s=>{const info=FG_SUBS.find(x=>x[0]===s.k),z2=fgRate(s.r);return `<div class="fg-s" title="${esc(info[2])}"><i style="background:${z2[2]}"></i><span>${esc(info[1])}</span><b style="color:${z2[2]}">${z2[1]}</b></div>`;}).join('');
     /* Rappel de ta propre règle quand le marché est dans une zone extrême */
-    const st=finStrat(),rule=v<=25&&plainText(st.fear).trim()?['En peur extrême, ta règle :',st.fear]:v>=75&&plainText(st.greed).trim()?['En avidité extrême, ta règle :',st.greed]:null;
+    const rule=null;
     main=`<div class="fg-main" style="--z:${z[2]}"><div class="fg-left"><div class="eyebrow">Fear &amp; Greed Index · actions américaines</div><div class="fg-gw">${fgGauge(v)}<div class="fg-v"><b>${v}</b><span>${z[1]}</span></div></div><div class="fg-cmp">${cmp}</div></div>
       <div class="fg-right"><div class="fg-sph"><span>Sur un an</span><span class="sub">0 = peur extrême · 100 = avidité extrême</span></div>${fgSpark(M.fgHist)}<div class="fg-subs">${subs}</div></div></div>
       ${rule?`<div class="fg-rule" style="--z:${z[2]}"><b>${rule[0]}</b><div class="rte ro">${richHtml(rule[1])}</div></div>`:''}`;}
@@ -3836,31 +3836,14 @@ const STRAT_DEF={horizon:'',profile:'',alloc:{},rules:'',fear:'',greed:'',text:'
 function finStrat(){const f=S.finance;if(!f.strategy||typeof f.strategy!=='object')f.strategy={};const s=f.strategy;for(const k in STRAT_DEF)if(s[k]==null)s[k]=k==='alloc'?{}:'';return s;}
 const STRAT_HOR=[['','À choisir'],['court','Moins de 3 ans'],['moyen','3 à 8 ans'],['long','8 à 15 ans'],['tres','Plus de 15 ans']];
 const STRAT_PROF=[['','À choisir','#8d97a6'],['prudent','Prudent','#5aa2e6'],['equilibre','Équilibré','#43b97f'],['dynamique','Dynamique','#f2a33a'],['offensif','Offensif','#e5695c']];
+/* Deux cadres de texte libre, enregistrés pendant la frappe (les anciens réglages restent dans les données, sans être affichés) */
 function paintStrategy(){
-  const el=$('#finStrat');if(!el)return;const st=finStrat(),f=S.finance;
-  const hp=withParts(),last=hp[hp.length-1],tot=last?Object.values(last.parts).reduce((a,v)=>a+(+v||0),0):0;
-  const cats=S.finance.cats.filter(c=>c.on||(st.alloc[c.k]>0)||(last&&last.parts[c.k]>0));
-  const sumT=Object.values(st.alloc).reduce((a,v)=>a+(+v||0),0);
-  const rows=cats.map(c=>{const t=+st.alloc[c.k]||0,a=tot?(last.parts[c.k]||0)/tot*100:0;if(!t&&!a)return '';const d=a-t,ok=!t||Math.abs(d)<=5;
-    return `<div class="al-r"><span class="al-l"><i style="background:${c.c}"></i>${esc(c.l)}</span><div class="al-bar"><i style="width:${Math.min(100,a)}%;background:${c.c}"></i>${t?`<b class="al-tg" style="left:${Math.min(100,t)}%" title="Cible : ${t} %"></b>`:''}</div><span class="al-v">${Math.round(a)} %${t?` <small>cible ${t} %</small>`:''}</span><span class="al-d ${ok?'ok':'off'}">${t?(Math.abs(d)<.5?'✓':`${d>0?'+':''}${Math.round(d)} pt`):''}</span></div>`;}).join('');
-  const prof=STRAT_PROF.find(p=>p[0]===st.profile)||STRAT_PROF[0];
-  el.innerHTML=`<div class="ch"><h2>Ma stratégie financière</h2><div class="acts"><button class="btn sm" onclick="editAlloc()">Répartition cible</button></div></div>
-    <div class="sg-top">
-      <label class="sg-f"><span>Horizon de placement</span><select onchange="finStrat().horizon=this.value;save()">${STRAT_HOR.map(([k,l])=>`<option value="${k}" ${st.horizon===k?'selected':''}>${l}</option>`).join('')}</select></label>
-      <div class="sg-f"><span>Profil de risque</span><div class="sg-prof">${STRAT_PROF.slice(1).map(([k,l,c])=>`<button class="${st.profile===k?'on':''}" style="--pc:${c}" onclick="finStrat().profile=finStrat().profile==='${k}'?'':'${k}';save();paintStrategy()">${l}</button>`).join('')}</div></div>
-      <div class="sg-f"><span>J'investis chaque mois</span><b class="gold">${eur(f.sim.save)}</b><small class="sub">réglé dans le simulateur</small></div>
-    </div>
+  const el=$('#finStrat');if(!el)return;const st=finStrat();
+  el.innerHTML=`<div class="ch"><h2>Ma stratégie financière</h2><div class="acts"><span class="sub">enregistré automatiquement</span></div></div>
     <div class="sg-grid">
-      <div class="sg-col"><div class="sg-h">Répartition actuelle et cible${sumT&&sumT!==100?` <span class="al-warn">cibles : ${sumT} % au total</span>`:''}</div>
-        ${rows?`<div class="al-list">${rows}</div><p class="sub" style="margin-top:8px">${last?`D'après ton relevé du ${fmtDate(last.date,{day:'numeric',month:'long'})}.`:''} ${sumT?'Le trait blanc marque ta cible.':'Clique sur « Répartition cible » pour fixer la part visée de chaque placement.'}</p>`:`<p class="sub">Fais un relevé détaillé et fixe ta répartition cible pour comparer.</p>`}</div>
-      <div class="sg-col"><div class="sg-h">Ma stratégie en quelques lignes</div>${rte('data-fst="text"',st.text,'Ex : Je construis un portefeuille d’ETF monde en DCA chaque mois, je garde 6 mois de dépenses de côté et je ne touche pas à mes placements avant 15 ans.','sg-ta')}</div>
-    </div>
-    <div class="sg-grid three">
-      <div class="sg-col"><div class="sg-h">Mes règles d'investissement</div>${rte('data-fst="rules"',st.rules,'Ex : Jamais plus de 10 % sur une seule action. Je n’investis que dans ce que je comprends. Je ne vends jamais sur un coup de panique.','sg-ta')}</div>
-      <div class="sg-col" style="--z:#e5484d"><div class="sg-h"><i class="mk-dot" style="background:#e5484d"></i>Quand le marché a très peur</div>${rte('data-fst="fear"',st.fear,'Ce que je fais en peur extrême. Ex : je garde mon plan, et je renforce un peu si j’ai des liquidités.','sg-ta')}</div>
-      <div class="sg-col"><div class="sg-h"><i class="mk-dot" style="background:#1e8f4e"></i>Quand le marché s'emballe</div>${rte('data-fst="greed"',st.greed,'Ce que je fais en avidité extrême. Ex : je ne poursuis pas la hausse, je rééquilibre vers ma cible.','sg-ta')}</div>
-    </div>
-    <p class="mk-src">Ces deux dernières règles s'affichent dans « État du marché » quand l'indice Fear &amp; Greed entre en zone extrême.</p>`;
+      <div class="sg-col sg-box" style="--z:#5aa2ff"><div class="sg-h"><i class="mk-dot" style="background:#5aa2ff"></i>Stratégie d'investissement</div>${rte('data-fst="text"',st.text,'Comment tu investis : sur quoi, combien chaque mois, sur quelle durée, comment tu répartis ton argent.','sg-ta')}</div>
+      <div class="sg-col sg-box" style="--z:#f5a623"><div class="sg-h"><i class="mk-dot" style="background:#f5a623"></i>Règles financières</div>${rte('data-fst="rules"',st.rules,'Les règles que tu t’engages à respecter. Ex : je garde 6 mois de dépenses de côté, je ne vends jamais sur un coup de panique, jamais plus de 10 % sur une seule action.','sg-ta')}</div>
+    </div>`;
 }
 document.addEventListener('input',e=>{const t=e.target;if(!t.dataset||!t.dataset.fst)return;finStrat()[t.dataset.fst]=fieldVal(t);save();});
 function editAlloc(){
