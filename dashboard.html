@@ -1376,6 +1376,22 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .fit-contain .rv-img,.sp-img.fit-contain{background-size:contain!important;background-color:#05070b}
 .pos-top .rv-img,.sp-img.pos-top{background-position:center top!important}
 .pos-bottom .rv-img,.sp-img.pos-bottom{background-position:center bottom!important}
+/* ===== Finance : bandeau « Ma liberté financière » ===== 
+   L'image remplit tout le cadre : une version floutée en fond, l'image nette à droite qui se fond dans le texte (plus de bandes noires) */
+.fhero{height:440px;background:#070a1b;box-shadow:0 24px 60px rgba(4,6,30,.35)}
+.fhero .rv{background:#070a1b}
+.fhero .rv::before{content:"";position:absolute;inset:-40px;background:var(--rvimg) center/cover no-repeat;filter:blur(36px) brightness(.5) saturate(1.25);transform:scale(1.05)}
+.fhero .rv-img{left:34%;background-size:cover!important;background-position:center!important;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 32%);mask-image:linear-gradient(90deg,transparent 0,#000 32%)}
+.fhero .rv.noimg::before{display:none}
+.fhero .fh-ov{background:linear-gradient(90deg,rgba(6,9,30,.92) 0%,rgba(6,9,30,.72) 34%,rgba(6,9,30,.15) 62%,transparent 80%),linear-gradient(transparent 55%,rgba(6,9,30,.55));padding:40px 44px;justify-content:center}
+.fhero .fh-ov h2{max-width:620px}
+.fhero .fh-ov .thin{height:8px;max-width:520px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:4px}
+.fhero .fh-ov .thin i{border-radius:99px;background:linear-gradient(90deg,#c9963a,#f2cd78);box-shadow:0 0 14px rgba(242,205,120,.6);min-width:8px}
+@media(max-width:700px){
+  .fhero{height:auto}
+  .fhero .rv-img{left:0;-webkit-mask-image:linear-gradient(180deg,#000 30%,transparent 95%);mask-image:linear-gradient(180deg,#000 30%,transparent 95%)}
+  .fhero .fh-ov{background:linear-gradient(180deg,transparent 0,rgba(6,9,30,.55) 40%,rgba(6,9,30,.9) 100%);padding:150px 18px 22px;justify-content:flex-end}
+}
 /* Accueil : mosaïque de 3 cadres photo (un grand à gauche, deux petits empilés à droite) */
 .hmosaic{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:12px;align-self:stretch;min-height:0}
 .hmosaic .hframe{grid-row:1/3;min-height:0!important}
