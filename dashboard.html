@@ -1298,6 +1298,9 @@ body.web .paste-or{display:none}
 .rte p,.rte div{margin:0 0 .35em}
 .rte ul,.rte ol{margin:.2em 0 .5em 1.4em;white-space:normal}
 .rte b,.rte strong{font-weight:700}
+/* Soulignage : trait plus épais quand le texte souligné est en gras */
+.rte u{text-underline-offset:.16em}
+.rte b u,.rte strong u,.rte u:has(b,strong),.rte [style*="font-weight"] u,.rte u[style*="font-weight"]{text-decoration-thickness:.13em}
 .dp-synth .rte{min-height:160px}
 .dp-path .note .rte{min-height:90px}
 /* Résumés d'Apprentissage : une vraie fiche de lecture, aérée et lisible */
