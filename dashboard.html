@@ -637,6 +637,11 @@ button.cy-m:hover{transform:translateY(-3px);border-color:var(--c)}
 .fg-c small{display:block;font-size:10.5px;color:var(--muted);line-height:1.15}
 .fg-sph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
 .fg-sph .sub{text-transform:none;letter-spacing:0;font-weight:500}
+.fg-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.fg-stats>div{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.fg-stats b{font-size:24px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.fg-stats span{font-size:12.5px;color:var(--muted);line-height:1.35}
+@media(max-width:900px){.fg-stats{grid-template-columns:1fr}}
 .fg-sp{display:block;width:100%;height:90px;border-radius:10px;background:rgba(0,0,0,.15)}
 .fg-subs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;margin-top:14px}
 .fg-s{display:flex;align-items:center;gap:9px;font-size:13px;padding:5px 0;border-bottom:1px solid var(--line);cursor:default}
@@ -3795,7 +3800,17 @@ function fgGauge(v){
   const [nx,ny]=pt(v,R-w/2-14);
   return `<svg class="fg-g" viewBox="0 0 ${W} ${H}" aria-hidden="true">${arcs}<line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#fff"/></svg>`;
 }
-/* Courbe de l'année : fond coloré par zones, sans texte dans le dessin */
+/* À la place de la courbe : la peur extrême en chiffres (utile pour une stratégie « j'investis quand le marché a très peur ») */
+function fgFearStats(h,v){
+  if(!h||!h.length)return '';
+  const ex=p=>p[1]<25,days=x=>Math.max(0,Math.round((Date.now()-x)/864e5));
+  let run=0;for(let i=h.length-1;i>=0&&ex(h[i]);i--)run++;
+  const n=h.filter(ex).length,lastEx=[...h].reverse().find(ex),low=h.reduce((a,p)=>p[1]<a[1]?p:a,h[0]);
+  const d=x=>new Date(x).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+  const first=run?`<b style="color:#e5484d">${run} séance${run>1?'s':''}</b><span>en peur extrême d'affilée, en ce moment</span>`
+    :lastEx?`<b>${days(lastEx[0])} j</b><span>depuis la dernière peur extrême (${d(lastEx[0])})</span>`:`<b>—</b><span>aucune peur extrême sur un an</span>`;
+  return `<div class="fg-stats"><div>${first}</div><div><b>${n}</b><span>séance${n>1?'s':''} en peur extrême sur les 12 derniers mois</span></div><div><b style="color:${fgZone(low[1])[2]}">${Math.round(low[1])}</b><span>plus bas de l'année, le ${d(low[0])}</span></div></div>`;
+}/* Courbe de l'année : fond coloré par zones, sans texte dans le dessin */
 function fgSpark(h){
   if(!h||h.length<2)return '';const W=600,H=90,X=i=>i/(h.length-1)*W,Y=v=>H-v/100*H;
   const bands=FG_ZONES.map(([hi,,c],i)=>{const lo=i?FG_ZONES[i-1][0]:0,top=Math.min(100,hi);return `<rect x="0" y="${Y(top).toFixed(1)}" width="${W}" height="${(Y(lo)-Y(top)).toFixed(1)}" fill="${c}" opacity=".08"/>`;}).join('');
@@ -3824,7 +3839,7 @@ function paintMarket(){
     /* Rappel de ta propre règle quand le marché est dans une zone extrême */
     const rule=null;
     main=`<div class="fg-main" style="--z:${z[2]}"><div class="fg-left"><div class="eyebrow">Fear &amp; Greed Index · actions américaines</div><div class="fg-gw">${fgGauge(v)}<div class="fg-v"><b>${v}</b><span>${z[1]}</span></div></div><div class="fg-cmp">${cmp}</div></div>
-      <div class="fg-right"><div class="fg-sph"><span>Sur un an</span><span class="sub">0 = peur extrême · 100 = avidité extrême</span></div>${fgSpark(M.fgHist)}<div class="fg-subs">${subs}</div></div></div>
+      <div class="fg-right">${fgFearStats(M.fgHist,v)}<div class="fg-sph"><span>Ce qui compose l'indice</span></div><div class="fg-subs">${subs}</div></div></div>
       ${rule?`<div class="fg-rule" style="--z:${z[2]}"><b>${rule[0]}</b><div class="rte ro">${richHtml(rule[1])}</div></div>`:''}`;}
   else if(M.cnnErr)main=`<p class="sub">L'indice Fear &amp; Greed de CNN n'a pas pu être chargé. Réessaie avec « Actualiser ».</p>`;
   el.innerHTML=head+main+(tiles.length?`<div class="mk-tiles">${tiles.join('')}</div>`:'')+`<p class="mk-src">Sources : CNN Business, alternative.me, CoinGecko, Banque centrale européenne. Données publiques, parfois en léger différé. Ce ne sont pas des conseils d'investissement.</p>`;
