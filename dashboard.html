@@ -3264,6 +3264,9 @@ function seedSkills(St){
 }
 /* Résumés par étape et synthèse finale : enregistrés pendant la frappe, sans redessiner la page */
 const noteOpen=new Set(),synthOpen=new Set();
+/* Ouvre tous les résumés d'un parcours, ou les ferme tous s'ils sont déjà tous ouverts */
+function toggleAllNotes(sid){const s=S.skills.find(x=>x.id===sid);if(!s)return;const ks=s.stages.map((x,i)=>sid+'|'+i);const all=ks.every(k=>noteOpen.has(k));
+  ks.forEach(k=>all?noteOpen.delete(k):noteOpen.add(k));const y=scrollY;renderSkillPage();scrollTo(0,y);}
 function toggleNote(btn,sid,i){const k=sid+'|'+i,box=btn.closest('.stg');if(noteOpen.has(k)){noteOpen.delete(k);box.classList.remove('open');}else{noteOpen.add(k);box.classList.add('open');const t=box.querySelector('textarea,.rte');autoNote(t);t.focus();}}
 const autoNote=t=>{if(!t||t.tagName!=='TEXTAREA')return;t.style.height='auto';t.style.height=Math.max(90,t.scrollHeight+4)+'px';};
 
@@ -3478,7 +3481,7 @@ function renderSkillPage(){
   <div class="dp-track" style="--c:${s.color}"><div class="dp-fill" style="width:${pct}%"></div>${s.stages.map((x,i)=>`<span class="dp-tick ${x.done?'on':''}" style="left:${s.stages.length>1?i/(s.stages.length-1)*100:50}%" title="${esc(x.t)}"><i></i><b>${i===s.stages.length-1&&s.stages.length>2?'👑':i+1}</b></span>`).join('')}</div>
   <div class="card dp-lvcard" style="--c:${s.color}"><div class="eyebrow">Mon niveau</div>${skillLevels(s)}</div>
   <div class="grid dp-grid" style="--c:${s.color}">
-    <section class="card s12"><div class="ch"><h2>Mon parcours</h2><div class="acts"><span class="sub">${done}/${s.stages.length} étapes · ${notes} résumé${notes>1?'s':''}</span></div></div>
+    <section class="card s12"><div class="ch"><h2>Mon parcours</h2><div class="acts"><span class="sub">${done}/${s.stages.length} étapes · ${notes} résumé${notes>1?'s':''}</span>${s.stages.length?`<button class="btn ghost sm" onclick="toggleAllNotes('${s.id}')">${s.stages.every((x,i)=>noteOpen.has(s.id+'|'+i))?'Fermer tous les résumés':'Afficher tous les résumés'}</button>`:''}</div></div>
       ${s.stages.length?`<div class="path dp-path">${s.stages.map((x,i)=>`<div class="stg ${x.done?'on':''} ${noteOpen.has(s.id+'|'+i)?'open':''}"><div class="stg-row"><div class="pt ${x.done?'on':''} ${i===ci?'cur':''} ${i===s.stages.length-1&&s.stages.length>2?'boss':''}"><button class="pt-dot" title="${x.done?'Décocher':'Cocher'} l'étape" onclick="toggleStage('${s.id}',${i})"><i></i></button><button class="pt-t" title="Ouvrir le résumé" style="${STAGE_COL[x.col]?'color:'+STAGE_COL[x.col]:''}" onclick="toggleNote(this,'${s.id}',${i})">${esc(x.t)}</button></div><button class="nbtn ${x.note?'has':''}" onclick="toggleNote(this,'${s.id}',${i})">${x.note?'📝 Résumé':'✎ Résumé'}</button></div><div class="note">${rte(`data-sk="${s.id}" data-i="${i}"`,x.note,'Ton résumé de cette étape : notions clés, ce que tu as compris, liens utiles... Tu peux coller un texte avec sa mise en forme.')}</div></div>`).join('')}</div>`:'<div class="sub" style="margin-bottom:10px">Découpe cette compétence en étapes : chapitres, cours, projets. La dernière devient le boss final. Ajoute-les dans ⚙ Réglages.</div>'}
       </section>
     <section class="card s12 dp-synth"><div class="eyebrow">🎓 Synthèse finale</div>${rte(`data-synth="${s.id}"`,s.synth,"Ta synthèse de toute la compétence : l'essentiel à retenir, comment les étapes s'articulent, ce que tu saurais expliquer à quelqu'un.",'dp-ta')}</section>
