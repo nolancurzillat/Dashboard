@@ -583,6 +583,7 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .fmtbar.on{display:flex}
 .fmtbar button{min-width:32px;height:32px;display:grid;place-items:center;border:0;border-radius:8px;background:none;color:#fff;font:inherit;font-size:15px;cursor:pointer}
 .fmtbar button:hover{background:rgba(255,255,255,.1)}.fmtbar sup{font-size:10px}
+.fmtbar button.act{background:rgba(90,162,255,.28);box-shadow:inset 0 0 0 1px rgba(90,162,255,.6)}
 .fmtbar .fdot{width:16px;height:16px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.15)}
 .fmtbar .fsep{width:1px;height:20px;background:var(--line2);margin:0 3px}
 /* Thèmes des livres */
@@ -3346,17 +3347,41 @@ function fmtPlace(){const s=getSelection();if(!s.rangeCount||s.isCollapsed){FMT.
   const r=s.getRangeAt(0),n=r.commonAncestorContainer,el=(n.nodeType===1?n:n.parentNode).closest('.rte[contenteditable="true"]');
   if(!el||el.closest('.ro')){FMT.classList.remove('on');return;}
   fmtRte=el;const b=r.getBoundingClientRect();FMT.classList.add('on');const w=FMT.offsetWidth,h=FMT.offsetHeight;
-  FMT.style.left=Math.max(8,Math.min(innerWidth-w-8,b.left+b.width/2-w/2))+'px';FMT.style.top=(b.top-h-10<8?b.bottom+10:b.top-h-10)+'px';}
+  FMT.style.left=Math.max(8,Math.min(innerWidth-w-8,b.left+b.width/2-w/2))+'px';FMT.style.top=(b.top-h-10<8?b.bottom+10:b.top-h-10)+'px';
+  const bb=FMT.querySelector('[data-f="big"]'),big=fmtIsBig();bb.classList.toggle('act',big);bb.title=big?'Revenir à la taille normale':'Plus grand';}
+/* Le texte sélectionné est-il déjà agrandi ? (tous ses caractères plus grands que la taille normale de la zone) */
+function fmtIsBig(){const s=getSelection();if(!s.rangeCount||!fmtRte)return false;const r=s.getRangeAt(0),base=parseFloat(getComputedStyle(fmtRte).fontSize);
+  const w=document.createTreeWalker(fmtRte,NodeFilter.SHOW_TEXT);let n,seen=0;
+  while((n=w.nextNode())){if(!n.nodeValue.trim()||!r.intersectsNode(n))continue;seen++;if(parseFloat(getComputedStyle(n.parentNode).fontSize)<=base+1)return false;}
+  return seen>0;}
+/* Remet la sélection à la taille normale sans toucher au reste (gras, couleurs) ni au texte agrandi autour */
+function fmtNormalSize(){document.execCommand('styleWithCSS',false,false);document.execCommand('fontSize',false,'7');
+  const keep=[];
+  fmtRte.querySelectorAll('font[size="7"]').forEach(F=>{
+    for(let A=F.parentNode;A&&A!==fmtRte;A=A.parentNode){if(!A.style||!A.style.fontSize)continue;
+      const r=document.createRange();r.setStart(A,0);r.setEndBefore(F);const pre=r.extractContents();
+      const r2=document.createRange();r2.setStartAfter(F);r2.setEnd(A,A.childNodes.length);const post=r2.extractContents();
+      const has=fr=>fr.textContent||fr.querySelector('br');
+      if(has(pre)){const a=A.cloneNode(false);a.append(pre);A.before(a);}
+      if(has(post)){const a=A.cloneNode(false);a.append(post);A.after(a);}
+      A.style.fontSize='';}
+    F.querySelectorAll('[style]').forEach(x=>{x.style.fontSize='';});
+    keep.push(...F.childNodes);F.replaceWith(...F.childNodes);});
+  fmtRte.querySelectorAll('span').forEach(x=>{if(!x.style.length)x.replaceWith(...x.childNodes);});
+  fmtRte.normalize();
+  const k=keep.filter(x=>x.isConnected);if(k.length){const r=document.createRange();r.setStartBefore(k[0]);r.setEndAfter(k[k.length-1]);const s=getSelection();s.removeAllRanges();s.addRange(r);}}
 document.addEventListener('selectionchange',()=>setTimeout(fmtPlace,0));
 addEventListener('scroll',()=>{if(FMT.classList.contains('on'))setTimeout(fmtPlace,0);},true);
 FMT.addEventListener('mousedown',e=>e.preventDefault());
 FMT.addEventListener('click',e=>{const b=e.target.closest('button');fmtPlace();if(!b||!fmtRte)return;const f=b.dataset.f;
   if(f==='bold'||f==='italic'){document.execCommand('styleWithCSS',false,false);document.execCommand(f);}
   else if(FMT_COL[f]){document.execCommand('styleWithCSS',false,true);document.execCommand('foreColor',false,FMT_COL[f]);}
+  else if(f==='big'&&fmtIsBig())fmtNormalSize();
   else if(f==='big'){document.execCommand('styleWithCSS',false,false);document.execCommand('fontSize',false,'7');
     fmtRte.querySelectorAll('font[size="7"]').forEach(x=>{const sp=document.createElement('span');sp.style.fontSize='22px';sp.append(...x.childNodes);x.replaceWith(sp);});}
   else if(f==='clear'){document.execCommand('removeFormat');
     const s=getSelection();if(s.rangeCount){const r=s.getRangeAt(0);fmtRte.querySelectorAll('span[style],b,i,strong,em').forEach(x=>{if(r.intersectsNode(x)&&r.toString().includes(x.textContent))x.replaceWith(...x.childNodes);});}}
+  fmtRte.querySelectorAll('[style]').forEach(x=>{if(!x.style.length)x.removeAttribute('style');});
   fmtRte.dispatchEvent(new Event('input',{bubbles:true}));setTimeout(fmtPlace,0);});
 
 document.addEventListener('input',e=>{const t=e.target;
