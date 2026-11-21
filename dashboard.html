@@ -1438,7 +1438,9 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .sp-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(242,205,120,.45),transparent)}
 /* Fenêtre « Temps de travail » */
 .modal.ti{background:#0d1119;max-width:860px;width:min(860px,94vw)}
-.modal.ti .ti-row{grid-template-columns:minmax(0,2.2fr) minmax(0,1fr) 64px 38px}
+.modal.ti .ti-row{grid-template-columns:minmax(0,2.2fr) minmax(0,1fr) 64px 38px 30px}
+.ti-del{width:30px;height:28px;display:grid;place-items:center;border:1px solid transparent;border-radius:8px;background:none;color:var(--muted);font-size:14px;cursor:pointer;opacity:.55}
+.ti-row:hover .ti-del{opacity:1}.ti-del:hover{border-color:rgba(255,107,107,.5);background:rgba(255,107,107,.12)}
 .ti-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .ti-h h3{margin:2px 0 0}
 .ti-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:rgba(242,205,120,.12);border:1px solid rgba(242,205,120,.3)}
@@ -3112,7 +3114,7 @@ function openTimeInfo(id){
   /* D'où vient le temps « propre » d'un objectif : son chrono à lui, ou un raccourci « Sessions de travail » de l'accueil relié à lui */
   const c0=S.chrono,srcRows=(x,d)=>{const out=[],col=CATS[x.cat]||'#888';
     const direct=(x.totalSec||0)+(c0&&c0.gid===x.id?chronoSec():0);
-    if(direct>=30)out.push({l:'Chrono de l’objectif',t:direct,d,c:col,src:1});
+    if(direct>=30)out.push({l:'Chrono de l’objectif',t:direct,d,c:col,src:1,chrono:x.id});
     S.spaces.filter(s=>s.goal===x.id).forEach(s=>{const t=(s.totalSec||0)+(c0&&c0.sid===s.id?chronoSec():0);if(t>=30)out.push({l:`Session de travail « ${s.name} »`,t,d,c:col,src:1});});
     return out;};
   const rows=[],seen=new Set([g.id]);
@@ -3129,7 +3131,7 @@ function openTimeInfo(id){
     <div class="ti-h"><span class="ti-ic">⏱</span><div><div class="eyebrow">Temps de travail</div><h3>${esc(g.title)}</h3></div></div>
     ${run?`<div class="ti-run">● Session en cours${runName&&runName!==g.title?` sur « ${esc(runName)} »`:''} : <b>${hms(chronoSec())}</b></div>`:''}
     <div class="ti-kpis"><div><b>${fmtDur(total)}</b><span>au total</span></div><div><b>${fmtDur(sumSince(mo))}</b><span>ce mois-ci</span></div><div><b>${fmtDur(sumSince(wk))}</b><span>7 derniers jours</span></div><div><b>${fmtDur(days[today]||0)}</b><span>aujourd'hui</span></div></div>
-    ${total>=30?`<h4 class="ti-t">Répartition</h4><div class="ti-split"><div class="ti-pie">${tiPie(pieParts,total)}</div><div class="ti-rows">${rows.map(r=>`<div class="ti-row ${r.src?'src':''}" style="--d:${r.d};--c:${r.c}" ${r.id?`role="button" onclick="this.closest('.overlay').remove();openGoal('${r.id}')"`:''}><span class="ti-l">${esc(r.l)}</span><span class="ti-bar"><i style="width:${total?Math.max(2,r.t/total*100):0}%"></i></span><b>${fmtDur(r.t)}</b><small>${total?Math.round(r.t/total*100):0} %</small></div>`).join('')}</div></div>
+    ${total>=30?`<h4 class="ti-t">Répartition</h4><div class="ti-split"><div class="ti-pie">${tiPie(pieParts,total)}</div><div class="ti-rows">${rows.map(r=>`<div class="ti-row ${r.src?'src':''}" style="--d:${r.d};--c:${r.c}" ${r.id?`role="button" onclick="this.closest('.overlay').remove();openGoal('${r.id}')"`:''}><span class="ti-l">${esc(r.l)}</span><span class="ti-bar"><i style="width:${total?Math.max(2,r.t/total*100):0}%"></i></span><b>${fmtDur(r.t)}</b><small>${total?Math.round(r.t/total*100):0} %</small>${r.chrono?`<button class="ti-del" title="Supprimer le temps du chrono de cet objectif" onclick="event.stopPropagation();delGoalChrono('${r.chrono}','${g.id}',this)">🗑</button>`:''}</div>`).join('')}</div></div>
       <p class="sub">« Chrono de l’objectif » = sessions lancées depuis l'objectif ; « Session de travail » = sessions lancées depuis l'accueil. Le temps d'un sous-objectif comprend celui de ses propres sous-objectifs.</p>`:''}
     <h4 class="ti-t">14 derniers jours</h4>
     <div class="ti-days">${ds.map(x=>{const v=days[x.k]||0;return `<div class="ti-day ${x.k===today?'t':''}" title="${x.d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})} : ${fmtDur(v)}"><span><i style="height:${v?Math.max(4,v/mx*100):0}%"></i></span><small>${x.d.toLocaleDateString('fr-FR',{weekday:'narrow'})}</small></div>`;}).join('')}</div>
@@ -3137,6 +3139,16 @@ function openTimeInfo(id){
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
   ov.addEventListener('keydown',e=>{if(e.key==='Escape')ov.remove();});
   document.body.appendChild(ov);
+}
+/* Supprime tout le temps enregistré par le chrono d'un objectif (pas les sessions de travail de l'accueil ni les sous-objectifs) */
+function delGoalChrono(gid,openId,btn){
+  const x=S.goals.find(y=>y.id===gid);if(!x)return;
+  const run=S.chrono&&S.chrono.gid===gid,t=(x.totalSec||0)+(run?chronoSec():0);
+  if(!confirm(`Supprimer les ${fmtDur(t)} du chrono de « ${x.title} » ?${run?' La session en cours sera arrêtée.':''} Ce temps disparaîtra aussi des statistiques et du calendrier. C'est définitif.`))return;
+  if(run)S.chrono=null;
+  x.totalSec=0;x.days={};save();
+  const ov=btn&&btn.closest('.overlay');if(ov)ov.remove();
+  paintChrono(true);toast('Chrono supprimé.');openTimeInfo(openId);
 }
 /* Sessions activées dans les réglages de l'objectif (g.sessions) ; anciens objectifs : actif s'ils avaient déjà un chrono ou du temps */
 const goalSessionsOn=g=>g.sessions!==undefined?!!g.sessions:!!(g.timer||(g.totalSec||0)>0);
