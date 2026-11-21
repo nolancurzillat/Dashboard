@@ -3355,7 +3355,7 @@ document.addEventListener('paste',e=>{const t=e.target.closest&&e.target.closest
 const rte=(attrs,val,ph,cls='')=>`<div class="rte ${cls}" contenteditable="true" spellcheck="true" ${attrs} data-ph="${esc(ph)}">${richHtml(val)}</div>`;
 /* Barre de mise en forme : apparaît quand on sélectionne du texte dans une zone de texte enrichi (gras, italique, grand, rouge, vert, effacer) */
 const FMT=document.createElement('div');FMT.className='fmtbar';
-FMT.innerHTML=`<button data-f="bold" title="Gras (Ctrl+B)"><b>B</b></button><button data-f="italic" title="Italique (Ctrl+I)"><i>I</i></button><button data-f="big" title="Plus grand">A<sup>+</sup></button><span class="fsep"></span><button data-f="red" title="Rouge"><span class="fdot" style="background:#ff6b6b"></span></button><button data-f="green" title="Vert"><span class="fdot" style="background:#4fd18b"></span></button><button data-f="blue" title="Bleu (ex. finance)"><span class="fdot" style="background:#5aa2ff"></span></button><button data-f="orange" title="Jaune orangé (ex. technique, science)"><span class="fdot" style="background:#f5a623"></span></button><span class="fsep"></span><button data-f="clear" title="Enlever la mise en forme">✕</button>`;
+FMT.innerHTML=`<button data-f="bold" title="Gras (Ctrl+B)"><b>B</b></button><button data-f="italic" title="Italique (Ctrl+I)"><i>I</i></button><button data-f="underline" title="Souligné (Ctrl+U)"><u>S</u></button><button data-f="big" title="Plus grand">A<sup>+</sup></button><span class="fsep"></span><button data-f="red" title="Rouge"><span class="fdot" style="background:#ff6b6b"></span></button><button data-f="green" title="Vert"><span class="fdot" style="background:#4fd18b"></span></button><button data-f="blue" title="Bleu (ex. finance)"><span class="fdot" style="background:#5aa2ff"></span></button><button data-f="orange" title="Jaune orangé (ex. technique, science)"><span class="fdot" style="background:#f5a623"></span></button><span class="fsep"></span><button data-f="clear" title="Enlever la mise en forme">✕</button>`;
 document.body.appendChild(FMT);
 let fmtRte=null;const FMT_COL={red:'#ff6b6b',green:'#4fd18b',blue:'#5aa2ff',orange:'#f5a623'};
 function fmtPlace(){const s=getSelection();if(!s.rangeCount||s.isCollapsed){FMT.classList.remove('on');return;}
@@ -3389,13 +3389,13 @@ document.addEventListener('selectionchange',()=>setTimeout(fmtPlace,0));
 addEventListener('scroll',()=>{if(FMT.classList.contains('on'))setTimeout(fmtPlace,0);},true);
 FMT.addEventListener('mousedown',e=>e.preventDefault());
 FMT.addEventListener('click',e=>{const b=e.target.closest('button');fmtPlace();if(!b||!fmtRte)return;const f=b.dataset.f;
-  if(f==='bold'||f==='italic'){document.execCommand('styleWithCSS',false,false);document.execCommand(f);}
+  if(f==='bold'||f==='italic'||f==='underline'){document.execCommand('styleWithCSS',false,false);document.execCommand(f);}
   else if(FMT_COL[f]){document.execCommand('styleWithCSS',false,true);document.execCommand('foreColor',false,FMT_COL[f]);}
   else if(f==='big'&&fmtIsBig())fmtNormalSize();
   else if(f==='big'){document.execCommand('styleWithCSS',false,false);document.execCommand('fontSize',false,'7');
     fmtRte.querySelectorAll('font[size="7"]').forEach(x=>{const sp=document.createElement('span');sp.style.fontSize='22px';sp.append(...x.childNodes);x.replaceWith(sp);});}
   else if(f==='clear'){document.execCommand('removeFormat');
-    const s=getSelection();if(s.rangeCount){const r=s.getRangeAt(0);fmtRte.querySelectorAll('span[style],b,i,strong,em').forEach(x=>{if(r.intersectsNode(x)&&r.toString().includes(x.textContent))x.replaceWith(...x.childNodes);});}}
+    const s=getSelection();if(s.rangeCount){const r=s.getRangeAt(0);fmtRte.querySelectorAll('span[style],b,i,u,strong,em').forEach(x=>{if(r.intersectsNode(x)&&r.toString().includes(x.textContent))x.replaceWith(...x.childNodes);});}}
   fmtRte.querySelectorAll('[style]').forEach(x=>{if(!x.style.length)x.removeAttribute('style');});
   fmtRte.dispatchEvent(new Event('input',{bubbles:true}));setTimeout(fmtPlace,0);});
 
