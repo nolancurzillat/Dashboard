@@ -379,6 +379,33 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .hcal i.t{outline:2px solid var(--gold2)}
 .hcal i.f{opacity:.3;cursor:default}
 .hcal i.f:hover{outline:none}
+/* Calendrier Sport (page Habitudes) */
+.spleg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.spleg span{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:color-mix(in srgb,var(--sc) 14%,transparent);border:1px solid color-mix(in srgb,var(--sc) 45%,transparent);font-size:13px}
+.spleg span i{width:10px;height:10px;border-radius:50%;background:var(--sc)}
+.spleg span b{font-variant-numeric:tabular-nums}
+.spcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.spcal .w{font-size:11px;color:var(--muted);text-align:center;letter-spacing:.5px}
+.spcal button{position:relative;min-height:64px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);font:inherit;cursor:pointer;padding:6px 7px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;transition:border-color .15s,background .15s;overflow:hidden}
+.spcal button:hover:not(:disabled){border-color:var(--line2);background:rgba(255,255,255,.06)}
+.spcal button:disabled{opacity:.3;cursor:default}
+.spcal button.t{box-shadow:inset 0 0 0 2px var(--gold2)}
+.spcal button.has{background:var(--sbg);border-color:transparent}
+.spcal button .n{font-size:12.5px;font-weight:700}
+.spcal button.has .n{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.spcal button .tags{display:flex;flex-direction:column;gap:2px;width:100%}
+.spcal button .tags em{font-style:normal;font-size:11px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spcal .x{min-height:0}
+.spsum{margin-top:12px;font-size:13px;color:var(--muted)}
+.spop{position:fixed;z-index:9000;width:230px;padding:10px;border-radius:14px;background:rgba(14,18,30,.98);border:1px solid var(--line2);box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.spop h4{margin:2px 4px 8px;font-size:13px;font-weight:600;color:var(--muted)}
+.spop .opt{width:100%;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;border:1px solid transparent;background:none;color:var(--text);font:inherit;font-size:14px;cursor:pointer;text-align:left}
+.spop .opt:hover{background:rgba(255,255,255,.06)}
+.spop .opt i{width:12px;height:12px;border-radius:50%;background:var(--sc);flex:none}
+.spop .opt .ck{margin-left:auto;width:18px;height:18px;border-radius:6px;border:1.5px solid var(--line2);display:grid;place-items:center;font-size:12px;color:#0a0d12}
+.spop .opt.on{background:color-mix(in srgb,var(--sc) 16%,transparent);border-color:color-mix(in srgb,var(--sc) 45%,transparent)}
+.spop .opt.on .ck{background:var(--sc);border-color:var(--sc)}
+@media(max-width:640px){.spcal{gap:4px}.spcal button{min-height:48px;padding:4px}.spcal button .tags em{font-size:0;width:100%;height:5px;border-radius:3px;background:var(--sc)}}
 .heat{display:grid;grid-template-rows:repeat(7,13px);grid-auto-flow:column;grid-auto-columns:13px;gap:3px;margin-top:10px}
 .heat i{border-radius:3px;background:rgba(255,255,255,.06)}
 .heat i.on{background:var(--hc)}
@@ -1826,6 +1853,8 @@ body.web .win-only{display:none!important}
     <div class="ch" id="hhead"></div>
     <div id="htable"></div>
   </div>
+  <div class="sec-h"><h2 class="display">Sport</h2><div class="acts wnav" id="spnav"></div></div>
+  <div class="card" id="hsport"></div>
   <div class="sec-h"><h2 class="display">Mois par mois</h2><div class="acts wnav" id="heatnav"></div></div>
   <div class="heats" id="heats"></div>
   <div id="chalsec" style="margin-top:34px"></div>
@@ -2281,7 +2310,7 @@ function defaults(){
       {id:'sp-tech',name:'Étude Tech',sub:'Apprendre et construire',cover:'lib:falcon',items:[],focus:50,target:''},
       {id:'sp-mit',name:'MIT',sub:'Viser le meilleur',cover:'lib:mit-night',items:[],focus:50,target:''}
     ],
-    sport:{target:3,cover:'lib:run',sessions:[],records:[]}
+    sport:{target:3,cover:'lib:run',sessions:[],records:[],days:{}}
   };
 }
 function load(){
@@ -2307,6 +2336,8 @@ function load(){
     if(!Array.isArray(S.spaces)||!S.spaces.length)S.spaces=d.spaces;
     S.spaces.forEach(s=>{s.items=Array.isArray(s.items)?s.items:[];s.focus=+s.focus||0;});
     S.sport={...d.sport,...(o.sport||{})};for(const k of ['sessions','records'])if(!Array.isArray(S.sport[k]))S.sport[k]=[];
+    if(!S.sport.days||typeof S.sport.days!=='object'||Array.isArray(S.sport.days))S.sport.days={};
+    for(const k in S.sport.days){const v=S.sport.days[k];if(!Array.isArray(v)||!v.length)delete S.sport.days[k];}
     if(!Array.isArray(S.settings.libCats))S.settings.libCats=d.settings.libCats;
     /* Nouvelle bibliothèque d'images : on active tous les thèmes une fois */
     if(!S.settings.libV2){S.settings.libCats=Array.from(new Set(S.settings.libCats.concat(['finance','voyage','vie','tech','mit','etude','sport'])));S.settings.libV2=true;}
@@ -3679,7 +3710,7 @@ function paintHabitOrder(){
 }
 function moveHabit(a,b){if(a===b||b<0||b>=S.habits.length)return;const [h]=S.habits.splice(a,1);S.habits.splice(b,0,h);save();paintHabitOrder();}
 function renderHabits(){
-  renderChals();
+  renderChals();renderSportCal();
   const mon=addDays(monday(new Date()),hWeek*7),days=[...Array(7)].map((_,i)=>addDays(mon,i)),t=dk(),todayD=new Date();todayD.setHours(0,0,0,0);
   const doneT=S.habits.filter(h=>h.log[t]).length,r30=S.habits.length?S.habits.reduce((a,h)=>a+rate(h),0)/S.habits.length:0;
   const best=S.habits.reduce((m,h)=>Math.max(m,bestStreak(h)),0);
@@ -3718,6 +3749,54 @@ function renderHabits(){
      <div class="hcal">${['L','M','M','J','V','S','D'].map(x=>`<span class="w">${x}</span>`).join('')}${'<span></span>'.repeat(off)}${md.map(d=>{const k=dk(d);return d>todayD?`<i class="f">${d.getDate()}</i>`:`<i class="${h.log[k]?'on':missed(h,k,t)?'miss':''} ${k===t?'t':''} ${h.log[k]&&perfectDay(k)?'gold':''}" onclick="toggleHabit('${h.id}','${k}')" title="${d.toLocaleDateString('fr-FR')}">${d.getDate()}</i>`;}).join('')}</div>
      <div class="legend"><span>record ${bestStreak(h)} j d'affilée</span><span>${Object.keys(h.log).length} jours au total</span></div></div>`;}).join('');
 }
+/* ===== Calendrier Sport (page Habitudes) : un ou plusieurs sports par jour, chacun sa couleur ; un jour avec du sport coche l'habitude « Sport » ===== */
+const SPORT_KINDS=[['muscu','Musculation','#f5a623'],['boxe','Boxe','#ef5350'],['natation','Natation','#38bdf8'],['cardio','Cardio','#4fd18b'],['pushup','Pushup','#a78bfa']];
+const sportKind=k=>SPORT_KINDS.find(x=>x[0]===k);
+let spMonth=0;
+const sportDay=k=>(S.sport.days&&S.sport.days[k]||[]).filter(sportKind);
+function sportBg(ks){
+  if(ks.length===1)return sportKind(ks[0])[2];
+  const n=ks.length;return 'linear-gradient(135deg,'+ks.map((k,i)=>{const c=sportKind(k)[2];return `${c} ${i/n*100}%,${c} ${(i+1)/n*100}%`;}).join(',')+')';
+}
+/* L'habitude « Sport » suit le calendrier : cochée dès qu'un sport est noté ce jour-là, décochée s'il n'y en a plus */
+function sportSyncHabit(k){
+  const has=sportDay(k).length>0;let h=S.habits.find(x=>/sport/i.test(x.name));
+  if(!h&&has){h={id:uid(),name:'Sport',icon:'🏋️',color:'#f5a623',target:3,log:{},created:k};S.habits.push(h);toast('Habitude « Sport » créée : elle se coche toute seule avec le calendrier.');}
+  if(!h)return;
+  if(has){if(!h.log[k]){h.log[k]=true;if(k===dk())xpPop(XP_RULES.habit,h.name);}}else delete h.log[k];
+}
+function toggleSportDay(k,s){
+  S.sport.days=S.sport.days||{};const a=sportDay(k),i=a.indexOf(s);
+  if(i>=0)a.splice(i,1);else a.push(s);
+  a.sort((x,y)=>SPORT_KINDS.findIndex(z=>z[0]===x)-SPORT_KINDS.findIndex(z=>z[0]===y));
+  if(a.length)S.sport.days[k]=a;else delete S.sport.days[k];
+  sportSyncHabit(k);save();renderHabits();paintSportPop(k);
+}
+function renderSportCal(){
+  const todayD=new Date();todayD.setHours(0,0,0,0);const t=dk();
+  const ms=new Date(todayD.getFullYear(),todayD.getMonth()+spMonth,1),n=new Date(ms.getFullYear(),ms.getMonth()+1,0).getDate(),off=(ms.getDay()+6)%7;
+  const md=[...Array(n)].map((_,i)=>new Date(ms.getFullYear(),ms.getMonth(),i+1));
+  $('#spnav').innerHTML=`<button class="btn sm" onclick="spMonth--;renderSportCal()">‹</button><span>${ms.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase())}</span><button class="btn sm" ${spMonth>=0?'disabled style="opacity:.3"':''} onclick="spMonth++;renderSportCal()">›</button>`;
+  const cnt={};let days=0;md.forEach(d=>{const ks=sportDay(dk(d));if(ks.length)days++;ks.forEach(k=>cnt[k]=(cnt[k]||0)+1);});
+  $('#hsport').innerHTML=`<div class="spleg">${SPORT_KINDS.map(([k,l,c])=>`<span style="--sc:${c}"><i></i>${l}<b>${cnt[k]||0}</b></span>`).join('')}</div>
+    <div class="spcal">${['Lu','Ma','Me','Je','Ve','Sa','Di'].map(x=>`<span class="w">${x}</span>`).join('')}${'<span class="x"></span>'.repeat(off)}${md.map(d=>{const k=dk(d),ks=sportDay(k);
+      return `<button class="${ks.length?'has':''} ${k===t?'t':''}" ${d>todayD?'disabled':''} ${ks.length?`style="--sbg:${sportBg(ks)}"`:''} onclick="openSportPop(this,'${k}')" title="${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}${ks.length?' : '+ks.map(x=>sportKind(x)[1]).join(', '):''}"><span class="n">${d.getDate()}</span>${ks.length?`<span class="tags">${ks.map(x=>`<em style="--sc:${sportKind(x)[2]}">${sportKind(x)[1]}</em>`).join('')}</span>`:''}</button>`;}).join('')}</div>
+    <div class="spsum">${days?`${days} jour${days>1?'s':''} de sport ce mois-ci`:'Aucun sport noté ce mois-ci'} · clique sur un jour pour choisir le ou les sports.</div>`;
+}
+function openSportPop(btn,k){
+  closeSportPop();const p=document.createElement('div');p.className='spop';p.dataset.k=k;document.body.appendChild(p);paintSportPop(k);
+  const r=btn.getBoundingClientRect(),w=230,h=p.offsetHeight;
+  p.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left+r.width/2-w/2))+'px';
+  p.style.top=(r.bottom+8+h>innerHeight-8?Math.max(8,r.top-h-8):r.bottom+8)+'px';
+  setTimeout(()=>{document.addEventListener('mousedown',sportPopOut);document.addEventListener('keydown',sportPopKey);addEventListener('scroll',closeSportPop,{once:true,capture:true});},0);
+}
+function paintSportPop(k){
+  const p=document.querySelector('.spop');if(!p||p.dataset.k!==k)return;const ks=sportDay(k);
+  p.innerHTML=`<h4>${parse(k).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}).replace(/^./,c=>c.toUpperCase())}</h4>${SPORT_KINDS.map(([s,l,c])=>`<button class="opt ${ks.includes(s)?'on':''}" style="--sc:${c}" onclick="toggleSportDay('${k}','${s}')"><i></i>${l}<span class="ck">${ks.includes(s)?'✓':''}</span></button>`).join('')}`;
+}
+function closeSportPop(){document.querySelectorAll('.spop').forEach(x=>x.remove());document.removeEventListener('mousedown',sportPopOut);document.removeEventListener('keydown',sportPopKey);}
+function sportPopOut(e){if(!e.target.closest('.spop')&&!e.target.closest('.spcal button'))closeSportPop();}
+function sportPopKey(e){if(e.key==='Escape')closeSportPop();}
 function editHabit(id){
   const h=id?S.habits.find(x=>x.id===id):{name:'',icon:EMOJIS[S.habits.length%EMOJIS.length],color:COLORS[S.habits.length%COLORS.length],target:7};
   modal({title:id?"Modifier l'habitude":'Nouvelle habitude',fields:[
