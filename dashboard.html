@@ -379,6 +379,15 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .hcal i.t{outline:2px solid var(--gold2)}
 .hcal i.f{opacity:.3;cursor:default}
 .hcal i.f:hover{outline:none}
+/* Ctrl+V dans la galerie : choix du thème */
+.modal.gp-box{width:min(620px,94vw);max-width:none;overflow-x:hidden}
+.gp-prev{position:relative;height:140px;border-radius:14px;overflow:hidden;background:rgba(0,0,0,.25);margin:6px 0 14px;display:grid;place-items:center}
+.gp-prev img{max-width:100%;max-height:100%;object-fit:contain}
+.gp-prev span{position:absolute;right:10px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(0,0,0,.6);font-size:12px;font-weight:600}
+.gp-opts{display:flex;flex-wrap:wrap;gap:8px}
+.gp-o{padding:8px 14px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--text);font:inherit;font-size:14px;cursor:pointer}
+.gp-o:hover{background:rgba(255,255,255,.1)}
+.gp-o.on{border-color:var(--gold2);background:rgba(242,205,120,.14)}
 /* Calendrier Sport (page Habitudes) */
 .spleg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .spleg span{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:color-mix(in srgb,var(--sc) 14%,transparent);border:1px solid color-mix(in srgb,var(--sc) 45%,transparent);font-size:13px}
@@ -3380,7 +3389,7 @@ document.addEventListener('paste',async e=>{
     if(one){const ids=await addPhotos(files.slice(0,1),'',true);if(!ids[0])return;one.dataset.v=ids[0];one.querySelector('.phth').style.cssText=bgStyle(photoSrc(ids[0]));one.classList.remove('pasted');void one.offsetWidth;one.classList.add('pasted');}
     else{const ids=await addPhotos(files,'',true);const a=JSON.parse(multi.dataset.v||'[]');ids.forEach(id=>{if(!a.includes(id))a.push(id);});multi.dataset.v=JSON.stringify(a);paintPhotos(multi);}
     return;}
-  if(cur==='gallery'){e.preventDefault();addPhotos(files);}
+  if(cur==='gallery'){e.preventDefault();pasteToGallery(files);}
 },true);
 document.addEventListener('paste',e=>{const t=e.target.closest&&e.target.closest('.rte');if(!t)return;e.preventDefault();
   const cd=e.clipboardData,h=cd.getData('text/html');
@@ -4665,6 +4674,25 @@ function paintHiddenPhotos(){
     <div class="hid-grid">${hs.map(p=>`<div class="hid-it"><img src="${p.src}" alt="" loading="lazy"><div class="hid-a"><button class="btn sm primary" onclick="hidePhoto('${p.id}',false)">Afficher dans la galerie</button><button class="btn sm danger" onclick="delPhoto('${p.id}')" title="Attention : elle disparaît aussi de l'objectif ou du rêve qui l'utilise">Supprimer</button></div></div>`).join('')}</div></details>`:'';
 }
 async function hidePhoto(id,h){const p=PH.find(x=>x.id===id);if(!p)return;if(h){p.hidden=true;p.featured=false;}else delete p.hidden;await photoChanged(p);pIdx=0;renderGallery();toast(h?'Image masquée : elle reste utilisable pour tes objectifs.':'Image affichée dans la galerie et en fond d\'accueil.');}
+/* Ctrl+V dans la galerie : petite fenêtre pour choisir où ranger l'image (Mes photos ou un thème). Le dernier choix est proposé en premier. */
+let galPasteCat=null;
+function pasteToGallery(files){
+  document.querySelectorAll('.gp-ov').forEach(x=>x.remove());
+  const url=URL.createObjectURL(files[0]),n=files.length;
+  const opts=[['','Mes photos']].concat(LIB_CATS.map(([c,l])=>[c,l]));
+  const ov=document.createElement('div');ov.className='overlay gp-ov';
+  ov.innerHTML=`<div class="modal gp-box"><h3>Où ranger ${n>1?`ces ${n} images`:'cette image'} ?</h3>
+    <div class="gp-prev"><img src="${url}" alt="">${n>1?`<span>+${n-1}</span>`:''}</div>
+    <div class="gp-opts">${opts.map(([c,l])=>`<button class="gp-o ${galPasteCat===c?'on':''}" data-c="${c}">${esc(l)}</button>`).join('')}</div>
+    <p class="small muted" style="margin:12px 0 0">${galPasteCat!==null?'Entrée = dernier choix · ':''}Échap pour annuler</p></div>`;
+  document.body.appendChild(ov);
+  const close=()=>{ov.remove();URL.revokeObjectURL(url);removeEventListener('keydown',key,true);};
+  const pick=c=>{galPasteCat=c;close();addPhotos(files,c);};
+  const key=e=>{if(e.key==='Escape'){e.stopPropagation();close();}else if(e.key==='Enter'&&galPasteCat!==null){e.preventDefault();pick(galPasteCat);}};
+  ov.addEventListener('mousedown',e=>{if(e.target===ov)close();});
+  ov.addEventListener('click',e=>{const b=e.target.closest('.gp-o');if(b)pick(b.dataset.c);});
+  addEventListener('keydown',key,true);
+}
 function addToCat(c){const i=document.createElement('input');i.type='file';i.accept='image/*';i.multiple=true;i.onchange=()=>addPhotos([...i.files],c);i.click();}
 async function removeTile(kind,id){
   if(kind==='mine')return delPhoto(id);
