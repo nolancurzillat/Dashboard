@@ -385,6 +385,7 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .gp-prev img{max-width:100%;max-height:100%;object-fit:contain}
 .gp-prev span{position:absolute;right:10px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(0,0,0,.6);font-size:12px;font-weight:600}
 .gp-opts{display:flex;flex-wrap:wrap;gap:8px}
+.gp-desc{width:100%;margin:0 0 14px;resize:vertical;min-height:52px}
 .gp-o{padding:8px 14px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--text);font:inherit;font-size:14px;cursor:pointer}
 .gp-o:hover{background:rgba(255,255,255,.1)}
 .gp-o.on{border-color:var(--gold2);background:rgba(242,205,120,.14)}
@@ -1599,6 +1600,9 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .libgrid .lt:hover .lt-a{opacity:1}
 .libgrid .lt .lt-a button{width:26px;height:26px;border-radius:8px;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:13px;cursor:pointer;display:grid;place-items:center}
 .libgrid .lt .lt-a button:hover{background:rgba(229,105,92,.9)}
+.libgrid .lt .lt-a button.lt-desc:hover{background:rgba(90,162,255,.9)}
+.lbox .lb-cap b{display:block;max-width:min(760px,86vw);margin:0 auto 6px;font-size:16px;font-weight:500;line-height:1.5;color:#fff;white-space:pre-wrap}
+.lbox button.lb-ed{bottom:auto;top:18px;right:auto;left:18px;width:auto;padding:0 16px;font-size:14px}
 .libgrid .lt.mine{outline:2px solid rgba(214,169,74,.55);outline-offset:-2px}
 .libgrid .lt-add{display:grid;place-items:center;border:1px dashed var(--line2)!important;background:rgba(255,255,255,.03)!important;color:var(--muted);font-size:13px;cursor:pointer;transition:.15s;text-align:center}
 .libgrid .lt-add:hover{border-color:var(--gold)!important;color:var(--gold2)}
@@ -4654,16 +4658,16 @@ function toggleLibCat(c){const a=S.settings.libCats;S.settings.libCats=a.include
 const libHidden=()=>S.settings.libHidden||(S.settings.libHidden=[]);
 const libVisible=c=>LIB.filter(e=>(!c||e.cat===c)&&!libHidden().includes(e.id));
 function galTiles(c){
-  const mine=PH.filter(p=>p.cat===c&&!p.hidden).sort((a,b)=>(b.added||0)-(a.added||0)).map(p=>({kind:'mine',id:p.id,src:p.src,thumb:p.src,label:p.caption||'Ma photo'}));
+  const mine=PH.filter(p=>p.cat===c&&!p.hidden).sort((a,b)=>(b.added||0)-(a.added||0)).map(p=>({kind:'mine',id:p.id,src:p.src,thumb:p.src,label:p.caption||'Ma photo',cap:p.caption||''}));
   return mine.concat(libVisible(c).map(e=>({kind:'lib',id:e.id,src:libUrl(e,2400),thumb:libUrl(e,400),label:e.label})));
 }
 function renderGallery(){
   $('#libsec').innerHTML=LIB_CATS.map(([c,l])=>{const on=S.settings.libCats.includes(c),t=galTiles(c),nh=LIB.filter(e=>e.cat===c&&libHidden().includes(e.id)).length;
     return `<div class="card" style="margin-bottom:14px"><div class="ch" style="margin-bottom:0"><h2 style="color:var(--text);text-transform:none;letter-spacing:0;font-size:15px">${l} <span class="sub" style="font-weight:400">${t.length}</span></h2><div class="acts">${nh?`<button class="btn sm ghost" onclick="restoreLib('${c}')">Rétablir ${nh} image${nh>1?'s':''} retirée${nh>1?'s':''}</button>`:''}<button class="btn sm ${on?'primary':''}" onclick="toggleLibCat('${c}')">${on?"✓ Sur l'accueil":"Afficher sur l'accueil"}</button></div></div>
-      <div class="libgrid ${on?'':'off'}"><div class="lt-add" onclick="addToCat('${c}')">+ Ajouter une image</div>${t.map((x,i)=>`<div class="lt ${x.kind==='mine'?'mine':''}" style="${bgStyle(x.thumb)}" onclick="openLbox('${c}',${i})"><span>${esc(x.label)}</span><div class="lt-a"><button title="Voir en grand" onclick="event.stopPropagation();openLbox('${c}',${i})">⤢</button><button title="${x.kind==='mine'?'Supprimer ma photo':'Retirer cette image'}" onclick="event.stopPropagation();removeTile('${x.kind}','${x.id}')">✕</button></div></div>`).join('')}</div></div>`;}).join('');
+      <div class="libgrid ${on?'':'off'}"><div class="lt-add" onclick="addToCat('${c}')">+ Ajouter une image</div>${t.map((x,i)=>`<div class="lt ${x.kind==='mine'?'mine':''}" style="${bgStyle(x.thumb)}" onclick="openLbox('${c}',${i})"><span>${esc(x.label)}</span><div class="lt-a">${x.kind==='mine'?`<button class="lt-desc" title="${x.cap?'Modifier la description':'Ajouter une description'}" onclick="event.stopPropagation();capPhoto('${x.id}')">✎</button>`:''}<button title="Voir en grand" onclick="event.stopPropagation();openLbox('${c}',${i})">⤢</button><button title="${x.kind==='mine'?'Supprimer ma photo':'Retirer cette image'}" onclick="event.stopPropagation();removeTile('${x.kind}','${x.id}')">✕</button></div></div>`).join('')}</div></div>`;}).join('');
   const list=galMine();
   paintHiddenPhotos();
-  $('#gal').innerHTML=`<div class="ph-item lt-add" style="min-height:120px;display:grid;place-items:center;border:1px dashed var(--line2);cursor:pointer;color:var(--muted)" onclick="addToCat('')">+ Ajouter une photo</div>`+list.map(p=>`<div class="ph-item"><img src="${p.src}" alt="" style="cursor:zoom-in" onclick="openLbox('',${list.indexOf(p)})">${p.featured?'<span class="star">★ À la une</span>':''}${p.moment?`<span class="mom">${esc((MOMENTS.find(m=>m[0]===p.moment)||['',''])[1])}</span>`:''}<div class="ov" style="pointer-events:none">${p.caption?`<div class="cap">${esc(p.caption)}</div>`:''}<select style="pointer-events:auto" onchange="momentPhoto('${p.id}',this.value)" title="Moment de la journée">${MOMENTS.map(([v,l])=>`<option value="${v}"${(p.moment||'')===v?' selected':''}>Affichée : ${l.toLowerCase()}</option>`).join('')}</select><div class="acts" style="pointer-events:auto"><button class="btn sm" onclick="featPhoto('${p.id}')">${p.featured?'Retirer de la une':'★ À la une'}</button><button class="btn sm" onclick="capPhoto('${p.id}')">Légende</button><button class="btn sm" onclick="hidePhoto('${p.id}',true)" title="La retirer de la galerie et du fond d'accueil, sans la supprimer">Masquer</button><button class="btn sm danger" onclick="delPhoto('${p.id}')">Supprimer</button></div></div></div>`).join('');
+  $('#gal').innerHTML=`<div class="ph-item lt-add" style="min-height:120px;display:grid;place-items:center;border:1px dashed var(--line2);cursor:pointer;color:var(--muted)" onclick="addToCat('')">+ Ajouter une photo</div>`+list.map(p=>`<div class="ph-item"><img src="${p.src}" alt="" style="cursor:zoom-in" onclick="openLbox('',${list.indexOf(p)})">${p.featured?'<span class="star">★ À la une</span>':''}${p.moment?`<span class="mom">${esc((MOMENTS.find(m=>m[0]===p.moment)||['',''])[1])}</span>`:''}<div class="ov" style="pointer-events:none">${p.caption?`<div class="cap">${esc(p.caption)}</div>`:''}<select style="pointer-events:auto" onchange="momentPhoto('${p.id}',this.value)" title="Moment de la journée">${MOMENTS.map(([v,l])=>`<option value="${v}"${(p.moment||'')===v?' selected':''}>Affichée : ${l.toLowerCase()}</option>`).join('')}</select><div class="acts" style="pointer-events:auto"><button class="btn sm" onclick="featPhoto('${p.id}')">${p.featured?'Retirer de la une':'★ À la une'}</button><button class="btn sm" onclick="capPhoto('${p.id}')">${p.caption?'✎ Description':'+ Description'}</button><button class="btn sm" onclick="hidePhoto('${p.id}',true)" title="La retirer de la galerie et du fond d'accueil, sans la supprimer">Masquer</button><button class="btn sm danger" onclick="delPhoto('${p.id}')">Supprimer</button></div></div></div>`).join('');
 }
 const galMine=()=>sortedPhotos().filter(p=>!p.cat&&!p.hidden);
 /* Images masquées (importées pour un objectif, un rêve, une collection…) : repliées en bas de la galerie, avec « Afficher dans la galerie » */
@@ -4683,17 +4687,20 @@ function pasteToGallery(files){
   const ov=document.createElement('div');ov.className='overlay gp-ov';
   ov.innerHTML=`<div class="modal gp-box"><h3>Où ranger ${n>1?`ces ${n} images`:'cette image'} ?</h3>
     <div class="gp-prev"><img src="${url}" alt="">${n>1?`<span>+${n-1}</span>`:''}</div>
+    <textarea class="gp-desc" rows="2" placeholder="Description (facultatif) : ce que cette image représente pour toi"></textarea>
     <div class="gp-opts">${opts.map(([c,l])=>`<button class="gp-o ${galPasteCat===c?'on':''}" data-c="${c}">${esc(l)}</button>`).join('')}</div>
     <p class="small muted" style="margin:12px 0 0">${galPasteCat!==null?'Entrée = dernier choix · ':''}Échap pour annuler</p></div>`;
   document.body.appendChild(ov);
   const close=()=>{ov.remove();URL.revokeObjectURL(url);removeEventListener('keydown',key,true);};
-  const pick=c=>{galPasteCat=c;close();addPhotos(files,c);};
-  const key=e=>{if(e.key==='Escape'){e.stopPropagation();close();}else if(e.key==='Enter'&&galPasteCat!==null){e.preventDefault();pick(galPasteCat);}};
+  const pick=async c=>{const d=ov.querySelector('.gp-desc').value.trim();galPasteCat=c;close();const ids=await addPhotos(files,c);
+    if(d&&ids.length){for(const id of ids){const p=PH.find(x=>x.id===id);if(p){p.caption=d;await photoChanged(p);}}if(cur==='gallery')renderGallery();}};
+  const key=e=>{if(e.key==='Escape'){e.stopPropagation();close();}else if(e.key==='Enter'&&!e.shiftKey&&galPasteCat!==null){e.preventDefault();pick(galPasteCat);}};
   ov.addEventListener('mousedown',e=>{if(e.target===ov)close();});
   ov.addEventListener('click',e=>{const b=e.target.closest('.gp-o');if(b)pick(b.dataset.c);});
   addEventListener('keydown',key,true);
 }
-function addToCat(c){const i=document.createElement('input');i.type='file';i.accept='image/*';i.multiple=true;i.onchange=()=>addPhotos([...i.files],c);i.click();}
+/* Ajout par le bouton : une seule image ajoutée → on propose tout de suite sa description (Annuler la laisse vide) */
+function addToCat(c){const i=document.createElement('input');i.type='file';i.accept='image/*';i.multiple=true;i.onchange=async()=>{const ids=await addPhotos([...i.files],c);if(ids.length===1)capPhoto(ids[0]);};i.click();}
 async function removeTile(kind,id){
   if(kind==='mine')return delPhoto(id);
   libHidden().push(id);save();bgShown=null;renderGallery();toast('Image retirée. « Rétablir » la remet.');
@@ -4701,15 +4708,17 @@ async function removeTile(kind,id){
 function restoreLib(c){S.settings.libHidden=libHidden().filter(id=>{const e=LIB.find(x=>x.id===id);return !e||e.cat!==c;});save();bgShown=null;renderGallery();}
 /* Agrandir une image (flèches pour passer à la suivante, Échap pour fermer) */
 function openLbox(c,idx){
-  const items=()=>c?galTiles(c):galMine().map(p=>({kind:'mine',id:p.id,src:p.src,label:p.caption||''}));
+  const items=()=>c?galTiles(c):galMine().map(p=>({kind:'mine',id:p.id,src:p.src,label:p.caption||'',cap:p.caption||''}));
   let k=idx;const ov=document.createElement('div');ov.className='lbox';ov.tabIndex=-1;
   const paint=()=>{const a=items();if(!a.length){close();return;}k=(k+a.length)%a.length;const x=a[k];
-    ov.innerHTML=`<img src="${x.src}" alt=""><div class="lb-cap">${esc(x.label)} · ${k+1}/${a.length}</div><button class="lb-x" title="Fermer">✕</button><button class="lb-del">${x.kind==='mine'?'Supprimer ma photo':'Retirer cette image'}</button>${a.length>1?'<button class="lb-p" title="Précédente">‹</button><button class="lb-n" title="Suivante">›</button>':''}`;};
+    const cap=x.kind==='mine'?(x.cap?`<b>${esc(x.cap)}</b>`:''):`<b>${esc(x.label)}</b>`;
+    ov.innerHTML=`<img src="${x.src}" alt=""><div class="lb-cap">${cap}${k+1}/${a.length}</div><button class="lb-x" title="Fermer">✕</button>${x.kind==='mine'?`<button class="lb-ed">✎ ${x.cap?'Modifier la description':'Ajouter une description'}</button>`:''}<button class="lb-del">${x.kind==='mine'?'Supprimer ma photo':'Retirer cette image'}</button>${a.length>1?'<button class="lb-p" title="Précédente">‹</button><button class="lb-n" title="Suivante">›</button>':''}`;};
   const close=()=>{ov.remove();removeEventListener('keydown',key,true);};
-  const key=e=>{if(e.key==='Escape'){e.stopPropagation();close();}else if(e.key==='ArrowRight'){k++;paint();}else if(e.key==='ArrowLeft'){k--;paint();}};
+  const key=e=>{if(e.target&&e.target.closest&&e.target.closest('.overlay'))return;if(e.key==='Escape'){e.stopPropagation();close();}else if(e.key==='ArrowRight'){k++;paint();}else if(e.key==='ArrowLeft'){k--;paint();}};
   ov.addEventListener('click',async e=>{const b=e.target.closest('button');
     if(!b){if(e.target===ov)close();return;}
     if(b.classList.contains('lb-x'))close();else if(b.classList.contains('lb-n')){k++;paint();}else if(b.classList.contains('lb-p')){k--;paint();}
+    else if(b.classList.contains('lb-ed')){const x=items()[k];capPhoto(x.id,paint);const o=[...document.querySelectorAll('.overlay')].pop();if(o)o.style.zIndex=400;}
     else if(b.classList.contains('lb-del')){const x=items()[k];await removeTile(x.kind,x.id);paint();}});
   addEventListener('keydown',key,true);document.body.appendChild(ov);paint();
 }function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const M=2200;let w=img.width,h=img.height;if(w>M||h>M){const k=M/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',.86));};img.onerror=()=>res(null);img.src=r.result;};r.readAsDataURL(file);});}
@@ -4718,14 +4727,15 @@ function openLbox(c,idx){
 async function addPhotos(files,cat,hidden){let t=Date.now();const ids=[];for(const f of files){if(!f.type.startsWith('image/'))continue;const src=await resize(f);if(!src)continue;const p={id:uid(),src,caption:'',featured:false,moment:'',added:t++};if(cat)p.cat=cat;if(hidden)p.hidden=true;await idbPut(p);PH.push(p);ids.push(p.id);}
   if(ids.length){toast(hidden?(ids.length>1?`${ids.length} images ajoutées (pas dans la galerie).`:'Image ajoutée (pas dans la galerie).'):ids.length>1?`${ids.length} photos ajoutées.`:'Photo ajoutée.');pIdx=0;bgShown=null;BK.photosDirty=true;bkSchedule();if(cur==='gallery')renderGallery();else if(cur==='home')renderBg(false);}
   return ids;}
-$('#pfile').addEventListener('change',e=>{addPhotos([...e.target.files]);e.target.value='';});
+$('#pfile').addEventListener('change',async e=>{const f=[...e.target.files];e.target.value='';const ids=await addPhotos(f);if(ids.length===1)capPhoto(ids[0]);});
 const drop=$('#drop');drop.onclick=()=>$('#pfile').click();
 drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');};drop.ondragleave=()=>drop.classList.remove('over');
 drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');addPhotos([...e.dataTransfer.files]);};
 async function photoChanged(p){await idbPut(p);BK.photosDirty=true;bkSchedule();bgShown=null;}
 async function featPhoto(id){const p=PH.find(x=>x.id===id);p.featured=!p.featured;await photoChanged(p);pIdx=0;renderGallery();}
 async function momentPhoto(id,v){const p=PH.find(x=>x.id===id);p.moment=v;await photoChanged(p);renderGallery();}
-function capPhoto(id){const p=PH.find(x=>x.id===id);modal({title:'Légende',fields:[{key:'c',label:'Ce que cette image représente pour toi',value:p.caption}],onSave:v=>{p.caption=v.c;photoChanged(p);renderGallery();}});}
+/* Description d'une de tes photos (toutes, quel que soit le thème) ; after() est rappelée après l'enregistrement (ex. repeindre le grand format) */
+function capPhoto(id,after){const p=PH.find(x=>x.id===id);if(!p)return;modal({title:'Description',fields:[{key:'c',label:'Ce que cette image représente pour toi',type:'textarea',rows:3,value:p.caption||'',placeholder:'Ex : la maison que je veux offrir à mes parents'}],onSave:v=>{p.caption=String(v.c||'').trim();photoChanged(p);if(cur==='gallery')renderGallery();if(after)after();}});}
 async function delPhoto(id){if(!confirm('Supprimer cette photo ?'))return;await idbDel(id);PH=PH.filter(x=>x.id!==id);BK.photosDirty=true;bkSchedule();bgShown=null;renderGallery();}
 
 /* ================= Réglages ================= */
