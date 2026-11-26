@@ -379,6 +379,42 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .hcal i.t{outline:2px solid var(--gold2)}
 .hcal i.f{opacity:.3;cursor:default}
 .hcal i.f:hover{outline:none}
+/* ===== Motivation : citations, jour sans envie, encarts, victoires, rêves ===== */
+.q-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.q-fav{border:0;background:rgba(255,255,255,.1);color:#fff;width:34px;height:34px;border-radius:50%;font-size:17px;cursor:pointer;display:grid;place-items:center;transition:.15s}
+.q-fav:hover{background:rgba(255,255,255,.2)}.q-fav.on{color:#ff6b8a;background:rgba(255,107,138,.18)}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.qchip{padding:5px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.25);color:rgba(255,255,255,.85);font:inherit;font-size:12.5px;cursor:pointer;backdrop-filter:blur(6px)}
+.qchip:hover{background:rgba(255,255,255,.12)}.qchip.on{background:rgba(242,205,120,.25);border-color:#f2cd78;color:#fff}
+.sos-btn{margin-top:16px;padding:11px 20px;border-radius:999px;border:1px solid rgba(255,107,107,.55);background:linear-gradient(135deg,rgba(229,105,92,.35),rgba(229,105,92,.18));color:#fff;font:inherit;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:.15s}
+.sos-btn:hover{transform:translateY(-1px);background:linear-gradient(135deg,rgba(229,105,92,.5),rgba(229,105,92,.28))}
+.sos{display:flex;flex-direction:column;gap:12px;text-align:left;max-width:720px;margin:0 auto}
+.sos .rt-h{margin-bottom:4px}
+.sos-b{padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.06);border-left:3px solid #d6a94a}
+.sos-b.red{border-left-color:#e5695c}.sos-b.gold{border-left-color:#f2cd78}
+.sos-b span{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:700;margin-bottom:4px}
+.sos-b p{margin:3px 0;font-size:15px;line-height:1.55}.sos-b small{color:rgba(255,255,255,.5);margin-left:4px}
+.sos-dream{display:flex;align-items:center;gap:14px;padding:10px;border-radius:14px;background:rgba(255,255,255,.06)}
+.sos-dream img{width:110px;height:72px;object-fit:cover;border-radius:10px;flex:none}
+.sos-dream span{display:block;font-size:12px;color:rgba(255,255,255,.6)}.sos-dream b{font-size:17px}
+.sos-q{margin:2px 0;font-style:italic;font-size:16px;color:rgba(255,255,255,.88)}.sos-q cite{display:block;font-size:13px;margin-top:4px;opacity:.7;font-style:normal}
+.sos-act{padding:14px 18px;border-radius:14px;background:rgba(79,209,139,.14);border:1px solid rgba(79,209,139,.4);font-size:16px}
+.mot-calls{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
+.mot-call{flex:1 1 280px;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.mot-call>span{font-size:24px}.mot-call b{display:block}.mot-call small{color:var(--muted)}
+.mot-call.gold{border-color:rgba(242,205,120,.6);background:linear-gradient(135deg,rgba(242,205,120,.16),rgba(242,205,120,.04))}
+.mot-call:hover{border-color:var(--gold)}
+.win-years{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.wy{padding:10px 16px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);display:flex;align-items:baseline;gap:8px}
+.wy b{font-size:22px}.wy span{color:var(--muted);font-size:13px}
+.wy.cur{border-color:rgba(242,205,120,.5);background:rgba(242,205,120,.08)}.wy.cur b{color:#f2cd78}
+.wrow.auto{background:linear-gradient(90deg,rgba(242,205,120,.08),transparent)}
+.dprog{margin-top:10px}
+.dp-h{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:5px}.dp-h b{color:var(--text)}
+.dp-bar{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}.dp-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#d6a94a,#f2cd78)}
+.dp-next{margin-top:7px;font-size:13px;color:rgba(255,255,255,.8)}
+.rt-why{margin:10px auto 18px;max-width:620px;padding:12px 18px;border-radius:14px;background:rgba(255,255,255,.07);border-left:3px solid #d6a94a;font-size:16px;font-style:italic;line-height:1.5;text-align:left}
+.rt-why span{display:block;margin-top:6px;font-size:12px;font-style:normal;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.55)}
 /* Ctrl+V dans la galerie : choix du thème */
 .modal.gp-box{width:min(620px,94vw);max-width:none;overflow-x:hidden}
 .gp-prev{position:relative;height:140px;border-radius:14px;overflow:hidden;background:rgba(0,0,0,.25);margin:6px 0 14px;display:grid;place-items:center}
@@ -2656,7 +2692,7 @@ const drawerOpen=()=>$('#drawer').classList.contains('on');
 
 /* ================= Accueil ================= */
 let qOff=0,pIdx=0,bgFlip=false,bgShown=null,lastMoment='';
-function curQuote(){const q=S.quotes;return q.length?q[(hash(dk())+qOff)%q.length]:null;}
+function curQuote(){const q=typeof quotePool==='function'?quotePool():S.quotes;return q.length?q[(hash(dk())+qOff)%q.length]:null;}
 function homeClock(){
   const n=new Date(),t=n.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
   $('#nclock').textContent=t;
@@ -2675,6 +2711,7 @@ function renderHome(){
 function renderBanners(){
   const d=today(),h=new Date().getHours(),b=[],lr=lettersReady();
   if(lr.length)b.push(`<button class="banner gold" onclick="openLetter('${lr[0].id}')">✉ Une lettre de toi t'attend</button>`);
+  else if(yearLetterDue())b.push(`<button class="banner" onclick="editLetter(true)">✍ Écrire ma lettre de l'année ${new Date().getFullYear()}</button>`);
   if(!d.morningDone)b.push(`<button class="banner" onclick="openMorning()">☀ Démarrer ma journée</button>`);
   if(new Date().getDate()>=(S.reminders.monthly.day||1)&&!statementThisMonth())b.push(`<button class="banner" onclick="updateWealth()">📊 Relevé de patrimoine du mois</button>`);
   if(BK.state==='perm')b.push(`<button class="banner warn" onclick="bkReauth()">⚠ Réactiver la sauvegarde automatique</button>`);
@@ -2851,8 +2888,10 @@ function renderDrawer(){
   if(document.activeElement!==$('#review'))$('#review').value=today().review||'';
 }
 function editQuotes(){
-  modal({title:'Mes citations',fields:[{key:'q',label:'Une citation par ligne, au format : texte | auteur',type:'textarea',rows:14,value:S.quotes.map(q=>q.author?`${q.text} | ${q.author}`:q.text).join('\n')}],
-    onSave:v=>{S.quotes=v.q.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const [t,...a]=l.split('|');return {text:t.trim(),author:a.join('|').trim()};});qOff=0;save();renderHome();}});
+  /* Format : texte | auteur | thème (auteur et thème facultatifs). Les favorites (♥) sont gardées en retrouvant le même texte */
+  modal({title:'Mes citations',fields:[{key:'q',label:'Une citation par ligne, au format : texte | auteur | thème (auteur et thème facultatifs ; sans thème, il est deviné : Investissement, Discipline, Courage ou Sagesse)',type:'textarea',rows:14,value:S.quotes.map(q=>[q.text,q.author||'',q.theme||''].join(' | ').replace(/( \| )+$/,'')).join('\n')}],
+    onSave:v=>{const old=new Map(S.quotes.map(q=>[q.text,q]));S.quotes=v.q.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const [t,a,...th]=l.split('|').map(s=>s.trim());const o={text:t,author:a||''};if(th.join('|'))o.theme=th.join(' ').trim();if(old.get(t)&&old.get(t).fav)o.fav=true;return o;});qOff=0;
+      if(S.settings.qTheme&&S.settings.qTheme!=='fav'&&!quoteThemes().includes(S.settings.qTheme))S.settings.qTheme='';save();renderHome();if(cur==='motivation')renderMotHero();}});
 }
 
 /* Priorités */
@@ -2917,12 +2956,18 @@ function runRitual({bg,steps,finish,skip,startAt=0,finishLabel='Terminer'}){
 }
 const rv=(ov,f)=>{const el=ov.querySelector(`[data-f="${f}"]`);return el?(el.type==='checkbox'?el.checked:el.value.trim()):'';};
 
+/* Une phrase de ton « Pourquoi » ou de « Qui je serai dans 5 ans », différente chaque jour (rien si ces cadres sont vides) */
+function whyOfTheDay(){
+  const src=[['why','Mon pourquoi'],['letter','Qui je serai dans 5 ans'],['values','Mes valeurs et mes règles']];
+  const all=[];src.forEach(([k,l])=>plainText(S[k]||'').split(/(?<=[.!?…])\s+|\n+/).map(s=>s.trim()).filter(s=>s.length>=12&&s.length<=220).forEach(t=>all.push({t,l})));
+  return all.length?all[hash(dk())%all.length]:null;
+}
 /* Démarrage du matin */
 function openMorning(startAt=0){
   const d=today();const st={prio:d.priorities.slice()};
   /* Le matin se résume aux 3 objectifs du jour (plus d'intention ni de gratitude) */
   runRitual({bg:ritualBg(),finishLabel:"C'est parti",steps:[
-    {html:()=>`<div class="eyebrow">${greet()} ${esc(S.settings.name)} · Jour ${dayNumber()}</div><h2 class="rt-h display">Tes 3 objectifs du jour</h2><p class="rt-p">Si tu ne fais que ça, la journée sera réussie.</p>${prioRows(st.prio)}`,
+    {html:()=>{const w=whyOfTheDay();return `<div class="eyebrow">${greet()} ${esc(S.settings.name)} · Jour ${dayNumber()}</div>${w?`<div class="rt-why">« ${esc(w.t)} »<span>${esc(w.l)}</span></div>`:''}<h2 class="rt-h display">Tes 3 objectifs du jour</h2><p class="rt-p">Si tu ne fais que ça, la journée sera réussie.</p>${prioRows(st.prio)}`;},
      read:ov=>{st.prio=readPrio(ov,d.priorities);}}
   ],
   finish:()=>{const d=today();d.priorities=st.prio;d.morningDone=true;delete d.planned;save();if(cur==='home')renderHome();else if(cur==='goals')renderGoals();},
@@ -4249,24 +4294,34 @@ function renderMotivation(){renderMotHero();renderDreams();renderWhy();renderWin
 /* Objectifs qui font rêver, avec leur image (affichée en entier) */
 function renderDreams(){
   /* Pas de date : un rêve n'a pas d'échéance. Les rêves réalisés sont rangés à part, plus petits, en dessous */
-  const card=d=>{const src=photoSrc(d.cover,1200);
+  const card=d=>{const src=photoSrc(d.cover,1200),pr=dreamProgress(d);
     /* Image entière et propre en haut, texte dans une bande en dessous (rien ne recouvre l'image) */
-    return `<div class="dream ${d.done?'done':''}" onclick="editDream('${d.id}')"><div class="dm">${src?`<div class="dbg" style="${bgStyle(src)}"></div><img src="${src}" alt="" loading="lazy">`:'<div class="noimg"></div>'}${d.done?'<span class="ok">✓ Réalisé</span>':''}</div><div class="dcap"><h3 class="display">${esc(d.title)}</h3>${d.why?`<p>${esc(d.why)}</p>`:''}</div></div>`;};
+    return `<div class="dream ${d.done?'done':''}" onclick="editDream('${d.id}')"><div class="dm">${src?`<div class="dbg" style="${bgStyle(src)}"></div><img src="${src}" alt="" loading="lazy">`:'<div class="noimg"></div>'}${d.done?'<span class="ok">✓ Réalisé</span>':''}</div><div class="dcap"><h3 class="display">${esc(d.title)}</h3>${d.why?`<p>${esc(d.why)}</p>`:''}
+      ${pr&&!d.done?`<div class="dprog"><div class="dp-h"><span>${pr.n} objectif${pr.n>1?'s':''} relié${pr.n>1?'s':''}</span><b>${pr.pct} %</b></div><div class="dp-bar"><i style="width:${pr.pct}%"></i></div>${pr.next?`<div class="dp-next">Prochain pas : ${esc(pr.next)}</div>`:''}</div>`:''}</div></div>`;};
   const todo=S.dreams.filter(d=>!d.done),done=S.dreams.filter(d=>d.done);
   $('#dreams').innerHTML=S.dreams.length?`${todo.length?`<div class="dreams">${todo.map(card).join('')}</div>`:'<div class="sub">Tous tes rêves sont réalisés. Ajoute le suivant.</div>'}
     ${done.length?`<div class="dreams-done"><div class="dd-h"><span>✓</span><h3 class="display">Rêves réalisés</h3><span class="sub">${done.length}</span></div><div class="dreams sm">${done.map(card).join('')}</div></div>`:''}`
     :`<div class="card empty">Une Porsche, un voyage au Japon, une maison face à la mer, une admission au MIT… Ajoute ce qui te fait vraiment envie, avec une image.<br><button class="btn primary" onclick="editDream()">Ajouter mon premier rêve</button></div>`;
 }
+/* Rêve relié à des objectifs : progression = moyenne de leurs %, prochain pas = la 1re étape non faite du 1er objectif pas encore atteint */
+function dreamProgress(d){
+  const gs=(d.goals||[]).map(id=>S.goals.find(g=>g.id===id)).filter(Boolean);if(!gs.length)return null;
+  const pct=Math.round(gs.reduce((a,g)=>a+(g.progress||0),0)/gs.length),g=gs.find(x=>(x.progress||0)<100);
+  const st=g&&(g.steps||[]).find(s=>!s.done);
+  return {n:gs.length,pct,next:g?(st?`${st.t} (${g.title})`:g.title):''};
+}
 function editDream(id){
   const d=id?S.dreams.find(x=>x.id===id):{title:'',cover:'',why:'',date:'',done:false};
+  const gOpts=S.goals.map(g=>[g.id,`${g.title} · ${g.progress||0} %`]);
   modal({title:id?'Modifier':'Ce qui me fait rêver',fields:[
       {key:'title',label:'Objectif',value:d.title,placeholder:'Ex : Ma première Porsche'},
       {key:'cover',label:'Son image',type:'photo',value:d.cover},
       {key:'why',label:'Pourquoi il te motive (facultatif)',type:'textarea',rows:3,value:d.why},
+      ...(gOpts.length?[{key:'goals',label:'Les objectifs qui t’en rapprochent (facultatif) : la carte affichera ta progression et le prochain pas',type:'checks',value:(d.goals||[]).filter(x=>S.goals.some(g=>g.id===x)),options:gOpts}]:[]),
       {key:'price',label:"Prix approximatif (facultatif) : il apparaîtra dans Finance, « Ce que tu peux t'offrir »",value:d.price||'',placeholder:'Ex : 120 000'},
       {key:'done',label:'Statut',type:'select',value:d.done?'1':'',options:[['','En route'],['1','Réalisé !']]}],
     onSave:v=>{if(!v.title)return false;const done=v.done==='1',was=!!d.done;
-      const o={title:v.title,cover:v.cover,why:v.why,price:numIn(v.price)||'',done,doneAt:done?(d.doneAt||dk()):''};
+      const o={title:v.title,cover:v.cover,why:v.why,price:numIn(v.price)||'',done,doneAt:done?(d.doneAt||dk()):'',goals:Array.isArray(v.goals)?v.goals:(d.goals||[])};
       if(id)Object.assign(d,o);else S.dreams.push({id:uid(),...o});
       if(done&&!was){xpPop(XP_RULES.dream,'Rêve réalisé');toast('Un rêve devenu réalité. Bravo.');}
       save();renderDreams();bgShown=null;},
@@ -4632,12 +4687,13 @@ function renderLetters(){
     return `<div class="env ${ready?'ready':l.opened?'open':''}" ${ready||l.opened?`onclick="openLetter('${l.id}')"`:''}><button class="btn sm danger del" onclick="event.stopPropagation();delLetter('${l.id}')">Supprimer</button><span class="seal">${l.opened?'✉':ready?'★':'🔒'}</span><div class="ed">${ready?'Prête à être ouverte':l.opened?'Ouverte':`S'ouvre ${days===1?'demain':`dans ${days} jours`}`}</div><div class="el">Écrite le ${fmtDate(l.written)} · ${l.opened?'cliquer pour relire':ready?'cliquer pour ouvrir':"scellée jusqu'au "+fmtDate(l.openOn)}</div></div>`;}).join('')}</div>`
     :`<div class="card empty">Écris à la personne que tu seras dans 6 mois, 1 an, 5 ans. La lettre reste scellée jusqu'à la date choisie, puis elle t'attend sur l'accueil.</div>`;
 }
-function editLetter(){
-  modal({title:'Lettre à mon futur moi',wide:true,fields:[
-      {key:'text',label:"Ce que tu veux lui dire : où tu en es, ce que tu espères, ce que tu crains, ce que tu lui promets",type:'textarea',rows:12,value:''},
-      {key:'openOn',label:"Date d'ouverture",type:'date',value:dk(addDays(new Date(),365))}],
+function editLetter(yearly){
+  const y=new Date().getFullYear();
+  modal({title:yearly?`Ma lettre de l'année ${y}`:'Lettre à mon futur moi',wide:true,fields:[
+      {key:'text',label:yearly?`Écris à la personne que tu seras le 1er janvier ${y+1} : ce que tu veux avoir accompli cette année, ce que tu veux changer, ce que tu lui promets`:"Ce que tu veux lui dire : où tu en es, ce que tu espères, ce que tu crains, ce que tu lui promets",type:'textarea',rows:12,value:''},
+      {key:'openOn',label:"Date d'ouverture",type:'date',value:yearly?`${y+1}-01-01`:dk(addDays(new Date(),365))}],
     saveLabel:'Sceller la lettre',
-    onSave:v=>{if(!v.text||!v.openOn)return false;if(v.openOn<=dk()){alert("Choisis une date dans le futur.");return false;}S.letters.push({id:uid(),text:v.text,written:dk(),openOn:v.openOn,opened:false});save();toast('Lettre scellée.');renderLetters();}});
+    onSave:v=>{if(!v.text||!v.openOn)return false;if(v.openOn<=dk()){alert("Choisis une date dans le futur.");return false;}S.letters.push({id:uid(),text:v.text,written:dk(),openOn:v.openOn,opened:false});save();toast('Lettre scellée.');renderLetters();if(cur==='motivation')renderMotHero();if(cur==='home')renderBanners();}});
 }
 function delLetter(id){if(!confirm('Supprimer cette lettre ?'))return;S.letters=S.letters.filter(l=>l.id!==id);save();renderLetters();if(cur==='home')renderBanners();}
 function openLetter(id){
@@ -4647,10 +4703,57 @@ function openLetter(id){
 }
 
 function renderMotHero(){
-  const q=curQuote(),cov=S.settings.motCover||'lib:stars';
-  $('#motHero').innerHTML=`<div class="pghero"><div class="img" style="${bgStyle(photoSrc(cov,2000))}"></div><div class="ov"><div class="eyebrow">Motivation</div>${q?`<blockquote>« ${esc(q.text)} »</blockquote>${q.author?`<cite>${esc(q.author)}</cite>`:''}`:'<h1 class="display">Ce qui me fait avancer</h1>'}</div>
-    <div class="acts"><button class="btn sm" onclick="qOff++;renderMotHero()">Autre citation</button><button class="btn sm" onclick="editQuotes()">Mes citations</button><button class="btn sm" onclick="pickPhoto(S.settings.motCover||'lib:stars',id=>{S.settings.motCover=id||'lib:stars';save();renderMotHero();})">Changer l'image</button></div></div>`;
+  const q=curQuote(),cov=S.settings.motCover||'lib:stars',th=S.settings.qTheme||'',themes=quoteThemes(),nf=S.quotes.filter(x=>x.fav).length;
+  const chip=(v,l)=>`<button class="qchip ${th===v?'on':''}" data-qt="${esc(v)}">${l}</button>`;
+  $('#motHero').innerHTML=`<div class="pghero"><div class="img" style="${bgStyle(photoSrc(cov,2000))}"></div><div class="ov"><div class="eyebrow">Motivation${q&&th?` · ${esc(th==='fav'?'Mes favorites':th)}`:''}</div>${q?`<blockquote>« ${esc(q.text)} »</blockquote><div class="q-row">${q.author?`<cite>${esc(q.author)}</cite>`:''}<button class="q-fav ${q.fav?'on':''}" title="${q.fav?'Retirer de mes favorites':'Ajouter à mes favorites : elle reviendra plus souvent'}" onclick="toggleQuoteFav()">${q.fav?'♥':'♡'}</button></div>`:'<h1 class="display">Ce qui me fait avancer</h1>'}
+      <div class="qchips">${chip('','Toutes')}${nf?chip('fav','♥ Favorites'):''}${themes.map(t=>chip(t,esc(t))).join('')}</div>
+      <button class="sos-btn" onclick="openNoMotivation()">🆘 Jour sans envie</button></div>
+    <div class="acts"><button class="btn sm" onclick="qOff++;renderMotHero()">Autre citation</button><button class="btn sm" onclick="editQuotes()">Mes citations</button><button class="btn sm" onclick="pickPhoto(S.settings.motCover||'lib:stars',id=>{S.settings.motCover=id||'lib:stars';save();renderMotHero();})">Changer l'image</button></div></div>
+    ${motCallouts()}`;
 }
+/* ===== Citations : favorites et thèmes. Un thème saisi (texte | auteur | thème) prime ; sinon il est deviné à partir des mots ===== */
+function quoteTheme(q){
+  if(q.theme)return q.theme;const t=(q.text||'').toLowerCase();
+  if(/argent|invest|bourse|march|intérêt|riche|richesse|prix|valeur|risque|capital|dette|épargn/.test(t))return 'Investissement';
+  if(/discipline|habitude|chaque jour|effort|travail|répét|constan|patien/.test(t))return 'Discipline';
+  if(/peur|oser|courage|échec|échou|difficile|tomber|abandonn|douleur/.test(t))return 'Courage';
+  return 'Sagesse';
+}
+const quoteThemes=()=>Array.from(new Set(S.quotes.map(quoteTheme))).sort((a,b)=>a.localeCompare(b,'fr'));
+/* Citations du moment : filtrées par le thème choisi ; une favorite compte deux fois, donc revient plus souvent */
+function quotePool(){
+  const th=S.settings.qTheme||'',all=S.quotes;let p=th==='fav'?all.filter(q=>q.fav):th?all.filter(q=>quoteTheme(q)===th):all;
+  if(!p.length)p=all;return p.flatMap(q=>q.fav&&th!=='fav'?[q,q]:[q]);
+}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#motHero [data-qt]');if(!b)return;S.settings.qTheme=b.dataset.qt;qOff=0;save();renderMotHero();});
+function toggleQuoteFav(){const q=curQuote();if(!q)return;q.fav=!q.fav;save();toast(q.fav?'Ajoutée à tes favorites.':'Retirée de tes favorites.');renderMotHero();}
+/* ===== « Jour sans envie » : tout ce qui te remet en route, réuni sur un écran calme ===== */
+function plainFirst(html,n){const t=plainText(html||'').replace(/\s+/g,' ').trim();if(t.length<=n)return t;const c=t.slice(0,n);return c.slice(0,c.lastIndexOf(' ')>n*.6?c.lastIndexOf(' '):n)+'…';}
+function openNoMotivation(){
+  const why=plainFirst(S.why,420),anti=plainFirst(S.anti,300),w=allWins(),pick=[...w].sort(()=>Math.random()-.5).slice(0,3);
+  const dreams=S.dreams.filter(d=>!d.done),dr=dreams.length?dreams[Math.floor(Math.random()*dreams.length)]:null,src=dr?photoSrc(dr.cover,1200):'';
+  const qs=S.quotes,q=qs.length?qs[Math.floor(Math.random()*qs.length)]:null;
+  const d=today(),todo=(d.priorities||[]).find(p=>p.text&&!p.done);
+  const act=todo?`Fais juste ceci : <b>${esc(todo.text)}</b>. Rien d'autre pour l'instant.`:(d.priorities||[]).length?'Tes objectifs du jour sont faits. Repose-toi sans culpabiliser.':'Fixe un seul objectif pour aujourd\'hui. Un seul, petit.';
+  runRitual({bg:ritualBg(),finishLabel:todo||(d.priorities||[]).length?"C'est parti":'Fixer mon objectif',steps:[{html:()=>`<div class="sos">
+    <div class="eyebrow">Jour sans envie</div><h2 class="rt-h display">Tu n'as pas besoin d'envie. Juste du premier pas.</h2>
+    ${why?`<div class="sos-b"><span>✦ Mon pourquoi</span><p>${esc(why)}</p></div>`:''}
+    ${anti?`<div class="sos-b red"><span>⊘ Ce que je refuse</span><p>${esc(anti)}</p></div>`:''}
+    ${dr?`<div class="sos-dream">${src?`<img src="${src}" alt="">`:''}<div><span>Ce qui me fait rêver</span><b>${esc(dr.title)}</b></div></div>`:''}
+    ${pick.length?`<div class="sos-b gold"><span>🏆 Ce que tu as déjà accompli</span>${pick.map(x=>`<p>${x.ic} ${esc(x.text)} <small>${fmtDate(x.date)}</small></p>`).join('')}</div>`:''}
+    ${q?`<blockquote class="sos-q">« ${esc(q.text)} »${q.author?`<cite>${esc(q.author)}</cite>`:''}</blockquote>`:''}
+    <div class="sos-act">${act}</div></div>`}],
+    finish:()=>{if(!todo&&!(d.priorities||[]).length)openMorning();},skip:()=>{}});
+}
+/* Encarts en haut de l'onglet : lettre prête à ouvrir, lettre de l'année à écrire */
+function motCallouts(){
+  const b=[],lr=lettersReady();
+  if(lr.length)b.push(`<button class="mot-call gold" onclick="openLetter('${lr[0].id}')"><span>✉</span><div><b>Une lettre de toi t'attend</b><small>Écrite le ${fmtDate(lr[0].written)} · clique pour l'ouvrir</small></div></button>`);
+  if(yearLetterDue())b.push(`<button class="mot-call" onclick="editLetter(true)"><span>✍</span><div><b>Écris ta lettre de l'année ${new Date().getFullYear()}</b><small>Elle restera scellée jusqu'au 1er janvier prochain</small></div></button>`);
+  return b.length?`<div class="mot-calls">${b.join('')}</div>`:'';
+}
+/* Lettre annuelle proposée du 1er au 31 janvier, tant qu'aucune lettre n'a été écrite cette année */
+function yearLetterDue(){const n=new Date(),y=String(n.getFullYear());return n.getMonth()===0&&!S.letters.some(l=>(l.written||'').startsWith(y));}
 
 /* ================= Sport ================= */
 let sMonth=0;
@@ -4702,14 +4805,32 @@ function sportTarget(){
 }
 
 /* ================= Victoires ================= */
-function memoryWin(){const w=S.wins;if(!w.length)return null;const lim=dk(addDays(new Date(),-7)),old=w.filter(x=>x.date<lim),pool=old.length?old:w;return pool[hash(dk())%pool.length];}
+/* Toutes les victoires : celles notées à la main + les grands accomplissements, ajoutés tout seuls (jamais stockés : ils suivent leurs objectifs) */
+function allWins(){
+  const out=S.wins.filter(w=>w&&w.date).map(w=>({id:w.id,date:w.date,text:w.text,ic:'⭐',auto:false}));
+  const ok=d=>/^\d{4}-\d{2}-\d{2}$/.test(d||'');
+  S.goals.forEach(g=>{if(g.progress>=100&&ok(g.doneAt))out.push({date:g.doneAt,text:`Objectif atteint : ${g.title}`,ic:'🏆',auto:true,go:`openGoal('${g.id}')`});});
+  (S.lifeGoals||[]).forEach(g=>{if(g.done&&ok(g.doneAt))out.push({date:g.doneAt,text:`Objectif de vie réalisé : ${g.t}`,ic:'🌟',auto:true});});
+  S.dreams.forEach(d=>{if(d.done&&ok(d.doneAt))out.push({date:d.doneAt,text:`Rêve réalisé : ${d.title}`,ic:'💫',auto:true,go:`editDream('${d.id}')`});});
+  S.skills.forEach(s=>{const st=s.stages||[];if(st.length&&st.every(x=>x.done&&ok(x.doneAt)))out.push({date:st.reduce((m,x)=>x.doneAt>m?x.doneAt:m,''),text:`Apprentissage terminé : ${s.name}`,ic:'🎓',auto:true});});
+  return out.sort((a,b)=>b.date.localeCompare(a.date));
+}
+/* « Il y a 1 an / 6 mois / 1 mois » : une victoire de la même période (à 3 jours près) ; sinon un souvenir tiré au hasard du jour */
+function memoryWin(){
+  const w=allWins();if(!w.length)return null;const n=new Date();
+  for(const [m,l] of [[12,'Il y a 1 an'],[6,'Il y a 6 mois'],[1,'Il y a 1 mois']]){const c=new Date(n.getFullYear(),n.getMonth()-m,n.getDate()),lo=dk(addDays(c,-3)),hi=dk(addDays(c,3));const f=w.filter(x=>x.date>=lo&&x.date<=hi);if(f.length)return {...f[hash(dk())%f.length],lab:l};}
+  const lim=dk(addDays(n,-7)),old=w.filter(x=>x.date<lim),pool=old.length?old:w;return {...pool[hash(dk())%pool.length],lab:'Souvenir du jour'};
+}
 function renderWins(){
-  const m=memoryWin();
-  $('#winMem').innerHTML=m?`<div class="memory" style="font-size:18px;padding:20px 22px"><div class="eyebrow">Souvenir du jour · ${fmtDate(m.date)}</div>${esc(m.text)}</div>`:'';
-  const w=[...S.wins].sort((a,b)=>b.date.localeCompare(a.date));
+  const m=memoryWin(),w=allWins();
+  $('#winMem').innerHTML=m?`<div class="memory" style="font-size:18px;padding:20px 22px"><div class="eyebrow">${m.lab} · ${fmtDate(m.date)}</div>${m.ic} ${esc(m.text)}</div>`:'';
   if(!w.length){$('#winList').innerHTML=`<div class="empty">Aucune victoire notée pour l'instant.<br><button class="btn primary" onclick="editWin()">Noter ma première victoire</button></div>`;return;}
+  /* Compteur par année, puis la frise mois par mois */
+  const years={};w.forEach(x=>{const y=x.date.slice(0,4);years[y]=(years[y]||0)+1;});
+  const ys=Object.keys(years).sort().reverse();
   const g={};w.forEach(x=>{const k=x.date.slice(0,7);(g[k]=g[k]||[]).push(x);});
-  $('#winList').innerHTML=Object.entries(g).map(([k,xs])=>`<div class="month"><h3>${parse(k+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})} · ${xs.length}</h3>${xs.map(x=>`<div class="wrow" onclick="editWin('${x.id}')"><span class="d">${parse(x.date).getDate()} ${parse(x.date).toLocaleDateString('fr-FR',{month:'short'})}</span><span>${esc(x.text)}</span></div>`).join('')}</div>`).join('');
+  $('#winList').innerHTML=`<div class="win-years">${ys.map((y,i)=>`<div class="wy ${i?'':'cur'}"><b>${years[y]}</b><span>victoire${years[y]>1?'s':''} en ${y}</span></div>`).join('')}</div>`
+    +Object.entries(g).map(([k,xs])=>`<div class="month"><h3>${parse(k+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})} · ${xs.length}</h3>${xs.map(x=>`<div class="wrow ${x.auto?'auto':''}" onclick="${x.auto?(x.go||''):`editWin('${x.id}')`}" ${x.auto?'title="Ajoutée automatiquement"':''}><span class="d">${parse(x.date).getDate()} ${parse(x.date).toLocaleDateString('fr-FR',{month:'short'})}</span><span>${x.ic} ${esc(x.text)}</span></div>`).join('')}</div>`).join('');
 }
 function editWin(id){
   const x=id?S.wins.find(w=>w.id===id):{text:'',date:dk()};
