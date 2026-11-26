@@ -1549,6 +1549,29 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .cd.empty{background:transparent;border-color:transparent;pointer-events:none}
 .cd.fut{opacity:.45}
 .cd.today{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+/* Complétude du jour : teintes douces (rouge, jaune, vert clair, vert foncé) */
+.cd.rt-r,.cal-leg i.rt-r{--rt:229,105,92}
+.cd.rt-y,.cal-leg i.rt-y{--rt:234,196,84}
+.cd.rt-lg,.cal-leg i.rt-lg{--rt:110,205,128}
+.cd.rt-dg,.cal-leg i.rt-dg{--rt:58,160,98}
+.cd[class*="rt-"]{background:linear-gradient(160deg,rgba(var(--rt),.26),rgba(var(--rt),.13)),rgba(18,21,28,.82);border-color:rgba(var(--rt),.45)}
+.cd.rt-dg{background:linear-gradient(160deg,rgba(var(--rt),.34),rgba(var(--rt),.19)),rgba(18,21,28,.82)}
+/* Grand accomplissement : trophée mis en avant, liseré doré */
+.cd.has-big{box-shadow:inset 0 0 0 1.5px rgba(242,205,120,.75),0 0 18px rgba(242,205,120,.18)}
+.cd-big{position:absolute;top:6px;right:8px;display:flex;gap:2px;font-size:20px;line-height:1;filter:drop-shadow(0 0 6px rgba(242,205,120,.7));animation:cdBig 2.6s ease-in-out infinite}
+.cd.has-big .cd-n{padding-right:28px}
+@keyframes cdBig{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.cd-big{animation:none}}
+.cal-leg{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.cal-leg span{display:inline-flex;align-items:center;gap:6px}
+.cal-leg i{width:14px;height:14px;border-radius:4px;background:rgba(var(--rt),.35);border:1px solid rgba(var(--rt),.6)}
+.cal-leg-n{flex-basis:100%;font-size:12px}
+.cd-rate{position:relative;height:30px;border-radius:10px;background:rgba(255,255,255,.05);overflow:hidden;margin:4px 0 16px;display:flex;align-items:center;padding:0 12px;font-size:13.5px}
+.cd-rate i{position:absolute;left:0;top:0;bottom:0;background:rgba(var(--rt),.35)}
+.cd-rate span{position:relative}
+.cd-rate.rt-r{--rt:229,105,92}.cd-rate.rt-y{--rt:234,196,84}.cd-rate.rt-lg{--rt:110,205,128}.cd-rate.rt-dg{--rt:58,160,98}
+.cdl-big{border-color:rgba(242,205,120,.5)!important;background:linear-gradient(160deg,rgba(242,205,120,.14),rgba(242,205,120,.04))!important}
+.cdl-big h4{color:#f2cd78}
 .cd.sel{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
 .cd-n{font-size:14px;font-weight:600;display:flex;justify-content:space-between;color:var(--text)}
 .cd-n span{font-size:12px;color:var(--muted);font-weight:400}
@@ -3106,6 +3129,10 @@ function syncGoals(St){
     return memo[g.id]=Math.max(0,Math.min(100,Math.round(p)));
   };
   St.goals.forEach(g=>{g.progress=calc(g,0);});
+  /* Date à laquelle un objectif atteint 100 % (pour le calendrier). Les objectifs déjà atteints avant ce suivi reçoivent '?' : date inconnue, jamais affichée */
+  const known=!!(St.settings&&St.settings.goalDoneV1);
+  St.goals.forEach(g=>{if(g.progress>=100){if(!g.doneAt)g.doneAt=known?dk():'?';}else if(g.doneAt)delete g.doneAt;});
+  if(St.settings)St.settings.goalDoneV1=1;
 }
 const isManual=g=>g.mode==='manual'||(g.mode==='auto'||!g.mode)&&!S.goals.some(x=>x.parent===g.id)&&!(g.steps||[]).length;
 function goalSource(g){
@@ -3592,6 +3619,23 @@ function dayActivity(k){
   a.journal=(d.review||'').trim();a.evening=d.evening&&(d.evening.good||d.evening.learned)?d.evening:null;
   a.fin=S.finance.history.find(h=>h.date===k)||null;
   a.habitAll=habitsOn(k);
+  /* Sport du jour : calendrier Sport des habitudes ou séance notée */
+  a.sportDay=((S.sport.days||{})[k]||[]).filter(x=>typeof sportKind==='function'?sportKind(x):true);
+  /* Grands accomplissements du jour : objectif (court, moyen, long terme) atteint, objectif de vie, compétence terminée */
+  a.big=[];
+  S.goals.forEach(g=>{if(g.doneAt===k&&g.progress>=100)a.big.push({ic:'🏆',t:g.title,l:'Objectif '+(hzLabel(g.horizon)||'').toLowerCase()+' atteint'});});
+  (S.lifeGoals||[]).forEach(g=>{if(g.done&&g.doneAt===k)a.big.push({ic:'🌟',t:g.t,l:'Objectif de vie réalisé'});});
+  S.skills.forEach(s=>{const st=s.stages||[];if(st.length&&st.every(x=>x.done&&x.doneAt)&&st.reduce((m,x)=>x.doneAt>m?x.doneAt:m,'')===k)a.big.push({ic:'🎓',t:s.name,l:'Apprentissage terminé'});});
+  /* Complétude de la journée (0 à 1) : moyenne des parts renseignées. Habitudes et objectifs du jour : cochés ÷ prévus ;
+     sessions : temps ÷ 1 h ; sport : compte seulement s'il a été fait (un jour de repos ne pénalise pas) */
+  const sec=a.space.reduce((x,[,v])=>x+v,0),parts=[];
+  if(a.prio.length)parts.push(a.prio.filter(p=>p.done).length/a.prio.length);
+  if(a.habitAll.length)parts.push(a.habit.length/a.habitAll.length);
+  if(parts.length||sec>0)parts.push(Math.min(1,sec/3600));
+  if(a.sportDay.length||a.sport.length)parts.push(1);
+  /* Un jour où rien n'a été noté (aucun objectif fixé, aucune habitude cochée, ni session ni sport) reste sans couleur */
+  const anything=a.prio.length||a.habit.length||sec>0||a.sportDay.length||a.sport.length;
+  a.secTot=sec;a.rate=anything&&parts.length?parts.reduce((x,y)=>x+y,0)/parts.length:null;
   const n={prio:a.prio.filter(p=>p.done).length,habit:a.habit.length,sport:a.sport.length,space:a.space.length,skill:a.skill.length,goal:a.goal.length,life:a.wins.length+(a.journal||a.evening?1:0),fin:a.fin?1:0};
   a.n=n;a.score=Object.entries(n).filter(([kk])=>!calOff.has(kk)).reduce((s,[,v])=>s+v,0);
   return a;
@@ -3646,6 +3690,9 @@ function renderCalYear(){
     const c=scoreColor(s.score),off=(now.getFullYear()-y)*12+(now.getMonth()-m);
     return `<button class="cy-m" style="--c:${c}" onclick="calView='month';calMonth=${-off};calDay=null;renderCalendar()" title="${esc(s.parts.filter(p=>p.pts!==null).map(p=>`${p.l} : ${scoreTxt(Math.round(p.pts*10)/10)}/${p.max}`).join(' · '))}"><div class="cy-n">${name}${s.current?' <small>en cours</small>':''}</div><div class="cy-ring">${scoreRing(s.score,92,8)}</div><div class="cy-l">${scoreWord(s.score)}</div></button>`;}).join('')}</div>`;
 }
+/* Couleur d'un jour selon sa complétude (dayActivity().rate) : rouge, jaune, vert clair, vert foncé */
+const CAL_TIERS=[['r','moins de 25 %'],['y','25 à 50 %'],['lg','50 à 75 %'],['dg','75 % et plus']];
+const calTier=r=>r>=.75?'dg':r>=.5?'lg':r>=.25?'y':'r';
 function renderCalendar(){
   const isY=calView==='year';$('#calMonthBox').style.display=isY?'none':'';$('#calYearBox').style.display=isY?'':'none';
   if(isY){renderCalNav(null);renderCalYear();return;}
@@ -3667,8 +3714,10 @@ function renderCalendar(){
   $('#calFilters').innerHTML=CAL_KINDS.map(([k,ic,l,c])=>`<button class="fchip ${calOff.has(k)?'':'on'}" style="--c:${c}" onclick="calOff.has('${k}')?calOff.delete('${k}'):calOff.add('${k}');renderCalendar()">${ic} ${l}</button>`).join('');
   const show=k=>!calOff.has(k);
   const cell=({dt,k,a})=>{const fut=dt>todayD,lvl=a.score?Math.min(1,a.score/max):0,b=[];
+    const tier=fut||a.rate===null?'':calTier(a.rate),big=a.big.length?`<div class="cd-big" title="${esc(a.big.map(x=>x.l+' : '+x.t).join('\n'))}">${a.big.slice(0,3).map(x=>x.ic).join('')}</div>`:'';
     if(show('prio')&&a.prio.length){const dn=a.n.prio,tt=a.prio.length;b.push(`<span class="cb" style="--c:#f2cd78" title="Objectifs du jour : ${dn}/${tt}">🎯 ${dn}/${tt}</span>`);}
     if(show('habit')&&a.habit.length&&a.habitAll.length){const hd=a.habit.length,ht=a.habitAll.length,pf=hd===ht;b.push(`<span class="cb ${pf?'cb-gold':''}" style="--c:#43b97f" title="Habitudes : ${hd}/${ht}${pf?' · journée parfaite':''}">${pf?'★':'✅'} ${hd}/${ht}</span>`);}
+    if(show('sport')&&a.sportDay.length)b.push(`<span class="cb" style="--c:#e58a5c" title="Sport : ${esc(a.sportDay.map(s=>sportKind(s)[1]).join(', '))}">🏋️ ${a.sportDay.length>1?a.sportDay.length+' sports':esc(sportKind(a.sportDay[0])[1])}</span>`);
     if(show('sport'))a.sport.forEach(s=>{const ty=SPORT_TYPES.find(x=>x[0]===s.type)||SPORT_TYPES[6];b.push(`<span class="cb" style="--c:#e58a5c" title="${esc(ty[2])} · ${s.dur} min">${ty[1]} ${s.dur}′</span>`);});
     if(show('space'))a.space.forEach(([s,v])=>b.push(`<span class="cb" style="--c:#5aa2e6" title="${esc(s.name)} · ${fmtDur(v)}">⏱ ${esc(s.name)}</span>`));
     if(show('skill')&&a.skill.length)b.push(`<span class="cb" style="--c:#a77be0" title="${esc(a.skill.map(([s,x])=>s.name+' : '+x.t).join(' · '))}">📘 ${a.skill.length}</span>`);
@@ -3676,8 +3725,9 @@ function renderCalendar(){
     if(show('life')&&a.wins.length)b.push(`<span class="cb" style="--c:#e0c27a">⭐ ${a.wins.length}</span>`);
     if(show('fin')&&a.fin)b.push(`<span class="cb" style="--c:#8fd1a5">💶 relevé</span>`);
     const dots='';
-    return `<button class="cd ${k===t?'today':''} ${k===calDay?'sel':''} ${fut?'fut':''}" style="--l:${lvl.toFixed(2)}" onclick="calDay='${k}';renderCalendar();if(innerWidth<=700)setTimeout(()=>$('#calDay').scrollIntoView({behavior:'smooth',block:'start'}),30)"><div class="cd-n">${dt.getDate()}${a.journal||a.evening?'<span title="Journal écrit">✎</span>':''}</div><div class="cd-b">${b.slice(0,4).join('')}${b.length>4?`<span class="cb more">+${b.length-4}</span>`:''}</div>${dots?`<div class="cd-h">${dots}</div>`:''}</button>`;};
-  $('#calGrid').innerHTML=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(x=>`<div class="cw">${x}</div>`).join('')+'<div class="cd empty"></div>'.repeat(first)+days.map(cell).join('');
+    return `<button class="cd ${k===t?'today':''} ${k===calDay?'sel':''} ${fut?'fut':''} ${tier?'rt-'+tier:''} ${a.big.length?'has-big':''}" style="--l:${lvl.toFixed(2)}" title="${tier?`Journée réalisée à ${Math.round(a.rate*100)} %`:''}" onclick="calDay='${k}';renderCalendar();if(innerWidth<=700)setTimeout(()=>$('#calDay').scrollIntoView({behavior:'smooth',block:'start'}),30)"><div class="cd-n">${dt.getDate()}${a.journal||a.evening?'<span title="Journal écrit">✎</span>':''}</div>${big}<div class="cd-b">${b.slice(0,4).join('')}${b.length>4?`<span class="cb more">+${b.length-4}</span>`:''}</div>${dots?`<div class="cd-h">${dots}</div>`:''}</button>`;};
+  $('#calGrid').innerHTML=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(x=>`<div class="cw">${x}</div>`).join('')+'<div class="cd empty"></div>'.repeat(first)+days.map(cell).join('')
+    +`<div class="cal-leg"><span>Journée réalisée :</span>${CAL_TIERS.map(([c,l])=>`<span><i class="rt-${c}"></i>${l}</span>`).join('')}<span class="cal-leg-n">selon habitudes, objectifs du jour, temps de session et sport · 🏆 grand accomplissement</span></div>`;
   renderCalDay();
 }
 function renderCalDay(){
@@ -3685,9 +3735,10 @@ function renderCalDay(){
   const a=dayActivity(calDay),sec=(t,c,body)=>body?`<div class="cdl" style="--c:${c}"><h4>${t}</h4>${body}</div>`:'';
   const li=(txt,ok)=>`<div class="cdi ${ok===false?'no':''}">${ok===undefined?'':ok?'<b>✓</b>':'<b>○</b>'}<span>${txt}</span></div>`;
   const parts=[
+    a.big.length?`<div class="cdl cdl-big"><h4>🏆 Grand accomplissement</h4>${a.big.map(x=>`<div class="cdi"><b>${x.ic}</b><span><b>${esc(x.t)}</b> · <span class="muted">${esc(x.l)}</span></span></div>`).join('')}</div>`:'',
     sec('🎯 Objectifs du jour','#f2cd78',a.prio.map(p=>li(esc(p.text),!!p.done)).join('')),
     sec('✅ Habitudes'+(a.habitAll.length&&a.habit.length===a.habitAll.length?' · journée parfaite ★':''),'#43b97f',a.habitAll.map(h=>li(`<span class="em">${h.icon}</span> ${esc(h.name)}`,!!h.log[calDay])).join('')),
-    sec('🏋️ Sport','#e58a5c',a.sport.map(s=>{const ty=SPORT_TYPES.find(x=>x[0]===s.type)||SPORT_TYPES[6];return li(`${ty[1]} ${esc(ty[2])} · ${s.dur} min${s.note?` · <span class="muted">${esc(s.note)}</span>`:''}`);}).join('')),
+    sec('🏋️ Sport','#e58a5c',a.sportDay.map(s=>{const sk=sportKind(s);return sk?li(`<span style="color:${sk[2]}">●</span> ${esc(sk[1])}`):'';}).join('')+a.sport.map(s=>{const ty=SPORT_TYPES.find(x=>x[0]===s.type)||SPORT_TYPES[6];return li(`${ty[1]} ${esc(ty[2])} · ${s.dur} min${s.note?` · <span class="muted">${esc(s.note)}</span>`:''}`);}).join('')),
     sec('⏱ Sessions','#5aa2e6',a.space.map(([s,v])=>li(`${esc(s.name)} · <b class="gold">${fmtDur(v)}</b>`)).join('')),
     sec('📘 Apprentissage','#a77be0',a.skill.map(([s,x])=>li(`<b>${esc(s.name)}</b> · ${esc(x.t)}`,true)).join('')),
     sec('🏁 Objectifs','#4fc3c7',a.goal.map(([g,x])=>li(`<b>${esc(g.title)}</b> · ${esc(x.t)}`,true)).join('')),
@@ -3695,7 +3746,7 @@ function renderCalDay(){
     sec('⭐ Victoires','#e0c27a',a.wins.map(w=>li(esc(w.text))).join('')),
     sec('✎ Journal','#c8d0dc',(a.evening?(a.evening.good?`<p><span class="muted">Ce qui s'est bien passé :</span> ${esc(a.evening.good)}</p>`:'')+(a.evening.learned?`<p><span class="muted">Ce que j'ai appris :</span> ${esc(a.evening.learned)}</p>`:''):'')+(a.journal?`<p class="cd-j">${esc(a.journal)}</p>`:''))
   ].join('');
-  el.innerHTML=`<div class="eyebrow">${calDay===dk()?"Aujourd'hui":'Ce jour-là'}</div><h3 class="display cd-t">${fmtDate(calDay,{weekday:'long',day:'numeric',month:'long'}).replace(/^./,c=>c.toUpperCase())}</h3>${parts||'<div class="empty">Rien d’enregistré ce jour-là.</div>'}`;
+  el.innerHTML=`<div class="eyebrow">${calDay===dk()?"Aujourd'hui":'Ce jour-là'}</div><h3 class="display cd-t">${fmtDate(calDay,{weekday:'long',day:'numeric',month:'long'}).replace(/^./,c=>c.toUpperCase())}</h3>${a.rate!==null&&parse(calDay)<=new Date()?`<div class="cd-rate rt-${calTier(a.rate)}"><i style="width:${Math.round(a.rate*100)}%"></i><span>Journée réalisée à <b>${Math.round(a.rate*100)} %</b></span></div>`:''}${parts||'<div class="empty">Rien d’enregistré ce jour-là.</div>'}`;
 }
 
 /* ================= Habitudes ================= */
