@@ -772,7 +772,13 @@ body.web .paste-or{display:none}
 .dh2-s{justify-self:start;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;color:#0a0d12}
 .dh2-d{font-size:13.5px;color:var(--muted);white-space:nowrap;display:inline-block}.dh2-d::first-letter{text-transform:uppercase}
 .dh2-items{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
-.dh2-items span{display:inline-flex;gap:6px;align-items:baseline}
+.dh2-items span,.dh2-items button{display:inline-flex;gap:6px;align-items:baseline}
+.dh2-items button{border:0;background:none;color:inherit;font:inherit;padding:3px 7px;margin:-3px -7px;border-radius:8px;cursor:pointer;text-align:left}
+.dh2-items button:hover{background:rgba(255,255,255,.07)}
+.dh2-items .ko:hover i{color:var(--green);opacity:1}
+.dh2-items .dh2-ed{color:var(--muted);opacity:0;transition:opacity .15s}
+.dh2-row:hover .dh2-ed{opacity:.8}.dh2-items .dh2-ed:hover{opacity:1;color:var(--text)}
+@media(hover:none){.dh2-items .dh2-ed{opacity:.6}}
 .dh2-items .ok i{color:var(--green);font-style:normal;font-weight:700}
 .dh2-items .ko{color:var(--muted)}.dh2-items .ko i{font-style:normal;opacity:.7}
 @media(max-width:700px){.dh2-row{grid-template-columns:48px 1fr;gap:4px 10px}.dh2-items{grid-column:1/-1}}
@@ -3039,7 +3045,7 @@ function paintDailyHist(){
   const shown=past.slice(0,dailyShow),months=[];shown.forEach(k=>{const m=k.slice(0,7);let g=months[months.length-1];if(!g||g.m!==m)months.push(g={m,ks:[]});g.ks.push(k);});
   const allOf=m=>past.filter(k=>k.startsWith(m)),rateOf=ks=>{const it=ks.flatMap(dayItems);return it.length?Math.round(it.filter(p=>p.done).length/it.length*100):0;};
   el.innerHTML=past.length?months.map(g=>{const ks=allOf(g.m);return `<div class="dh2-month"><div class="dh2-mh"><b>${new Date(g.m+'-15T12:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</b><span>${rateOf(ks)} % réalisés · ${ks.length} jour${ks.length>1?'s':''}</span></div>
-      ${g.ks.map(k=>{const it=dayItems(k),d=it.filter(p=>p.done).length;return `<div class="dh2-row"><span class="dh2-s dd-s ${d===it.length?'full':d?'part':'none'}">${d}/${it.length}</span><span class="dh2-d">${fmtDate(k,{weekday:'short',day:'numeric',month:'short'})}</span><div class="dh2-items">${it.map(p=>`<span class="${p.done?'ok':'ko'}"><i>${p.done?'✓':'○'}</i>${esc(p.text)}</span>`).join('')}</div></div>`;}).join('')}</div>`;}).join('')
+      ${g.ks.map(k=>{const it=dayItems(k),d=it.filter(p=>p.done).length;return `<div class="dh2-row"><span class="dh2-s dd-s ${d===it.length?'full':d?'part':'none'}">${d}/${it.length}</span><span class="dh2-d">${fmtDate(k,{weekday:'short',day:'numeric',month:'short'})}</span><div class="dh2-items">${it.map((p,i)=>`<button class="${p.done?'ok':'ko'}" onclick="toggleDaily('${k}',${i})" title="${p.done?'Décocher':'Cocher : je l\'ai fait'}"><i>${p.done?'✓':'○'}</i>${esc(p.text)}</button>`).join('')}<button class="dh2-ed" onclick="editPastDaily('${k}')" title="Modifier les objectifs de ce jour">✎</button></div></div>`;}).join('')}</div>`;}).join('')
     +(past.length>dailyShow?`<div style="text-align:center;margin-top:14px"><button class="btn" onclick="dailyShow+=60;paintDailyHist()">Voir les jours plus anciens (${past.length-dailyShow})</button></div>`:'')
     :`<div class="empty">Tes objectifs du jour apparaîtront ici jour après jour, avec ce que tu as réalisé ou non.</div>`;
 }
@@ -3057,6 +3063,16 @@ function renderDaily(){
   </div>`;
 }
 function toggleDaily(k,i){const it=dayItems(k)[i];if(!it)return;it.done=!it.done;save();renderDaily();paintDailyHist();if(k===dk()&&cur==='home')renderPriorities();}
+/* Modifier le texte des objectifs d'un jour passé (une ligne par objectif ; une ligne vidée le retire, une ligne ajoutée en crée un) */
+function editPastDaily(k){
+  const it=dayItems(k);
+  modal({title:'Objectifs du '+fmtDate(k,{weekday:'long',day:'numeric',month:'long'}),fields:[{key:'t',label:'Un objectif par ligne',type:'textarea',rows:5,value:it.map(p=>p.text).join('\n')}],
+    onSave:v=>{const lines=String(v.t||'').split('\n').map(s=>s.trim()).filter(Boolean);
+      const d=S.days[k]=S.days[k]||{};
+      d.priorities=lines.map(t=>{const old=it.find(p=>p.text===t);return old?old:{text:t,goal:'',done:false};});
+      save();renderDaily();paintDailyHist();}});
+  const o=[...document.querySelectorAll('.overlay')].pop();if(o)o.style.zIndex=60;
+}
 function carryDaily(k,i){const it=dayItems(k)[i];const d=today();if(d.priorities.some(p=>p.text===it.text)){toast('Déjà dans tes objectifs du jour.');return;}d.priorities.push({text:it.text,goal:it.goal||'',done:false});save();toast('Ajouté à tes objectifs du jour.');renderDaily();paintDailyHist();}
 
 /* ================= Objectifs (long, moyen, court terme) ================= */
