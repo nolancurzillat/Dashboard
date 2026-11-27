@@ -388,7 +388,152 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .qchip:hover{background:rgba(255,255,255,.12)}.qchip.on{background:rgba(242,205,120,.25);border-color:#f2cd78;color:#fff}
 .btn.sos-mini{border-color:rgba(160,190,255,.35);background:rgba(90,130,230,.16)}
 .btn.sos-mini:hover{background:rgba(90,130,230,.28)}
-/* Page « Jour sans envie » */
+/* « Jour sans envie » : parcours plein écran à faire défiler (préfixe nm-) */
+.nm-ov{position:fixed;inset:0;z-index:400;background:#04060b;color:#eef2fa;opacity:0;transition:opacity .55s ease;outline:none}
+.nm-ov.on{opacity:1}.nm-ov.out{opacity:0}
+.nm-scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;scrollbar-width:none}
+.nm-scroll::-webkit-scrollbar{display:none}
+.nm-s{position:relative;height:100vh;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.nm-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:6;background:linear-gradient(90deg,#f2cd78,#8fb2ff);transition:width .5s ease;box-shadow:0 0 12px rgba(242,205,120,.6)}
+.nm-x{position:fixed;top:18px;right:20px;z-index:6;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(10,13,22,.55);color:#fff;font-size:16px;cursor:pointer;backdrop-filter:blur(8px)}
+.nm-x:hover{background:rgba(255,255,255,.14)}
+.nm-dots{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:6;display:flex;flex-direction:column;gap:16px}
+.nm-dots button{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:transparent;padding:0;cursor:pointer;position:relative;transition:.3s}
+.nm-dots button.on{background:#f2cd78;border-color:#f2cd78;box-shadow:0 0 12px rgba(242,205,120,.8);transform:scale(1.3)}
+.nm-dots button span{position:absolute;right:22px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:12px;color:#dfe6f3;opacity:0;transition:opacity .25s;pointer-events:none;text-shadow:0 1px 6px #000}
+.nm-dots:hover button span{opacity:.9}
+.nm-bg{position:absolute;inset:-5%;background-size:cover;background-position:center;animation:nmKen 28s ease-in-out infinite alternate}
+@keyframes nmKen{from{transform:scale(1) translate(0,0)}to{transform:scale(1.15) translate(-2.5%,-2%)}}
+.nm-shade{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(4,6,11,.35),rgba(4,6,11,.88) 85%)}
+.nm-in{position:relative;z-index:2;text-align:center;padding:0 8vw;max-width:1120px;width:100%;box-sizing:border-box}
+.nm-eyebrow{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#f2cd78;font-weight:600}
+.nm-h{font-size:clamp(34px,6.2vw,82px);font-weight:800;line-height:1.04;margin:14px 0 18px;letter-spacing:-.025em;color:#fff}
+.nm-h-sm{font-size:clamp(26px,4vw,52px);margin-top:42px}
+.nm-h em{font-style:normal;background:linear-gradient(90deg,#fff1c6,#f2cd78 45%,#c99a3d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nm-sub{font-size:clamp(15px,1.6vw,19px);color:#c2cbdb;line-height:1.55;max-width:640px;margin:0 auto}
+.nm-btns{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+.nm-btn{border-radius:999px;padding:13px 26px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;backdrop-filter:blur(8px);transition:.25s}
+.nm-btn:hover{background:rgba(255,255,255,.16)}
+.nm-btn.gold{background:#f2cd78;color:#1c1508;border-color:#f2cd78;box-shadow:0 8px 30px rgba(242,205,120,.35)}
+.nm-btn.gold:hover{background:#f7dc97}.nm-btn:disabled{opacity:.55;cursor:default}
+.nm-down{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);font-size:13px;color:#9aa6bd;letter-spacing:.06em;animation:nmBob 2.2s ease-in-out infinite;z-index:2}
+@keyframes nmBob{50%{transform:translate(-50%,6px)}}
+/* Apparition des éléments de chaque écran, en cascade */
+.nm-s .nm-rv{opacity:0;transform:translateY(26px);transition:opacity 1s ease var(--d,0s),transform 1s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.nm-s.in .nm-rv{opacity:1;transform:none}
+/* 1. Respirer */
+.nm-s0 .nm-bg{filter:blur(16px) brightness(.42);inset:-10%}
+.nm-orb{width:140px;height:140px;border-radius:50%;margin:0 auto 34px;background:radial-gradient(circle at 36% 30%,#fffaf0,#f7dc97 22%,#f2cd78 42%,rgba(242,205,120,.18) 66%,transparent 70%);box-shadow:0 0 90px rgba(242,205,120,.45);animation:nmFloat 6s ease-in-out infinite}
+.nm-s.in .nm-orb.nm-rv{transition:opacity 1s,transform 4s ease-in-out}
+.nm-s.in .nm-orb.inhale{animation:none;transform:scale(1.75)}
+.nm-s.in .nm-orb.exhale{animation:none;transform:scale(.8);transition:opacity 1s,transform 6s ease-in-out}
+@keyframes nmFloat{50%{transform:translateY(-10px) scale(1.04)}}
+.nm-breath{min-height:30px;margin-top:6px;font-size:21px;color:#f7dc97;letter-spacing:.06em;font-family:Georgia,'Times New Roman',serif;font-style:italic}
+/* 2. Le mur des rêves */
+.nm-wall{background:#04060b}
+.nm-cols{position:absolute;inset:-18vh -6vw;display:flex;gap:16px;transform:rotate(-7deg)}
+.nm-col{flex:1;display:flex;flex-direction:column;gap:16px;animation:nmUp var(--dur,60s) linear infinite;will-change:transform}
+.nm-col.rev{animation-name:nmDown}
+@keyframes nmUp{from{transform:translateY(0)}to{transform:translateY(calc(-50% - 8px))}}
+@keyframes nmDown{from{transform:translateY(calc(-50% - 8px))}to{transform:translateY(0)}}
+.nm-cols:hover .nm-col{animation-play-state:paused}
+.nm-tile{flex:none;border-radius:18px;background-size:cover;background-position:center;position:relative;cursor:zoom-in;filter:brightness(.62) saturate(1.05);transition:transform .45s cubic-bezier(.2,.7,.2,1),filter .45s,box-shadow .45s}
+.nm-tile:hover{transform:scale(1.06);filter:brightness(1.05) saturate(1.15);box-shadow:0 20px 50px rgba(0,0,0,.6);z-index:2}
+.nm-tile span{position:absolute;left:14px;right:14px;bottom:12px;font-size:13.5px;font-weight:600;text-shadow:0 1px 8px #000;opacity:0;transform:translateY(6px);transition:.35s}
+.nm-tile:hover span{opacity:1;transform:none}
+.nm-veil{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 52% 40% at center,rgba(4,6,11,.86),rgba(4,6,11,.35) 72%,rgba(4,6,11,.6))}
+.nm-wall .nm-in{pointer-events:none}
+.nm-cycle{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:clamp(22px,3vw,38px);color:#f7dc97;min-height:1.4em;margin-bottom:12px;transition:opacity .45s}
+/* 3. Ton pourquoi */
+.nm-why .nm-bg{filter:brightness(.4) saturate(.9)}
+.nm-mark{font-family:Georgia,serif;font-size:130px;line-height:.55;color:#f2cd78;opacity:.6;margin-top:18px}
+.nm-quote{font-family:Georgia,'Times New Roman',serif;font-size:clamp(26px,4.4vw,60px);line-height:1.22;color:#fff;margin:10px auto 0;max-width:980px;cursor:pointer;min-height:2.5em;transition:opacity .38s,transform .38s,filter .38s;text-shadow:0 2px 24px rgba(0,0,0,.5)}
+.nm-quote.long{font-size:clamp(21px,2.9vw,40px)}
+.nm-quote.swap{opacity:0;transform:translateY(14px);filter:blur(8px)}
+.nm-qa{color:#f2cd78;font-size:15px;margin-top:14px;min-height:20px}
+.nm-ticks{display:flex;gap:6px;justify-content:center;margin-top:30px}
+.nm-ticks i{width:30px;height:3px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden;position:relative}
+.nm-ticks i.done{background:#f2cd78}
+.nm-ticks i.on::after{content:'';position:absolute;inset:0;background:#f2cd78;transform:translateX(-100%);animation:nmTick var(--t,5s) linear forwards}
+@keyframes nmTick{to{transform:none}}
+.nm-tap{font-size:12.5px;color:#8f9bb3;margin-top:14px}
+.nm-values{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:30px}
+.nm-values span{border:1px solid rgba(242,205,120,.45);color:#f7dc97;border-radius:999px;padding:7px 16px;font-size:13.5px;background:rgba(242,205,120,.08);backdrop-filter:blur(6px)}
+/* 4. La constellation */
+.nm-stars{background:radial-gradient(ellipse at 50% 115%,#1d2a5e,#080b19 58%,#02030a)}
+.nm-sky{position:absolute;inset:0}
+.nm-sky i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.55;animation:nmTw var(--t,3s) ease-in-out var(--d,0s) infinite alternate}
+@keyframes nmTw{to{opacity:.06}}
+.nm-const{position:absolute;inset:0;transition:transform .5s ease-out;z-index:1}
+.nm-const svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.nm-const line{stroke:rgba(170,195,255,.22);stroke-width:1;stroke-dasharray:3 6}
+.nm-const line.g{stroke:rgba(242,205,120,.55);stroke-dasharray:none}
+.nm-star{position:absolute;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;border:none;padding:0;cursor:pointer;background:radial-gradient(circle,#fff,#c7d6ff 42%,rgba(199,214,255,0) 70%);box-shadow:0 0 14px rgba(170,195,255,.85);animation:nmPulse 3.6s ease-in-out var(--d,0s) infinite}
+.nm-star::before{content:'';position:absolute;inset:-14px}
+.nm-star.done{width:24px;height:24px;background:radial-gradient(circle,#fffaf0,#f2cd78 42%,rgba(242,205,120,0) 70%);box-shadow:0 0 26px rgba(242,205,120,.95),0 0 60px rgba(242,205,120,.35)}
+@keyframes nmPulse{50%{box-shadow:0 0 22px rgba(200,215,255,1)}}
+.nm-lab{position:absolute;left:50%;bottom:calc(100% + 14px);transform:translateX(-50%) translateY(6px);width:max-content;max-width:250px;white-space:normal;text-align:left;background:rgba(10,14,26,.92);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:9px 13px;font-size:13.5px;line-height:1.4;color:#eef2fa;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.nm-lab small{display:block;color:#9aa8c4;font-size:11.5px;margin-top:4px}
+.nm-star.done .nm-lab small{color:#f2cd78}
+.nm-star:hover .nm-lab,.nm-star.open .nm-lab,.nm-star:focus-visible .nm-lab{opacity:1;transform:translateX(-50%)}
+.nm-star:hover,.nm-star.open{z-index:3}
+.nm-star.lft .nm-lab{left:-8px;transform:translateY(6px)}.nm-star.rgt .nm-lab{left:auto;right:-8px;transform:translateY(6px)}
+.nm-star.lft:hover .nm-lab,.nm-star.lft.open .nm-lab,.nm-star.rgt:hover .nm-lab,.nm-star.rgt.open .nm-lab{transform:none}
+.nm-stars .nm-in{position:absolute;top:8vh;left:0;right:0;margin:0 auto;pointer-events:none;z-index:2}
+.nm-stars .nm-h{font-size:clamp(30px,4.6vw,60px)}
+/* 5. Ce que tu refuses */
+.nm-refuse{background:radial-gradient(ellipse at 50% 40%,#12141d,#05060a 70%)}
+.nm-ref{margin-top:26px;display:flex;flex-direction:column;gap:14px}
+.nm-ref p{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:clamp(21px,3.1vw,40px);line-height:1.45;color:#9098ab}
+.nm-ref span{background:linear-gradient(#e2685a,#e2685a) no-repeat 0 60%/0% 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size 1.3s ease var(--sd,1s),color 1.3s ease var(--sd,1s)}
+.nm-refuse.in .nm-ref span{background-size:100% 3px;color:#6d7488}
+/* 6. Les victoires */
+.nm-wins{background:radial-gradient(ellipse at 50% 0%,#2a2210,#0a0b12 60%)}
+.nm-big{font-size:clamp(72px,12vw,170px);font-weight:800;line-height:1;margin:10px 0 6px;background:linear-gradient(180deg,#fff4d2,#f2cd78 55%,#b9892c);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.nm-mq{width:100%;overflow:hidden;margin-top:40px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.nm-mq-row{display:flex;gap:14px;width:max-content;animation:nmLeft var(--dur,50s) linear infinite}
+.nm-mq-row.rev{animation-name:nmRight;margin-top:14px}
+.nm-mq:hover .nm-mq-row{animation-play-state:paused}
+@keyframes nmLeft{to{transform:translateX(calc(-50% - 7px))}}
+@keyframes nmRight{from{transform:translateX(calc(-50% - 7px))}to{transform:none}}
+.nm-win{flex:none;display:flex;gap:12px;align-items:center;padding:14px 20px;border-radius:16px;background:rgba(242,205,120,.07);border:1px solid rgba(242,205,120,.24);max-width:380px}
+.nm-win i{font-style:normal;font-size:24px}
+.nm-win b{display:block;font-size:14.5px;font-weight:600;color:#fff}
+.nm-win small{color:#a8b2c6;font-size:12px}
+/* 7. Le plus petit pas */
+.nm-go .nm-bg{filter:brightness(.36)}
+.nm-step{display:flex;max-width:640px;margin:28px auto 0}
+.nm-step input{flex:1;font:inherit;font-size:18px;padding:17px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.24);background:rgba(8,10,18,.6);color:#fff;backdrop-filter:blur(12px);outline:none;text-align:center}
+.nm-step input:focus{border-color:#f2cd78;box-shadow:0 0 0 4px rgba(242,205,120,.18)}
+.nm-step input.nm-shake{animation:nmShake .45s}
+@keyframes nmShake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.nm-sugs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;max-width:760px;margin-left:auto;margin-right:auto}
+.nm-sugs button{border-radius:999px;padding:8px 15px;font:inherit;font-size:13.5px;cursor:pointer;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#dfe6f3;transition:.2s}
+.nm-sugs button:hover{border-color:#f2cd78;color:#f7dc97}
+.nm-hold{position:relative;display:block;margin:36px auto 0;width:136px;height:136px;border-radius:50%;border:none;background:rgba(242,205,120,.12);color:#f7dc97;font:inherit;font-size:14px;font-weight:700;line-height:1.3;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;transition:transform .3s,background .3s}
+.nm-hold:hover{background:rgba(242,205,120,.2)}
+.nm-hold.holding{transform:scale(.95)}
+.nm-hold svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);pointer-events:none}
+.nm-hold circle{fill:none;stroke-width:5;stroke-linecap:round}
+.nm-hold .tr{stroke:rgba(242,205,120,.22)}
+.nm-hold .pg{stroke:#f2cd78;stroke-dasharray:377;stroke-dashoffset:377;transition:stroke-dashoffset .3s ease}
+.nm-hold.holding .pg{stroke-dashoffset:0;transition:stroke-dashoffset 1.4s linear}
+.nm-hold.ok{background:#f2cd78;color:#1c1508;transform:scale(1.08);box-shadow:0 0 60px rgba(242,205,120,.7)}
+.nm-hold.ok .pg{stroke-dashoffset:0}
+.nm-hold span{position:relative}
+.nm-burst{position:absolute;left:50%;top:50%;pointer-events:none}
+.nm-burst i{position:absolute;width:7px;height:7px;border-radius:50%;background:#f2cd78;left:-3.5px;top:-3.5px;animation:nmBurst 1s cubic-bezier(.15,.7,.3,1) forwards;box-shadow:0 0 10px #f2cd78}
+@keyframes nmBurst{to{transform:rotate(var(--a)) translateY(calc(-1 * var(--r))) scale(.3);opacity:0}}
+@media (max-width:700px){
+  .nm-dots{right:10px;gap:12px}.nm-dots button span{display:none}
+  .nm-cols{inset:-15vh -30vw}.nm-col:nth-child(n+5){display:none}
+  .nm-in{padding:0 24px}.nm-mark{font-size:90px}
+  .nm-stars .nm-in{top:7vh}
+}
+@media (prefers-reduced-motion:reduce){
+  .nm-bg,.nm-col,.nm-mq-row,.nm-sky i,.nm-star,.nm-orb,.nm-down{animation:none !important}
+}
+/* Ancienne page « Jour sans envie » (plus utilisée) */
 .sos-ov{position:fixed;inset:0;z-index:400;overflow-y:auto;animation:fade .3s;outline:none}
 .sos-ov.out{opacity:0;transition:opacity .25s}
 .sos-bg{position:fixed;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.45) saturate(1.1);transform:scale(1.08);background-color:#0b1020}
@@ -4694,7 +4839,7 @@ function showColItem(cid,iid){
   document.body.appendChild(ov);
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
   ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();ov.remove();}});
-  ov.addEventListener('click',e=>{if(e.target.closest('[data-a="zoom"]')){viewImage(src,itemTitle(c,it));return;}const a=e.target.dataset&&e.target.dataset.a;if(a==='cancel')ov.remove();if(a==='edit'){ov.remove();editColItem(cid,iid);}});
+  ov.addEventListener('click',e=>{if(e.target.closest('[data-a="zoom"]')){showFullImage(src,itemTitle(c,it));return;}const a=e.target.dataset&&e.target.dataset.a;if(a==='cancel')ov.remove();if(a==='edit'){ov.remove();editColItem(cid,iid);}});
   ov.tabIndex=-1;ov.focus();setTimeout(()=>sharpenThumbs(ov),0);
 }
 const starInput=(id,v)=>`<div class="starin" id="${id}" data-v="${+v||0}">${[1,2,3,4,5].map(i=>`<button type="button" class="${i<=(+v||0)?'on':''}" onclick="const p=this.parentNode,n=+p.dataset.v===${i}?0:${i};p.dataset.v=n;[...p.children].forEach((b,j)=>b.classList.toggle('on',j<n))">★</button>`).join('')}</div>`;
@@ -4852,39 +4997,171 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 function toggleQuoteFav(){const q=curQuote();if(!q)return;q.fav=!q.fav;save();toast(q.fav?'Ajoutée à tes favorites.':'Retirée de tes favorites.');renderMotHero();}
 /* ===== « Jour sans envie » : tout ce qui te remet en route, réuni sur un écran calme ===== */
 function plainFirst(html,n){const t=plainText(html||'').replace(/\s+/g,' ').trim();if(t.length<=n)return t;const c=t.slice(0,n);return c.slice(0,c.lastIndexOf(' ')>n*.6?c.lastIndexOf(' '):n)+'…';}
-/* Plein écran sur mesure : le rêve en fond flouté, des cartes (pourquoi, rêve, refus, victoires), une citation, puis UNE seule action */
+/* « Jour sans envie » : un parcours plein écran à faire défiler, un moment par écran.
+   Respirer · le mur de tes rêves (images qui défilent) · ton pourquoi (phrase par phrase) · ta constellation (objectifs de vie)
+   · ce que tu refuses (barré) · tes victoires · le plus petit pas, à valider en maintenant le bouton (ajouté aux objectifs du jour). */
+function nmShuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+/* Images qui font rêver : rêves d'abord, puis tes photos et la bibliothèque des thèmes affichés sur l'accueil */
+function nmImages(){
+  const out=[],seen=new Set(),add=(src,label)=>{if(src&&!seen.has(src)){seen.add(src);out.push({src,label:label||''});}};
+  const cats=S.settings.libCats||[];
+  S.dreams.filter(d=>!d.done&&d.cover).forEach(d=>add(photoSrc(d.cover,1400),d.title));
+  nmShuffle(PH.filter(p=>!p.hidden&&cats.includes(p.cat))).forEach(p=>add(p.src,p.caption));
+  nmShuffle(libVisible().filter(e=>cats.includes(e.cat))).forEach(e=>add(libUrl(e,1100),e.label));
+  if(out.length<12)nmShuffle(libVisible()).forEach(e=>add(libUrl(e,1100),e.label));
+  return out.slice(0,40);
+}
+const nmSentences=html=>plainText(html||'').split(/\n+|(?<=[.!?…])\s+/).map(s=>s.trim()).filter(s=>s.length>2);
 function openNoMotivation(){
-  document.querySelectorAll('.sos-ov').forEach(x=>x.remove());
-  const ov=document.createElement('div');ov.className='sos-ov';ov.tabIndex=-1;
-  const close=()=>{ov.classList.add('out');removeEventListener('keydown',key,true);setTimeout(()=>ov.remove(),260);};
-  const key=e=>{if(e.key==='Escape'){e.stopPropagation();close();}};
-  const paint=()=>{
-    const why=plainFirst(S.why,380),anti=plainFirst(S.anti,240),pick=[...allWins()].sort(()=>Math.random()-.5).slice(0,3);
-    const dreams=S.dreams.filter(d=>!d.done),dr=dreams.length?dreams[Math.floor(Math.random()*dreams.length)]:null,src=dr?photoSrc(dr.cover,1600):'';
-    const qs=S.quotes,q=qs.length?qs[Math.floor(Math.random()*qs.length)]:null,pr=dr?dreamProgress(dr):null;
-    const d=today(),pri=(d.priorities||[]).filter(p=>p.text),todo=pri.find(p=>!p.done);
-    const actT=todo?esc(todo.text):pri.length?'Repose-toi sans culpabiliser':'Fixer un seul objectif, petit',
-      actS=todo?'Fais juste ça. Rien d’autre pour l’instant.':pri.length?'Tes objectifs du jour sont faits. Le repos fait aussi partie du chemin.':'Un seul. Le reste viendra tout seul.';
-    const empty=!why&&!anti&&!dr&&!pick.length;
-    ov.innerHTML=`<div class="sos-bg" style="${src?bgStyle(src):''}"></div><div class="sos-shade"></div>
-      <div class="sos-wrap">
-        <button class="sos-x" data-a="x" title="Fermer (Échap)">✕</button>
-        <div class="sos-top"><span class="sos-ic">☁</span><div class="eyebrow">Jour sans envie</div><h2 class="display">Pas besoin d’envie.<br>Juste d’un premier pas.</h2><p>Respire. Relis pourquoi tu fais tout ça.</p></div>
-        ${empty?`<div class="sos-card"><p>Remplis « Mon pourquoi », « Ce que je refuse », tes rêves et tes victoires dans l’onglet Motivation : ils apparaîtront ici les jours difficiles.</p></div>`:''}
-        <div class="sos-grid">
-          ${why?`<div class="sos-card why"><span>✦ Mon pourquoi</span><p>${esc(why)}</p></div>`:''}
-          ${dr?`<div class="sos-card dream">${src?`<div class="sos-dimg" style="${bgStyle(src)}"></div>`:''}<div class="sos-dtxt"><span>Ce qui te fait rêver</span><b>${esc(dr.title)}</b>${pr?`<div class="dp-bar"><i style="width:${pr.pct}%"></i></div><small>${pr.pct} % du chemin</small>`:''}</div></div>`:''}
-          ${anti?`<div class="sos-card refuse"><span>⊘ Ce que je refuse</span><p>${esc(anti)}</p></div>`:''}
-          ${pick.length?`<div class="sos-card wins"><span>🏆 Tu l’as déjà fait</span>${pick.map(x=>`<div class="sos-w"><i>${x.ic}</i><div>${esc(x.text)}<small>${fmtDate(x.date)}</small></div></div>`).join('')}</div>`:''}
-        </div>
-        ${q?`<blockquote class="sos-quote"><p>« ${esc(q.text)} »</p>${q.author?`<cite>${esc(q.author)}</cite>`:''}</blockquote>`:''}
-        <div class="sos-action"><div><span>Ta seule mission maintenant</span><b>${actT}</b><small>${actS}</small></div><button class="btn primary" data-a="go">${todo||pri.length?'C’est parti':'Fixer mon objectif'}</button></div>
-        <button class="sos-more" data-a="more">↻ Me montrer d’autres souvenirs</button>
-      </div>`;
-  };
-  ov.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
-    if(a==='x')close();else if(a==='more')paint();else if(a==='go'){const d=today(),pri=(d.priorities||[]).filter(p=>p.text);close();if(!pri.length)setTimeout(()=>openMorning(),280);}});
-  addEventListener('keydown',key,true);paint();document.body.appendChild(ov);ov.focus();
+  document.querySelectorAll('.sos-ov,.nm-ov').forEach(x=>x.remove());
+  const imgs=nmImages(),bgAt=i=>imgs.length?bgStyle(imgs[i%imgs.length].src):'';
+  const dreams=S.dreams.filter(d=>!d.done);
+  let whyItems=nmSentences(S.why).map(t=>({t})),whyIsQuotes=false;
+  if(!whyItems.length&&S.quotes.length){whyItems=nmShuffle(S.quotes).slice(0,4).map(q=>({t:q.text,a:q.author}));whyIsQuotes=true;}
+  const anti=nmSentences(S.anti).slice(0,4);
+  const values=plainText(S.values||'').split(/[,;\n·•]+/).map(s=>s.trim()).filter(s=>s&&s.length<40).slice(0,8);
+  const lg=(S.lifeGoals||[]).filter(g=>g&&g.t);
+  const stars=(lg.length?lg.map(g=>({t:g.t,done:!!g.done,date:g.doneAt})):dreams.map(d=>({t:d.title,done:false}))).slice(0,40);
+  const wins=allWins();
+  const day=today(),pri=(day.priorities||[]).filter(p=>p.text),todo=pri.find(p=>!p.done);
+  const sug=[...new Set([...pri.filter(p=>!p.done).map(p=>p.text),...S.habits.filter(h=>h.name&&!(h.log||{})[dk()]).map(h=>h.name),'Lire 2 pages','10 pompes, maintenant','Ranger mon bureau 2 minutes','Écrire une seule phrase'])].slice(0,6);
+  const sec=[];
+  /* 1. Respirer */
+  sec.push(['Respirer',`<section class="nm-s nm-s0"><div class="nm-bg" style="${bgAt(0)}"></div><div class="nm-shade"></div>
+    <div class="nm-in"><div class="nm-orb nm-rv" id="nmOrb"></div><div class="nm-eyebrow nm-rv" style="--d:.2s">Jour sans envie</div>
+    <h1 class="nm-h nm-rv" style="--d:.35s">Pas besoin d'envie.<br><em>Juste d'un premier pas.</em></h1>
+    <p class="nm-sub nm-rv" style="--d:.5s">Prends une minute. Rappelle-toi ce que tu construis.</p>
+    <div class="nm-breath" id="nmBreath"></div>
+    <div class="nm-btns nm-rv" style="--d:.65s"><button class="nm-btn gold" data-a="breathe">Respirer avec moi</button><button class="nm-btn" data-a="next">Plonger ↓</button></div></div>
+    <div class="nm-down">Fais défiler ↓</div></section>`]);
+  /* 2. Le mur des rêves : colonnes d'images qui défilent en sens contraires */
+  if(imgs.length){
+    const nc=5,cols=Array.from({length:nc},()=>[]);imgs.forEach((x,i)=>cols[i%nc].push(i));
+    const colHtml=cols.map((c,ci)=>{const list=c.slice();let k=ci;while(list.length<5){list.push(k%imgs.length);k+=nc;}
+      const tiles=list.map(i=>`<div class="nm-tile" data-a="tile" data-i="${i}" style="${bgStyle(imgs[i].src)};height:${190+hash(imgs[i].src.slice(-60)+i)%160}px">${imgs[i].label?`<span>${esc(imgs[i].label)}</span>`:''}</div>`).join('');
+      return `<div class="nm-col ${ci%2?'rev':''}" style="--dur:${60+ci*11}s">${tiles}${tiles}</div>`;}).join('');
+    const names=(dreams.length?dreams.map(d=>d.title):imgs.map(x=>x.label).filter(Boolean)).slice(0,12);
+    sec.push(['Tes rêves',`<section class="nm-s nm-wall"><div class="nm-cols">${colHtml}</div><div class="nm-veil"></div>
+      <div class="nm-in"><div class="nm-eyebrow nm-rv">Ce que tu construis</div><h2 class="nm-h nm-rv" style="--d:.15s">Regarde où tu vas.</h2>
+      ${names.length?`<div class="nm-cycle nm-rv" style="--d:.3s" id="nmCycle">${esc(names[0])}</div>`:''}
+      <p class="nm-sub nm-rv" style="--d:.45s">${dreams.length?`${dreams.length} rêve${dreams.length>1?'s':''} t'attend${dreams.length>1?'ent':''}. Chaque petit pas t'en rapproche.`:'Survole une image, clique pour la voir en grand.'}</p></div></section>`]);
+    sec._names=names;
+  }
+  /* 3. Ton pourquoi, phrase par phrase */
+  if(whyItems.length)sec.push(['Ton pourquoi',`<section class="nm-s nm-why"><div class="nm-bg" style="${bgAt(1)}"></div><div class="nm-shade"></div>
+    <div class="nm-in"><div class="nm-eyebrow nm-rv">${whyIsQuotes?'Une phrase pour toi':'Ton pourquoi'}</div><div class="nm-mark nm-rv" style="--d:.1s">“</div>
+    <p class="nm-quote nm-rv" style="--d:.2s" id="nmWhy" data-a="whynext"></p><div class="nm-qa" id="nmWhyA"></div>
+    ${whyItems.length>1?`<div class="nm-ticks nm-rv" style="--d:.35s" id="nmTicks">${whyItems.map(()=>'<i></i>').join('')}</div><div class="nm-tap nm-rv" style="--d:.4s">Touche le texte pour passer à la suite</div>`:''}
+    ${values.length?`<div class="nm-values nm-rv" style="--d:.5s">${values.map(v=>`<span>${esc(v)}</span>`).join('')}</div>`:''}
+    ${whyIsQuotes?`<div class="nm-tap nm-rv" style="--d:.55s">Écris « Mon pourquoi » dans l'onglet Motivation : tes propres phrases apparaîtront ici.</div>`:''}</div></section>`]);
+  /* 4. La constellation des objectifs de vie */
+  if(stars.length){
+    const n=stars.length,cols=Math.max(2,Math.ceil(Math.sqrt(n*1.8))),rows=Math.ceil(n/cols);
+    const pos=stars.map((s,i)=>{const r=Math.floor(i/cols),c0=i%cols,c=r%2?cols-1-c0:c0,h=hash(s.t+'|'+i);
+      return [+(7+((c+.5+((h%46)-23)/100)/cols)*86).toFixed(2),+(33+((r+.5+(((h>>5)%46)-23)/100)/rows)*56).toFixed(2)];});
+    const doneN=stars.filter(s=>s.done).length;
+    sec.push([lg.length?'Ta vie':'Tes rêves',`<section class="nm-s nm-stars"><div class="nm-sky">${Array.from({length:130},()=>`<i style="left:${(Math.random()*100).toFixed(2)}%;top:${(Math.random()*100).toFixed(2)}%;--t:${(2+Math.random()*4).toFixed(1)}s;--d:${(-Math.random()*5).toFixed(1)}s${Math.random()<.15?';width:3px;height:3px':''}"></i>`).join('')}</div>
+      <div class="nm-const" id="nmConst"><svg viewBox="0 0 100 100" preserveAspectRatio="none">${pos.slice(1).map((p,i)=>`<line x1="${pos[i][0]}" y1="${pos[i][1]}" x2="${p[0]}" y2="${p[1]}" vector-effect="non-scaling-stroke"${stars[i].done&&stars[i+1].done?' class="g"':''}/>`).join('')}</svg>
+      ${stars.map((s,i)=>`<button class="nm-star ${s.done?'done':''} ${pos[i][0]<28?'lft':pos[i][0]>72?'rgt':''}" style="left:${pos[i][0]}%;top:${pos[i][1]}%;--d:${(-((i*.37)%3.5)).toFixed(2)}s" data-a="star" aria-label="${esc(s.t)}"><span class="nm-lab">${esc(s.t)}<small>${s.done?'✓ Réalisé'+(/^\d{4}-\d\d-\d\d$/.test(s.date||'')?' le '+esc(fmtDate(s.date)):''):'À vivre'}</small></span></button>`).join('')}</div>
+      <div class="nm-in"><div class="nm-eyebrow nm-rv">${lg.length?'Tes objectifs de vie':'Tes rêves'}</div><h2 class="nm-h nm-rv" style="--d:.15s">Ta constellation.</h2>
+      <p class="nm-sub nm-rv" style="--d:.3s">${lg.length?`${doneN} réalisé${doneN>1?'s':''} sur ${n}. Chaque étoile dorée a commencé par un jour comme celui-ci.`:'Chaque étoile est un rêve que tu veux vivre.'} Touche une étoile.</p></div></section>`]);
+  }
+  /* 5. Ce que tu refuses : chaque phrase se barre */
+  if(anti.length)sec.push(['Ce que tu refuses',`<section class="nm-s nm-refuse"><div class="nm-in"><div class="nm-eyebrow nm-rv">Ce que tu refuses</div>
+    <div class="nm-ref">${anti.map((s,i)=>`<p class="nm-rv" style="--d:${(.15+i*.2).toFixed(2)}s"><span style="--sd:${(.9+i*.55).toFixed(2)}s">${esc(s)}</span></p>`).join('')}</div>
+    <h2 class="nm-h nm-h-sm nm-rv" style="--d:${(.5+anti.length*.3).toFixed(2)}s">Alors avance. <em>Même un tout petit peu.</em></h2></div></section>`]);
+  /* 6. Tes victoires, qui défilent */
+  if(wins.length){
+    const w=nmShuffle(wins).slice(0,24),half=Math.ceil(w.length/2);
+    const fill=a=>{let r=a.slice();while(a.length&&r.length<6)r=r.concat(a);return r;};
+    const row=(a,rev)=>{const f=fill(a),h=f.map(x=>`<div class="nm-win"><i>${x.ic}</i><div><b>${esc(x.text)}</b><small>${esc(fmtDate(x.date))}</small></div></div>`).join('');return `<div class="nm-mq-row ${rev?'rev':''}" style="--dur:${Math.max(32,f.length*7)}s">${h}${h}</div>`;};
+    const yr=String(new Date().getFullYear()),ny=wins.filter(x=>String(x.date).startsWith(yr)).length;
+    sec.push(['Tes victoires',`<section class="nm-s nm-wins"><div class="nm-in"><div class="nm-eyebrow nm-rv">Tu l'as déjà fait</div><div class="nm-big nm-rv" style="--d:.1s" id="nmCount">0</div>
+      <p class="nm-sub nm-rv" style="--d:.25s">victoire${wins.length>1?'s':''} notée${wins.length>1?'s':''}${ny?`, dont ${ny} cette année`:''}. Tu sais faire des choses difficiles.</p></div>
+      <div class="nm-mq nm-rv" style="--d:.4s">${row(w.slice(0,half))}${w.length>2?row(w.slice(half),true):''}</div></section>`]);
+  }
+  /* 7. Le plus petit pas */
+  sec.push(['Un pas',`<section class="nm-s nm-go"><div class="nm-bg" style="${bgAt(2)}"></div><div class="nm-shade"></div>
+    <div class="nm-in"><div class="nm-eyebrow nm-rv">Ta seule mission</div><h2 class="nm-h nm-rv" style="--d:.15s">Le plus petit pas.<br><em>Maintenant.</em></h2>
+    <p class="nm-sub nm-rv" style="--d:.3s">Pas toute la journée. Juste la prochaine action, assez petite pour ne pas pouvoir dire non.</p>
+    <div class="nm-step nm-rv" style="--d:.4s"><input id="nmStep" maxlength="120" placeholder="Ex : ouvrir mon livre et lire une page" value="${esc(todo?todo.text:'')}"></div>
+    <div class="nm-sugs nm-rv" style="--d:.5s">${sug.map(s=>`<button data-a="sug" data-v="${esc(s)}">${esc(s)}</button>`).join('')}</div>
+    <button class="nm-hold nm-rv" style="--d:.6s" id="nmHold"><svg viewBox="0 0 132 132"><circle class="tr" cx="66" cy="66" r="60"/><circle class="pg" cx="66" cy="66" r="60"/></svg><span>Maintiens<br>pour t'engager</span></button></div></section>`]);
+
+  const ov=document.createElement('div');ov.className='nm-ov';ov.tabIndex=-1;
+  ov.innerHTML=`<div class="nm-bar" id="nmBar"></div><button class="nm-x" data-a="x" title="Fermer (Échap)">✕</button>
+    <div class="nm-dots" role="navigation">${sec.map(([l],i)=>`<button data-a="dot" data-i="${i}" aria-label="${esc(l)}"><span>${esc(l)}</span></button>`).join('')}</div>
+    <div class="nm-scroll" id="nmScroll">${sec.map(x=>x[1]).join('')}</div>`;
+  const htmlOv=document.documentElement.style.overflow;document.documentElement.style.overflow='hidden';
+  document.body.appendChild(ov);setTimeout(()=>ov.classList.add('on'),20);ov.focus();
+  const sc=ov.querySelector('#nmScroll'),secs=[...sc.querySelectorAll('.nm-s')],dots=[...ov.querySelectorAll('.nm-dots button')];
+  let cur=0,cycleT=null,whyT=null,breathT=[],holdT=null,closed=false;
+  const goTo=i=>{i=Math.max(0,Math.min(secs.length-1,i));sc.scrollTo({top:secs[i].offsetTop,behavior:'smooth'});};
+  const close=()=>{if(closed)return;closed=true;clearInterval(cycleT);clearTimeout(whyT);breathT.forEach(clearTimeout);clearTimeout(holdT);io.disconnect();
+    removeEventListener('keydown',key,true);document.documentElement.style.overflow=htmlOv;ov.classList.add('out');setTimeout(()=>ov.remove(),520);};
+  /* Pourquoi : une phrase à la fois, durée selon la longueur, petites barres de progression */
+  const whyEl=ov.querySelector('#nmWhy'),whyA=ov.querySelector('#nmWhyA'),ticks=[...ov.querySelectorAll('#nmTicks i')];let wi=-1;
+  const showWhy=i=>{if(!whyEl)return;clearTimeout(whyT);wi=(i+whyItems.length)%whyItems.length;const it=whyItems[wi],ms=Math.min(9000,Math.max(4200,it.t.length*60));
+    whyEl.classList.add('swap');
+    setTimeout(()=>{whyEl.textContent=it.t;whyEl.classList.toggle('long',it.t.length>150);whyA.textContent=it.a?'— '+it.a:'';whyEl.classList.remove('swap');},wi===0&&!whyEl.textContent?0:380);
+    ticks.forEach((t,j)=>{t.classList.remove('on');t.classList.toggle('done',j<wi);});
+    const tk=ticks[wi];if(tk){void tk.offsetWidth;tk.style.setProperty('--t',ms+'ms');tk.classList.add('on');}
+    if(whyItems.length>1&&secs[cur]&&secs[cur].classList.contains('nm-why'))whyT=setTimeout(()=>showWhy(wi+1),ms);};
+  /* Mur : le nom du rêve change toutes les 2,6 s */
+  const cyc=ov.querySelector('#nmCycle'),names=sec._names||[];let ni=0;
+  const startCycle=()=>{clearInterval(cycleT);if(!cyc||names.length<2)return;cycleT=setInterval(()=>{ni=(ni+1)%names.length;cyc.style.opacity=0;setTimeout(()=>{cyc.textContent=names[ni];cyc.style.opacity=1;},450);},2600);};
+  /* Victoires : compteur qui monte */
+  const countEl=ov.querySelector('#nmCount');let counted=false;
+  const countUp=()=>{if(!countEl||counted)return;counted=true;const N=wins.length,t0=performance.now(),dur=Math.min(1600,400+N*40);
+    const step=()=>{const p=Math.min(1,(performance.now()-t0)/dur);countEl.textContent=Math.round(N*(1-Math.pow(1-p,3)));if(p<1&&!closed)setTimeout(step,30);};step();};
+  const onEnter=i=>{cur=i;dots.forEach((d,j)=>d.classList.toggle('on',j===i));ov.querySelector('#nmBar').style.width=(secs.length>1?i/(secs.length-1)*100:100)+'%';
+    const s=secs[i];clearTimeout(whyT);clearInterval(cycleT);
+    if(s.classList.contains('nm-why'))showWhy(wi<0?0:wi);
+    if(s.classList.contains('nm-wall'))startCycle();
+    if(s.classList.contains('nm-wins'))countUp();};
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');onEnter(secs.indexOf(e.target));}}),{root:sc,threshold:.55});
+  secs.forEach(s=>io.observe(s));
+  if(whyEl&&whyItems.length===1){whyEl.textContent=whyItems[0].t;whyEl.classList.toggle('long',whyItems[0].t.length>150);whyA.textContent=whyItems[0].a?'— '+whyItems[0].a:'';}
+  /* Respiration guidée : inspire 4 s, retiens 2 s, expire 6 s, puis on plonge */
+  const breathe=btn=>{const orb=ov.querySelector('#nmOrb'),txt=ov.querySelector('#nmBreath');if(!orb)return;btn.disabled=true;breathT.forEach(clearTimeout);breathT=[];
+    const at=(ms,f)=>breathT.push(setTimeout(f,ms));
+    at(0,()=>{txt.textContent='Inspire…';orb.className='nm-orb nm-rv inhale';});
+    at(4000,()=>{txt.textContent='Retiens…';});
+    at(6000,()=>{txt.textContent='Expire…';orb.className='nm-orb nm-rv exhale';});
+    at(12000,()=>{txt.textContent='C\'est bien. On y va.';orb.className='nm-orb nm-rv';btn.disabled=false;});
+    at(13400,()=>{txt.textContent='';if(cur===0)goTo(1);});};
+  /* Engagement : il faut MAINTENIR le bouton 1,4 s (un vrai petit geste, pas un clic distrait) */
+  const hold=ov.querySelector('#nmHold'),step=ov.querySelector('#nmStep');let done=false;
+  const commit=()=>{const t=(step.value||'').trim().slice(0,120);if(!t||done)return;done=true;
+    const d=today();if(!d.priorities.some(p=>p.text===t)){d.priorities.push({text:t,goal:'',done:false});save();}
+    hold.classList.remove('holding');hold.classList.add('ok');hold.querySelector('span').innerHTML='C\'est parti';
+    const b=document.createElement('div');b.className='nm-burst';b.innerHTML=Array.from({length:22},(_,i)=>`<i style="--a:${i*360/22}deg;--r:${90+(i%3)*28}px"></i>`).join('');hold.appendChild(b);
+    setTimeout(()=>{close();toast('« '+t+' » est dans tes objectifs du jour. Vas-y.');refreshCur();},1600);};
+  const startHold=e=>{if(done)return;e.preventDefault();if(!(step.value||'').trim()){step.classList.remove('nm-shake');void step.offsetWidth;step.classList.add('nm-shake');step.focus();return;}
+    hold.classList.add('holding');clearTimeout(holdT);holdT=setTimeout(commit,1400);};
+  const stopHold=()=>{if(done)return;clearTimeout(holdT);hold.classList.remove('holding');};
+  hold.addEventListener('pointerdown',startHold);['pointerup','pointerleave','pointercancel'].forEach(ev=>hold.addEventListener(ev,stopHold));
+  hold.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!e.repeat)startHold(e);}});hold.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')stopHold();});
+  step.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();hold.focus();}});
+  /* Ciel : léger effet de profondeur qui suit la souris */
+  const cst=ov.querySelector('#nmConst');
+  if(cst)sc.addEventListener('pointermove',e=>{if(!secs[cur]||!secs[cur].classList.contains('nm-stars'))return;const x=e.clientX/innerWidth-.5,y=e.clientY/innerHeight-.5;cst.style.transform=`translate(${(-x*26).toFixed(1)}px,${(-y*18).toFixed(1)}px)`;});
+  ov.addEventListener('click',e=>{const b=e.target.closest('[data-a]');
+    if(!e.target.closest('.nm-star'))ov.querySelectorAll('.nm-star.open').forEach(s=>s.classList.remove('open'));
+    if(!b)return;const a=b.dataset.a;
+    if(a==='x')close();else if(a==='next')goTo(cur+1);else if(a==='dot')goTo(+b.dataset.i);else if(a==='breathe')breathe(b);
+    else if(a==='whynext')showWhy(wi+1);
+    else if(a==='star'){const o=b.classList.contains('open');ov.querySelectorAll('.nm-star.open').forEach(s=>s.classList.remove('open'));b.classList.toggle('open',!o);}
+    else if(a==='sug'){step.value=b.dataset.v;step.focus();}
+    else if(a==='tile'){const x=imgs[+b.dataset.i];if(x)showFullImage(x.src,x.label);}});
+  const key=e=>{if(closed||document.querySelector('.imgview'))return;const inField=e.target&&e.target.tagName==='INPUT';
+    if(e.key==='Escape'){e.stopPropagation();close();return;}
+    if(inField)return;
+    if(['ArrowDown','PageDown'].includes(e.key)||(e.key===' '&&e.target===ov)){e.preventDefault();goTo(cur+1);}
+    else if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();goTo(cur-1);}
+    else if(e.key==='ArrowRight'&&secs[cur].classList.contains('nm-why')){showWhy(wi+1);}
+    else if(e.key==='ArrowLeft'&&secs[cur].classList.contains('nm-why')){showWhy(wi-1);}};
+  addEventListener('keydown',key,true);
 }
 /* Encarts en haut de l'onglet : lettre prête à ouvrir, lettre de l'année à écrire */
 function motCallouts(){
@@ -5101,7 +5378,7 @@ function sharpenThumbs(root){
   });
 }
 /* Image en grand, sur tout l'écran : clic ou Échap pour fermer */
-function viewImage(src,cap){
+function showFullImage(src,cap){
   if(!src)return;const ov=document.createElement('div');ov.className='imgview';
   ov.innerHTML=`<img src="${esc(src)}" alt="" title="Cliquer pour voir en taille réelle">${cap?`<div class="iv-cap">${esc(cap)}</div>`:''}<div class="iv-hint"></div><button class="iv-x" aria-label="Fermer">✕</button>`;
   const im=ov.querySelector('img');ov.style.cursor='default';im.style.cursor='zoom-in';
