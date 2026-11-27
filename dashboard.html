@@ -681,6 +681,14 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .col-sheet .mact{grid-column:1/-1}
 .cs-img{width:340px;max-height:420px;border-radius:16px;overflow:hidden;background:#06080c;align-self:start}
 .cs-img img{width:100%;height:100%;max-height:420px;object-fit:cover;display:block}.cs-img.port{width:250px}
+.cs-img{position:relative;cursor:zoom-in}
+.cs-zoom{position:absolute;right:10px;bottom:10px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(6,8,12,.7);color:#fff;font-size:17px;opacity:.75;transition:opacity .2s}
+.cs-img:hover .cs-zoom{opacity:1}
+.imgview{position:fixed;inset:0;z-index:600;background:rgba(4,6,10,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;cursor:zoom-out;opacity:0;transition:opacity .2s}
+.imgview.on{opacity:1}
+.imgview img{max-width:100%;max-height:calc(100vh - 90px);object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.imgview .iv-cap{color:#e8ecf4;font-size:16px;font-weight:600}
+.imgview .iv-x{position:absolute;top:16px;right:18px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:17px;cursor:pointer}
 .cs-flag{width:200px;align-self:start}.cs-flag img{width:100%;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .col-sheet .cs-flag+.cs-img{display:none}
 .cs-body{min-width:0;grid-column:auto}
@@ -4663,14 +4671,14 @@ function showColItem(cid,iid){
   const texts=fs.filter(([k,,t])=>t==='textarea'&&it[k]).map(([k,l])=>`<div class="cs-t"><h4>${esc(l)}</h4><p>${esc(it[k])}</p></div>`).join('');
   const ov=document.createElement('div');ov.className='overlay';
   ov.innerHTML=`<div class="modal wide col-sheet" style="--ac:${esc(c.color)}">
-    ${c.type==='countries'?`<div class="cs-flag"><img src="${flagUrl(it.code)}" alt=""></div>`:''}${src?`<div class="cs-img ${c.type==='books'?'port':''}"><img src="${esc(src)}" alt="" onerror="this.parentNode.remove()"></div>`:''}
+    ${c.type==='countries'?`<div class="cs-flag"><img src="${flagUrl(it.code)}" alt=""></div>`:''}${src?`<div class="cs-img ${c.type==='books'?'port':''}" data-a="zoom" title="Afficher en grand"><img src="${esc(src)}" alt="" onerror="this.parentNode.remove()"><span class="cs-zoom">⤢</span></div>`:''}
     <div class="cs-body"><div class="cs-st ${it.status==='todo'?'t':''}">${it.status==='todo'?esc(T.todo):'✓ '+esc(T.doneOne)}</div><h2 class="display">${esc(itemTitle(c,it))}</h2>${itemSub(c,it)?`<div class="cs-sub">${esc(itemSub(c,it))}</div>`:''}${starsHtml(it.rating,'big')}
       ${c.type==='books'&&normTheme(it.theme)?`<div class="cs-theme">${themeChip(it.theme)}</div>`:''}${meta?`<div class="cs-meta">${meta}</div>`:''}${texts||(c.type==='books'?'':`<p class="cs-empty">Ajoute un récit ou un souvenir en cliquant sur Modifier.</p>`)}</div>
     <div class="mact"><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Fermer</button><button class="btn primary" data-a="edit">Modifier</button></div></div>`;
   document.body.appendChild(ov);
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
   ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();ov.remove();}});
-  ov.addEventListener('click',e=>{const a=e.target.dataset&&e.target.dataset.a;if(a==='cancel')ov.remove();if(a==='edit'){ov.remove();editColItem(cid,iid);}});
+  ov.addEventListener('click',e=>{if(e.target.closest('[data-a="zoom"]')){viewImage(src,itemTitle(c,it));return;}const a=e.target.dataset&&e.target.dataset.a;if(a==='cancel')ov.remove();if(a==='edit'){ov.remove();editColItem(cid,iid);}});
   ov.tabIndex=-1;ov.focus();
 }
 const starInput=(id,v)=>`<div class="starin" id="${id}" data-v="${+v||0}">${[1,2,3,4,5].map(i=>`<button type="button" class="${i<=(+v||0)?'on':''}" onclick="const p=this.parentNode,n=+p.dataset.v===${i}?0:${i};p.dataset.v=n;[...p.children].forEach((b,j)=>b.classList.toggle('on',j<n))">★</button>`).join('')}</div>`;
@@ -5043,7 +5051,28 @@ function openLbox(c,idx){
     else if(b.classList.contains('lb-ed')){const x=items()[k];capPhoto(x.id,paint);const o=[...document.querySelectorAll('.overlay')].pop();if(o)o.style.zIndex=400;}
     else if(b.classList.contains('lb-del')){const x=items()[k];await removeTile(x.kind,x.id);paint();}});
   addEventListener('keydown',key,true);document.body.appendChild(ov);paint();
-}function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const M=2200;let w=img.width,h=img.height;if(w>M||h>M){const k=M/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',.86));};img.onerror=()=>res(null);img.src=r.result;};r.readAsDataURL(file);});}
+}
+/* Images en bonne qualité (traits fins des dessins) : jusqu'à 3200 px, réduction par paliers (moitié par moitié, lissage « high »)
+   au lieu d'un seul grand saut qui rendait les traits flous, puis JPEG 0,93. Une image JPEG déjà petite (≤ 3200 px, ≤ 2,5 Mo)
+   est gardée telle quelle, sans aucune recompression. */
+function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{
+  const M=3200;let w=img.width,h=img.height;
+  if(w<=M&&h<=M&&/^image\/jpe?g$/.test(file.type||'')&&file.size<=2.5e6){res(r.result);return;}
+  if(w>M||h>M){const k=M/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);}
+  let src=img,sw=img.width,sh=img.height;
+  while(sw/2>=w*1.05&&sh/2>=h*1.05){const t=document.createElement('canvas');t.width=Math.round(sw/2);t.height=Math.round(sh/2);const x=t.getContext('2d');x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';x.drawImage(src,0,0,t.width,t.height);src=t;sw=t.width;sh=t.height;}
+  const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(src,0,0,w,h);res(c.toDataURL('image/jpeg',.93));
+};img.onerror=()=>res(null);img.src=r.result;};r.readAsDataURL(file);});}
+/* Image en grand, sur tout l'écran : clic ou Échap pour fermer */
+function viewImage(src,cap){
+  if(!src)return;const ov=document.createElement('div');ov.className='imgview';
+  ov.innerHTML=`<img src="${esc(src)}" alt="">${cap?`<div class="iv-cap">${esc(cap)}</div>`:''}<button class="iv-x" aria-label="Fermer">✕</button>`;
+  const close=()=>{ov.classList.remove('on');document.removeEventListener('keydown',key,true);setTimeout(()=>ov.remove(),200);};
+  const key=e=>{if(e.key==='Escape'){e.stopPropagation();close();}};
+  ov.addEventListener('click',close);document.addEventListener('keydown',key,true);
+  document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('on'));
+}
 /* hidden : image importée ou collée pour un objectif, un rêve, une collection… elle ne s'affiche ni dans la galerie ni en fond d'accueil,
    sauf si tu choisis « Afficher dans la galerie ». Les images ajoutées depuis la galerie elle-même restent visibles. */
 async function addPhotos(files,cat,hidden){let t=Date.now();const ids=[];for(const f of files){if(!f.type.startsWith('image/'))continue;const src=await resize(f);if(!src)continue;const p={id:uid(),src,caption:'',featured:false,moment:'',added:t++};if(cat)p.cat=cat;if(hidden)p.hidden=true;await idbPut(p);PH.push(p);ids.push(p.id);}
