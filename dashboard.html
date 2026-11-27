@@ -386,19 +386,47 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .qchip{padding:5px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.25);color:rgba(255,255,255,.85);font:inherit;font-size:12.5px;cursor:pointer;backdrop-filter:blur(6px)}
 .qchip:hover{background:rgba(255,255,255,.12)}.qchip.on{background:rgba(242,205,120,.25);border-color:#f2cd78;color:#fff}
-.sos-btn{margin-top:16px;padding:11px 20px;border-radius:999px;border:1px solid rgba(255,107,107,.55);background:linear-gradient(135deg,rgba(229,105,92,.35),rgba(229,105,92,.18));color:#fff;font:inherit;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:.15s}
-.sos-btn:hover{transform:translateY(-1px);background:linear-gradient(135deg,rgba(229,105,92,.5),rgba(229,105,92,.28))}
-.sos{display:flex;flex-direction:column;gap:12px;text-align:left;max-width:720px;margin:0 auto}
-.sos .rt-h{margin-bottom:4px}
-.sos-b{padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.06);border-left:3px solid #d6a94a}
-.sos-b.red{border-left-color:#e5695c}.sos-b.gold{border-left-color:#f2cd78}
-.sos-b span{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:700;margin-bottom:4px}
-.sos-b p{margin:3px 0;font-size:15px;line-height:1.55}.sos-b small{color:rgba(255,255,255,.5);margin-left:4px}
-.sos-dream{display:flex;align-items:center;gap:14px;padding:10px;border-radius:14px;background:rgba(255,255,255,.06)}
-.sos-dream img{width:110px;height:72px;object-fit:cover;border-radius:10px;flex:none}
-.sos-dream span{display:block;font-size:12px;color:rgba(255,255,255,.6)}.sos-dream b{font-size:17px}
-.sos-q{margin:2px 0;font-style:italic;font-size:16px;color:rgba(255,255,255,.88)}.sos-q cite{display:block;font-size:13px;margin-top:4px;opacity:.7;font-style:normal}
-.sos-act{padding:14px 18px;border-radius:14px;background:rgba(79,209,139,.14);border:1px solid rgba(79,209,139,.4);font-size:16px}
+.btn.sos-mini{border-color:rgba(160,190,255,.35);background:rgba(90,130,230,.16)}
+.btn.sos-mini:hover{background:rgba(90,130,230,.28)}
+/* Page « Jour sans envie » */
+.sos-ov{position:fixed;inset:0;z-index:400;overflow-y:auto;animation:fade .3s;outline:none}
+.sos-ov.out{opacity:0;transition:opacity .25s}
+.sos-bg{position:fixed;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.45) saturate(1.1);transform:scale(1.08);background-color:#0b1020}
+.sos-shade{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(20,30,60,.35),rgba(6,8,14,.85) 70%)}
+.sos-wrap{position:relative;max-width:920px;margin:0 auto;padding:56px 24px 48px;display:flex;flex-direction:column;gap:18px}
+.sos-x{position:fixed;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;font-size:17px;cursor:pointer;z-index:2}
+.sos-x:hover{background:rgba(255,255,255,.2)}
+.sos-top{text-align:center;animation:sosUp .5s both}
+.sos-ic{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:50%;background:rgba(150,180,255,.14);border:1px solid rgba(150,180,255,.3);font-size:26px;margin-bottom:12px}
+.sos-top h2{font-size:clamp(28px,4vw,40px);line-height:1.15;margin:6px 0 8px;color:#fff}
+.sos-top p{color:rgba(255,255,255,.65);margin:0;font-size:15.5px}
+.sos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+.sos-card{position:relative;padding:18px 20px;border-radius:18px;background:rgba(18,22,34,.62);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(14px);box-shadow:0 14px 40px rgba(0,0,0,.25);animation:sosUp .5s both}
+.sos-card:nth-child(2){animation-delay:.06s}.sos-card:nth-child(3){animation-delay:.12s}.sos-card:nth-child(4){animation-delay:.18s}
+.sos-card>span{display:block;font-size:11.5px;letter-spacing:1.3px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.55);margin-bottom:8px}
+.sos-card p{margin:0;font-size:16px;line-height:1.6;color:rgba(255,255,255,.92)}
+.sos-card.why{border-top:3px solid #d6a94a}.sos-card.why>span{color:#e7c06e}
+.sos-card.refuse{border-top:3px solid #e5695c}.sos-card.refuse>span{color:#f08a7e}
+.sos-card.wins{border-top:3px solid #f2cd78}.sos-card.wins>span{color:#f2cd78}
+.sos-card.dream{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.sos-dimg{height:150px;background-size:cover;background-position:center}
+.sos-dtxt{padding:14px 18px 16px}.sos-dtxt span{display:block;font-size:11.5px;letter-spacing:1.3px;text-transform:uppercase;color:#9fb6ff;font-weight:700}
+.sos-dtxt b{display:block;font-size:19px;margin:4px 0 8px;color:#fff}.sos-dtxt small{color:rgba(255,255,255,.6);font-size:12.5px}
+.sos-dtxt .dp-bar{margin-bottom:5px}
+.sos-w{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:15px;color:rgba(255,255,255,.92)}
+.sos-w:last-child{border-bottom:0}.sos-w i{font-style:normal}.sos-w small{display:block;color:rgba(255,255,255,.5);font-size:12px;margin-top:2px}
+.sos-quote{margin:6px auto 0;max-width:700px;text-align:center}
+.sos-quote p{margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:19px;line-height:1.55;color:#fff}
+.sos-quote cite{display:block;margin-top:8px;font-style:normal;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#f2cd78}
+.sos-action{display:flex;align-items:center;gap:18px;justify-content:space-between;flex-wrap:wrap;padding:20px 22px;border-radius:18px;background:linear-gradient(135deg,rgba(79,209,139,.2),rgba(79,209,139,.07));border:1px solid rgba(79,209,139,.45)}
+.sos-action span{display:block;font-size:11.5px;letter-spacing:1.3px;text-transform:uppercase;font-weight:700;color:#7fe0a8}
+.sos-action b{display:block;font-size:21px;margin:4px 0;color:#fff}.sos-action small{color:rgba(255,255,255,.7);font-size:14px}
+.sos-action .btn{padding:12px 24px;font-size:15px}
+.sos-more{align-self:center;border:0;background:none;color:rgba(255,255,255,.6);font:inherit;font-size:14px;cursor:pointer;padding:6px 10px;border-radius:8px}
+.sos-more:hover{color:#fff;background:rgba(255,255,255,.06)}
+@keyframes sosUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.sos-top,.sos-card{animation:none}}
+@media(max-width:640px){.sos-wrap{padding:64px 14px 36px}.sos-action{flex-direction:column;align-items:stretch}}
 .mot-calls{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
 .mot-call{flex:1 1 280px;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--text);font:inherit;text-align:left;cursor:pointer}
 .mot-call>span{font-size:24px}.mot-call b{display:block}.mot-call small{color:var(--muted)}
@@ -415,6 +443,36 @@ nav.solid{background:rgba(10,13,18,.82);backdrop-filter:blur(14px);border-bottom
 .dp-next{margin-top:7px;font-size:13px;color:rgba(255,255,255,.8)}
 .rt-why{margin:10px auto 18px;max-width:620px;padding:12px 18px;border-radius:14px;background:rgba(255,255,255,.07);border-left:3px solid #d6a94a;font-size:16px;font-style:italic;line-height:1.5;text-align:left}
 .rt-why span{display:block;margin-top:6px;font-size:12px;font-style:normal;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.55)}
+/* Fenêtre « Mes citations » */
+.modal.qm{width:min(760px,95vw);max-width:none;max-height:88vh;display:flex;flex-direction:column;gap:14px}
+.qm-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.qm-h h3{margin:0 0 2px}
+.qm-add{padding:14px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.qm-add textarea,.qm-row textarea{width:100%;resize:vertical;font-size:15px}
+.qm-add-r{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}.qm-add-r input{flex:1 1 160px;min-width:0}
+.qm-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.qm-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.qm-chip{padding:5px 11px;border-radius:999px;border:1px solid var(--line2);background:none;color:var(--muted);font:inherit;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.qm-chip small{font-size:11px;opacity:.75}.qm-chip:hover{color:var(--text)}
+.qm-chip.on{background:rgba(242,205,120,.16);border-color:#f2cd78;color:#fff}
+.qm-search{width:180px;max-width:100%}
+.qm-list{overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px;min-height:120px}
+.qm-row{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid var(--line);transition:border-color .15s}
+.qm-row:hover{border-color:var(--line2)}
+.qm-row.fav{background:linear-gradient(90deg,rgba(255,107,138,.08),rgba(255,255,255,.02));border-color:rgba(255,107,138,.28)}
+.qm-row.ed{display:block;border-color:rgba(242,205,120,.5)}
+.qm-heart{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.06);color:var(--muted);font-size:17px;cursor:pointer;transition:.15s}
+.qm-heart:hover{color:#ff8fa6;background:rgba(255,107,138,.12)}.qm-heart.on{color:#ff6b8a;background:rgba(255,107,138,.16)}
+.qm-text{margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--text)}
+.qm-meta{display:flex;gap:10px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.qm-author{color:#f2cd78;font-size:13px;font-weight:600;letter-spacing:.3px}
+.qm-anon{color:var(--muted);font-size:12.5px}
+.qm-theme{font-size:11.5px;padding:2px 8px;border-radius:999px;background:rgba(90,162,255,.14);color:#9cc3ff}
+.qm-act{display:flex;gap:4px;opacity:.55;transition:opacity .15s}.qm-row:hover .qm-act{opacity:1}
+.qm-act button{width:30px;height:30px;border-radius:8px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:14px}
+.qm-act button:hover{background:rgba(255,255,255,.08);color:var(--text)}
+@media(hover:none){.qm-act{opacity:1}}
+/* Citation de l'en-tête de Motivation : auteur en doré */
+.pghero .ov cite{color:#f2cd78;font-style:normal;letter-spacing:.4px}
 /* Ctrl+V dans la galerie : choix du thème */
 .modal.gp-box{width:min(620px,94vw);max-width:none;overflow-x:hidden}
 .gp-prev{position:relative;height:140px;border-radius:14px;overflow:hidden;background:rgba(0,0,0,.25);margin:6px 0 14px;display:grid;place-items:center}
@@ -1588,10 +1646,11 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 /* Complétude du jour : teintes douces (rouge, jaune, vert clair, vert foncé) */
 .cd.rt-r,.cal-leg i.rt-r{--rt:229,105,92}
 .cd.rt-y,.cal-leg i.rt-y{--rt:234,196,84}
-.cd.rt-lg,.cal-leg i.rt-lg{--rt:110,205,128}
-.cd.rt-dg,.cal-leg i.rt-dg{--rt:58,160,98}
+.cd.rt-lg,.cal-leg i.rt-lg{--rt:168,224,99}
+.cd.rt-dg,.cal-leg i.rt-dg{--rt:22,138,68}
 .cd[class*="rt-"]{background:linear-gradient(160deg,rgba(var(--rt),.26),rgba(var(--rt),.13)),rgba(18,21,28,.82);border-color:rgba(var(--rt),.45)}
-.cd.rt-dg{background:linear-gradient(160deg,rgba(var(--rt),.34),rgba(var(--rt),.19)),rgba(18,21,28,.82)}
+.cd.rt-dg{background:linear-gradient(160deg,rgba(var(--rt),.5),rgba(var(--rt),.32)),rgba(18,21,28,.82);border-color:rgba(60,190,110,.65)}
+.cd.rt-lg{background:linear-gradient(160deg,rgba(var(--rt),.22),rgba(var(--rt),.1)),rgba(18,21,28,.82)}
 /* Grand accomplissement : trophée mis en avant, liseré doré */
 .cd.has-big{box-shadow:inset 0 0 0 1.5px rgba(242,205,120,.75),0 0 18px rgba(242,205,120,.18)}
 .cd-big{position:absolute;top:6px;right:8px;display:flex;gap:2px;font-size:20px;line-height:1;filter:drop-shadow(0 0 6px rgba(242,205,120,.7));animation:cdBig 2.6s ease-in-out infinite}
@@ -1605,7 +1664,7 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .cd-rate{position:relative;height:30px;border-radius:10px;background:rgba(255,255,255,.05);overflow:hidden;margin:4px 0 16px;display:flex;align-items:center;padding:0 12px;font-size:13.5px}
 .cd-rate i{position:absolute;left:0;top:0;bottom:0;background:rgba(var(--rt),.35)}
 .cd-rate span{position:relative}
-.cd-rate.rt-r{--rt:229,105,92}.cd-rate.rt-y{--rt:234,196,84}.cd-rate.rt-lg{--rt:110,205,128}.cd-rate.rt-dg{--rt:58,160,98}
+.cd-rate.rt-r{--rt:229,105,92}.cd-rate.rt-y{--rt:234,196,84}.cd-rate.rt-lg{--rt:168,224,99}.cd-rate.rt-dg{--rt:22,138,68}
 .cdl-big{border-color:rgba(242,205,120,.5)!important;background:linear-gradient(160deg,rgba(242,205,120,.14),rgba(242,205,120,.04))!important}
 .cdl-big h4{color:#f2cd78}
 .cd.sel{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
@@ -2887,11 +2946,48 @@ function renderDrawer(){
   $('#reviewTitle').textContent='Journal du jour';
   if(document.activeElement!==$('#review'))$('#review').value=today().review||'';
 }
+/* ===== Fenêtre « Mes citations » : liste avec favorites (♥), thème, modifier, supprimer, et formulaire d'ajout ===== */
+let qmFilter='',qmEdit=-1,qmSearch='';
 function editQuotes(){
-  /* Format : texte | auteur | thème (auteur et thème facultatifs). Les favorites (♥) sont gardées en retrouvant le même texte */
-  modal({title:'Mes citations',fields:[{key:'q',label:'Une citation par ligne, au format : texte | auteur | thème (auteur et thème facultatifs ; sans thème, il est deviné : Investissement, Discipline, Courage ou Sagesse)',type:'textarea',rows:14,value:S.quotes.map(q=>[q.text,q.author||'',q.theme||''].join(' | ').replace(/( \| )+$/,'')).join('\n')}],
-    onSave:v=>{const old=new Map(S.quotes.map(q=>[q.text,q]));S.quotes=v.q.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const [t,a,...th]=l.split('|').map(s=>s.trim());const o={text:t,author:a||''};if(th.join('|'))o.theme=th.join(' ').trim();if(old.get(t)&&old.get(t).fav)o.fav=true;return o;});qOff=0;
-      if(S.settings.qTheme&&S.settings.qTheme!=='fav'&&!quoteThemes().includes(S.settings.qTheme))S.settings.qTheme='';save();renderHome();if(cur==='motivation')renderMotHero();}});
+  document.querySelectorAll('.qm-ov').forEach(x=>x.remove());qmEdit=-1;qmSearch='';
+  const ov=document.createElement('div');ov.className='overlay qm-ov';
+  ov.innerHTML=`<div class="modal wide qm"><div class="qm-h"><div><h3>Mes citations</h3><span class="sub" id="qmCount"></span></div><button class="btn ghost" data-q="close">Fermer</button></div>
+    <div class="qm-add"><textarea id="qmT" rows="2" placeholder="Ajouter une citation…"></textarea><div class="qm-add-r"><input id="qmA" placeholder="Auteur (facultatif)"><input id="qmTh" list="qmThemes" placeholder="Thème (facultatif)"><button class="btn primary" data-q="add">Ajouter</button></div></div>
+    <datalist id="qmThemes"></datalist>
+    <div class="qm-tools"><div class="qm-chips" id="qmChips"></div><input class="qm-search" id="qmS" type="search" placeholder="Rechercher…"></div>
+    <div class="qm-list" id="qmList"></div></div>`;
+  document.body.appendChild(ov);paintQuotes();
+  const done=()=>{qOff=0;if(S.settings.qTheme&&S.settings.qTheme!=='fav'&&!quoteThemes().includes(S.settings.qTheme))S.settings.qTheme='';save();if(cur==='home')renderHome();if(cur==='motivation')renderMotHero();};
+  const close=()=>{ov.remove();done();};
+  ov.addEventListener('mousedown',e=>{if(e.target===ov)close();});
+  ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if(qmEdit>=0){qmEdit=-1;paintQuotes();}else close();}});
+  $('#qmS').addEventListener('input',e=>{qmSearch=e.target.value;paintQuotes();});
+  $('#qmT').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ov.querySelector('[data-q="add"]').click();}});
+  ov.addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;const a=b.dataset.q,i=+b.dataset.i;
+    if(a==='close')close();
+    else if(a==='add'){const t=$('#qmT').value.trim();if(!t){$('#qmT').focus();return;}const o={text:t,author:$('#qmA').value.trim()};const th=$('#qmTh').value.trim();if(th)o.theme=th;S.quotes.unshift(o);save();$('#qmT').value='';$('#qmA').value='';$('#qmTh').value='';toast('Citation ajoutée.');paintQuotes();$('#qmT').focus();}
+    else if(a==='fav'){S.quotes[i].fav=!S.quotes[i].fav;save();paintQuotes();}
+    else if(a==='del'){if(!confirm('Supprimer cette citation ?'))return;S.quotes.splice(i,1);qmEdit=-1;save();paintQuotes();}
+    else if(a==='edit'){qmEdit=i;paintQuotes();const t=ov.querySelector('.qm-row.ed textarea');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);}}
+    else if(a==='cancel'){qmEdit=-1;paintQuotes();}
+    else if(a==='save'){const r=b.closest('.qm-row'),t=r.querySelector('[data-f="t"]').value.trim();if(!t)return;const q=S.quotes[i];q.text=t;q.author=r.querySelector('[data-f="a"]').value.trim();const th=r.querySelector('[data-f="th"]').value.trim();if(th)q.theme=th;else delete q.theme;qmEdit=-1;save();paintQuotes();}
+    else if(a==='filter'){qmFilter=b.dataset.v;paintQuotes();}});
+}
+function paintQuotes(){
+  const L=$('#qmList');if(!L)return;const n=S.quotes.length,nf=S.quotes.filter(q=>q.fav).length,themes=quoteThemes();
+  if(qmFilter&&qmFilter!=='fav'&&!themes.includes(qmFilter))qmFilter='';
+  $('#qmCount').textContent=`${n} citation${n>1?'s':''} · ${nf} favorite${nf>1?'s':''}`;
+  $('#qmThemes').innerHTML=themes.map(t=>`<option value="${esc(t)}">`).join('');
+  const chip=(v,l,c)=>`<button class="qm-chip ${qmFilter===v?'on':''}" data-q="filter" data-v="${esc(v)}">${l}${c!=null?`<small>${c}</small>`:''}</button>`;
+  $('#qmChips').innerHTML=chip('','Toutes',n)+chip('fav','♥ Favorites',nf)+themes.map(t=>chip(t,esc(t),S.quotes.filter(q=>quoteTheme(q)===t).length)).join('');
+  const s=qmSearch.trim().toLowerCase();
+  const rows=S.quotes.map((q,i)=>({q,i})).filter(({q})=>(qmFilter==='fav'?q.fav:qmFilter?quoteTheme(q)===qmFilter:true)&&(!s||(q.text+' '+(q.author||'')).toLowerCase().includes(s)));
+  L.innerHTML=rows.length?rows.map(({q,i})=>i===qmEdit
+    ?`<div class="qm-row ed"><textarea data-f="t" rows="3">${esc(q.text)}</textarea><div class="qm-add-r"><input data-f="a" value="${esc(q.author||'')}" placeholder="Auteur"><input data-f="th" list="qmThemes" value="${esc(q.theme||'')}" placeholder="Thème (vide = deviné : ${esc(quoteTheme({text:q.text}))})"><button class="btn sm ghost" data-q="cancel">Annuler</button><button class="btn sm primary" data-q="save" data-i="${i}">Enregistrer</button></div></div>`
+    :`<div class="qm-row ${q.fav?'fav':''}"><button class="qm-heart ${q.fav?'on':''}" data-q="fav" data-i="${i}" title="${q.fav?'Retirer des favorites':'Ajouter aux favorites : elle reviendra plus souvent'}">${q.fav?'♥':'♡'}</button>
+      <div class="qm-body"><p class="qm-text">« ${esc(q.text)} »</p><div class="qm-meta">${q.author?`<span class="qm-author">${esc(q.author)}</span>`:'<span class="qm-anon">Auteur inconnu</span>'}<span class="qm-theme">${esc(quoteTheme(q))}</span></div></div>
+      <div class="qm-act"><button data-q="edit" data-i="${i}" title="Modifier">✎</button><button data-q="del" data-i="${i}" title="Supprimer">✕</button></div></div>`).join('')
+    :`<div class="empty">${s?'Aucune citation ne correspond.':qmFilter==='fav'?'Aucune favorite pour l’instant : clique sur le ♡ d’une citation.':'Aucune citation.'}</div>`;
 }
 
 /* Priorités */
@@ -4706,9 +4802,8 @@ function renderMotHero(){
   const q=curQuote(),cov=S.settings.motCover||'lib:stars',th=S.settings.qTheme||'',themes=quoteThemes(),nf=S.quotes.filter(x=>x.fav).length;
   const chip=(v,l)=>`<button class="qchip ${th===v?'on':''}" data-qt="${esc(v)}">${l}</button>`;
   $('#motHero').innerHTML=`<div class="pghero"><div class="img" style="${bgStyle(photoSrc(cov,2000))}"></div><div class="ov"><div class="eyebrow">Motivation${q&&th?` · ${esc(th==='fav'?'Mes favorites':th)}`:''}</div>${q?`<blockquote>« ${esc(q.text)} »</blockquote><div class="q-row">${q.author?`<cite>${esc(q.author)}</cite>`:''}<button class="q-fav ${q.fav?'on':''}" title="${q.fav?'Retirer de mes favorites':'Ajouter à mes favorites : elle reviendra plus souvent'}" onclick="toggleQuoteFav()">${q.fav?'♥':'♡'}</button></div>`:'<h1 class="display">Ce qui me fait avancer</h1>'}
-      <div class="qchips">${chip('','Toutes')}${nf?chip('fav','♥ Favorites'):''}${themes.map(t=>chip(t,esc(t))).join('')}</div>
-      <button class="sos-btn" onclick="openNoMotivation()">🆘 Jour sans envie</button></div>
-    <div class="acts"><button class="btn sm" onclick="qOff++;renderMotHero()">Autre citation</button><button class="btn sm" onclick="editQuotes()">Mes citations</button><button class="btn sm" onclick="pickPhoto(S.settings.motCover||'lib:stars',id=>{S.settings.motCover=id||'lib:stars';save();renderMotHero();})">Changer l'image</button></div></div>
+      <div class="qchips">${chip('','Toutes')}${nf?chip('fav','♥ Favorites'):''}${themes.map(t=>chip(t,esc(t))).join('')}</div></div>
+    <div class="acts"><button class="btn sm sos-mini" onclick="openNoMotivation()" title="Tout ce qui te remet en route, sur un seul écran">☁ Jour sans envie</button><button class="btn sm" onclick="qOff++;renderMotHero()">Autre citation</button><button class="btn sm" onclick="editQuotes()">Mes citations</button><button class="btn sm" onclick="pickPhoto(S.settings.motCover||'lib:stars',id=>{S.settings.motCover=id||'lib:stars';save();renderMotHero();})">Changer l'image</button></div></div>
     ${motCallouts()}`;
 }
 /* ===== Citations : favorites et thèmes. Un thème saisi (texte | auteur | thème) prime ; sinon il est deviné à partir des mots ===== */
@@ -4729,21 +4824,39 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 function toggleQuoteFav(){const q=curQuote();if(!q)return;q.fav=!q.fav;save();toast(q.fav?'Ajoutée à tes favorites.':'Retirée de tes favorites.');renderMotHero();}
 /* ===== « Jour sans envie » : tout ce qui te remet en route, réuni sur un écran calme ===== */
 function plainFirst(html,n){const t=plainText(html||'').replace(/\s+/g,' ').trim();if(t.length<=n)return t;const c=t.slice(0,n);return c.slice(0,c.lastIndexOf(' ')>n*.6?c.lastIndexOf(' '):n)+'…';}
+/* Plein écran sur mesure : le rêve en fond flouté, des cartes (pourquoi, rêve, refus, victoires), une citation, puis UNE seule action */
 function openNoMotivation(){
-  const why=plainFirst(S.why,420),anti=plainFirst(S.anti,300),w=allWins(),pick=[...w].sort(()=>Math.random()-.5).slice(0,3);
-  const dreams=S.dreams.filter(d=>!d.done),dr=dreams.length?dreams[Math.floor(Math.random()*dreams.length)]:null,src=dr?photoSrc(dr.cover,1200):'';
-  const qs=S.quotes,q=qs.length?qs[Math.floor(Math.random()*qs.length)]:null;
-  const d=today(),todo=(d.priorities||[]).find(p=>p.text&&!p.done);
-  const act=todo?`Fais juste ceci : <b>${esc(todo.text)}</b>. Rien d'autre pour l'instant.`:(d.priorities||[]).length?'Tes objectifs du jour sont faits. Repose-toi sans culpabiliser.':'Fixe un seul objectif pour aujourd\'hui. Un seul, petit.';
-  runRitual({bg:ritualBg(),finishLabel:todo||(d.priorities||[]).length?"C'est parti":'Fixer mon objectif',steps:[{html:()=>`<div class="sos">
-    <div class="eyebrow">Jour sans envie</div><h2 class="rt-h display">Tu n'as pas besoin d'envie. Juste du premier pas.</h2>
-    ${why?`<div class="sos-b"><span>✦ Mon pourquoi</span><p>${esc(why)}</p></div>`:''}
-    ${anti?`<div class="sos-b red"><span>⊘ Ce que je refuse</span><p>${esc(anti)}</p></div>`:''}
-    ${dr?`<div class="sos-dream">${src?`<img src="${src}" alt="">`:''}<div><span>Ce qui me fait rêver</span><b>${esc(dr.title)}</b></div></div>`:''}
-    ${pick.length?`<div class="sos-b gold"><span>🏆 Ce que tu as déjà accompli</span>${pick.map(x=>`<p>${x.ic} ${esc(x.text)} <small>${fmtDate(x.date)}</small></p>`).join('')}</div>`:''}
-    ${q?`<blockquote class="sos-q">« ${esc(q.text)} »${q.author?`<cite>${esc(q.author)}</cite>`:''}</blockquote>`:''}
-    <div class="sos-act">${act}</div></div>`}],
-    finish:()=>{if(!todo&&!(d.priorities||[]).length)openMorning();},skip:()=>{}});
+  document.querySelectorAll('.sos-ov').forEach(x=>x.remove());
+  const ov=document.createElement('div');ov.className='sos-ov';ov.tabIndex=-1;
+  const close=()=>{ov.classList.add('out');removeEventListener('keydown',key,true);setTimeout(()=>ov.remove(),260);};
+  const key=e=>{if(e.key==='Escape'){e.stopPropagation();close();}};
+  const paint=()=>{
+    const why=plainFirst(S.why,380),anti=plainFirst(S.anti,240),pick=[...allWins()].sort(()=>Math.random()-.5).slice(0,3);
+    const dreams=S.dreams.filter(d=>!d.done),dr=dreams.length?dreams[Math.floor(Math.random()*dreams.length)]:null,src=dr?photoSrc(dr.cover,1600):'';
+    const qs=S.quotes,q=qs.length?qs[Math.floor(Math.random()*qs.length)]:null,pr=dr?dreamProgress(dr):null;
+    const d=today(),pri=(d.priorities||[]).filter(p=>p.text),todo=pri.find(p=>!p.done);
+    const actT=todo?esc(todo.text):pri.length?'Repose-toi sans culpabiliser':'Fixer un seul objectif, petit',
+      actS=todo?'Fais juste ça. Rien d’autre pour l’instant.':pri.length?'Tes objectifs du jour sont faits. Le repos fait aussi partie du chemin.':'Un seul. Le reste viendra tout seul.';
+    const empty=!why&&!anti&&!dr&&!pick.length;
+    ov.innerHTML=`<div class="sos-bg" style="${src?bgStyle(src):''}"></div><div class="sos-shade"></div>
+      <div class="sos-wrap">
+        <button class="sos-x" data-a="x" title="Fermer (Échap)">✕</button>
+        <div class="sos-top"><span class="sos-ic">☁</span><div class="eyebrow">Jour sans envie</div><h2 class="display">Pas besoin d’envie.<br>Juste d’un premier pas.</h2><p>Respire. Relis pourquoi tu fais tout ça.</p></div>
+        ${empty?`<div class="sos-card"><p>Remplis « Mon pourquoi », « Ce que je refuse », tes rêves et tes victoires dans l’onglet Motivation : ils apparaîtront ici les jours difficiles.</p></div>`:''}
+        <div class="sos-grid">
+          ${why?`<div class="sos-card why"><span>✦ Mon pourquoi</span><p>${esc(why)}</p></div>`:''}
+          ${dr?`<div class="sos-card dream">${src?`<div class="sos-dimg" style="${bgStyle(src)}"></div>`:''}<div class="sos-dtxt"><span>Ce qui te fait rêver</span><b>${esc(dr.title)}</b>${pr?`<div class="dp-bar"><i style="width:${pr.pct}%"></i></div><small>${pr.pct} % du chemin</small>`:''}</div></div>`:''}
+          ${anti?`<div class="sos-card refuse"><span>⊘ Ce que je refuse</span><p>${esc(anti)}</p></div>`:''}
+          ${pick.length?`<div class="sos-card wins"><span>🏆 Tu l’as déjà fait</span>${pick.map(x=>`<div class="sos-w"><i>${x.ic}</i><div>${esc(x.text)}<small>${fmtDate(x.date)}</small></div></div>`).join('')}</div>`:''}
+        </div>
+        ${q?`<blockquote class="sos-quote"><p>« ${esc(q.text)} »</p>${q.author?`<cite>${esc(q.author)}</cite>`:''}</blockquote>`:''}
+        <div class="sos-action"><div><span>Ta seule mission maintenant</span><b>${actT}</b><small>${actS}</small></div><button class="btn primary" data-a="go">${todo||pri.length?'C’est parti':'Fixer mon objectif'}</button></div>
+        <button class="sos-more" data-a="more">↻ Me montrer d’autres souvenirs</button>
+      </div>`;
+  };
+  ov.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
+    if(a==='x')close();else if(a==='more')paint();else if(a==='go'){const d=today(),pri=(d.priorities||[]).filter(p=>p.text);close();if(!pri.length)setTimeout(()=>openMorning(),280);}});
+  addEventListener('keydown',key,true);paint();document.body.appendChild(ov);ov.focus();
 }
 /* Encarts en haut de l'onglet : lettre prête à ouvrir, lettre de l'année à écrire */
 function motCallouts(){
