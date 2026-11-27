@@ -682,6 +682,16 @@ details.nums[open]>summary .ar{transform:rotate(180deg)}
 .cs-img{width:340px;max-height:420px;border-radius:16px;overflow:hidden;background:#06080c;align-self:start}
 .cs-img img{width:100%;height:100%;max-height:420px;object-fit:cover;display:block}.cs-img.port{width:250px}
 .cs-img{position:relative;cursor:zoom-in}
+/* Collection personnalisée (dessins...) : l'image prend la place principale de la fiche, entière (jamais rognée) */
+.modal.wide.col-sheet.big-img{width:min(1180px,96vw);max-width:none;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr)}
+.col-sheet.big-img .cs-img{width:100%;max-height:none;background:#06080c;display:flex;align-items:center;justify-content:center}
+.col-sheet.big-img .cs-img img{width:auto;height:auto;max-width:100%;max-height:74vh;object-fit:contain}
+@media (max-width:900px){.modal.wide.col-sheet.big-img{grid-template-columns:1fr}.col-sheet.big-img .cs-img img{max-height:60vh}}
+.imgview.full{overflow:auto;display:block;padding:0}
+.imgview.full img{max-width:none;max-height:none;border-radius:0;margin:auto;display:block}
+.imgview .iv-hint{color:#8f9bb3;font-size:12.5px}
+.imgview .iv-x{position:fixed;z-index:2}
+.imgview.full .iv-cap,.imgview.full .iv-hint{display:none}
 .cs-zoom{position:absolute;right:10px;bottom:10px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(6,8,12,.7);color:#fff;font-size:17px;opacity:.75;transition:opacity .2s}
 .cs-img:hover .cs-zoom{opacity:1}
 .imgview{position:fixed;inset:0;z-index:600;background:rgba(4,6,10,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;cursor:zoom-out;opacity:0;transition:opacity .2s}
@@ -4589,6 +4599,7 @@ function colSorted(c,list){
 }
 function renderColItems(c){
   const T=COL_TYPES[c.type],box=$('#colItems');if(!box)return;
+  setTimeout(()=>sharpenThumbs(box),0);
   const list=colSorted(c,c.items.filter(i=>colTab==='todo'?i.status==='todo':i.status!=='todo'));
   if(!list.length){box.innerHTML=`<div class="card empty">${colQ?'Aucun résultat.':colTab==='todo'?`Rien dans « ${esc(T.todo)} » pour le moment.`:`Ta collection commence ici.`}<br>${colQ?'':`<button class="btn primary" onclick="editColItem('${c.id}',null,'${colTab}')">+ ${esc(T.add)}</button>`}</div>`;return;}
   if(colTab==='todo'){box.innerHTML=`<div class="lg-table">${list.map(it=>`<div class="lg-row col-todo" data-id="${it.id}"><div class="lg-c1" onclick="openColItem('${c.id}','${it.id}')">${c.type==='countries'?`<img class="ctflag" src="${flagUrl(it.code)}" alt="">`:''}<span class="lg-txt">${esc(itemTitle(c,it))}</span>${itemSub(c,it)?`<span class="lg-date">${esc(itemSub(c,it))}</span>`:''}</div><div class="lg-c2"><button class="check" title="${esc(T.doneOne)}" onclick="doneColItem('${c.id}','${it.id}')"></button><button class="lg-del" title="Supprimer" onclick="delColItem('${c.id}','${it.id}')">✕</button></div></div>`).join('')}</div>`;return;}
@@ -4606,7 +4617,8 @@ function renderColItems(c){
   const card=it=>{const src=itemImg(c,it,700);if(c.type==='custom'&&!src)return tile(it);
     /* Petit livre ouvert : ce livre a une page de résumé */
     const sumIc=c.type==='books'&&!it.nosum?`<span class="ci-sum" title="Livre avec résumé"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10 5 7.2 4.5 4 4.8v13.4c3.2-.3 6 .2 8 1.8 2-1.6 4.8-2.1 8-1.8V4.8c-3.2-.3-6 .2-8 1.7Z"/><path d="M12 6.5V20"/></svg></span>`:'';
-    return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${sumIc}${src?`<img src="${esc(src)}" alt="" onerror="this.remove()">`:''}<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div></div>
+    const phId=it.cover&&!String(it.cover).startsWith('lib:')?it.cover:'';
+    return `<button class="citem" style="--ac:${esc(c.color)}" onclick="openColItem('${c.id}','${it.id}')"><div class="ci-img">${sumIc}${src?`<img src="${esc(src)}" alt="" ${phId?`data-ph="${esc(phId)}"`:''} onerror="this.remove()">`:''}<div class="ci-ph"><span>${esc(itemTitle(c,it))}</span></div></div>
       <div class="ci-cap"><h3>${esc(itemTitle(c,it))}</h3>${itemSub(c,it)?`<p>${esc(itemSub(c,it))}</p>`:''}<div class="ci-meta">${themeChip(it.theme)}${it.date?`<span>${esc(colDate(it.date))}</span>`:''}</div></div></button>`;};
   if(c.type==='books'&&colSort==='theme'){
     /* Tri par thème : un titre par thème (pastille de couleur + nombre de livres), puis ses livres */
@@ -4670,8 +4682,8 @@ function showColItem(cid,iid){
   const meta=fs.filter(([k,,t])=>['text','number','date','year'].includes(t)&&k!=='title'&&!inSub.includes(k)&&it[k]).map(([k,l,t])=>`<div class="cs-m"><span>${esc(l)}</span><b>${esc(t==='date'?colDate(it[k]):t==='number'&&k==='alt'?(+it[k]).toLocaleString('fr-FR')+' m':it[k])}</b></div>`).join('');
   const texts=fs.filter(([k,,t])=>t==='textarea'&&it[k]).map(([k,l])=>`<div class="cs-t"><h4>${esc(l)}</h4><p>${esc(it[k])}</p></div>`).join('');
   const ov=document.createElement('div');ov.className='overlay';
-  ov.innerHTML=`<div class="modal wide col-sheet" style="--ac:${esc(c.color)}">
-    ${c.type==='countries'?`<div class="cs-flag"><img src="${flagUrl(it.code)}" alt=""></div>`:''}${src?`<div class="cs-img ${c.type==='books'?'port':''}" data-a="zoom" title="Afficher en grand"><img src="${esc(src)}" alt="" onerror="this.parentNode.remove()"><span class="cs-zoom">⤢</span></div>`:''}
+  ov.innerHTML=`<div class="modal wide col-sheet ${src&&c.type==='custom'?'big-img':''}" style="--ac:${esc(c.color)}">
+    ${c.type==='countries'?`<div class="cs-flag"><img src="${flagUrl(it.code)}" alt=""></div>`:''}${src?`<div class="cs-img ${c.type==='books'?'port':''}" data-a="zoom" title="Afficher en grand"><img src="${esc(src)}" alt="" ${it.cover&&!String(it.cover).startsWith('lib:')?`data-ph="${esc(it.cover)}"`:''} onerror="this.parentNode.remove()"><span class="cs-zoom">⤢</span></div>`:''}
     <div class="cs-body"><div class="cs-st ${it.status==='todo'?'t':''}">${it.status==='todo'?esc(T.todo):'✓ '+esc(T.doneOne)}</div><h2 class="display">${esc(itemTitle(c,it))}</h2>${itemSub(c,it)?`<div class="cs-sub">${esc(itemSub(c,it))}</div>`:''}${starsHtml(it.rating,'big')}
       ${c.type==='books'&&normTheme(it.theme)?`<div class="cs-theme">${themeChip(it.theme)}</div>`:''}${meta?`<div class="cs-meta">${meta}</div>`:''}${texts||(c.type==='books'?'':`<p class="cs-empty">Ajoute un récit ou un souvenir en cliquant sur Modifier.</p>`)}</div>
     <div class="mact"><span style="flex:1"></span><button class="btn ghost" data-a="cancel">Fermer</button><button class="btn primary" data-a="edit">Modifier</button></div></div>`;
@@ -4679,7 +4691,7 @@ function showColItem(cid,iid){
   ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.remove();});
   ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();ov.remove();}});
   ov.addEventListener('click',e=>{if(e.target.closest('[data-a="zoom"]')){viewImage(src,itemTitle(c,it));return;}const a=e.target.dataset&&e.target.dataset.a;if(a==='cancel')ov.remove();if(a==='edit'){ov.remove();editColItem(cid,iid);}});
-  ov.tabIndex=-1;ov.focus();
+  ov.tabIndex=-1;ov.focus();setTimeout(()=>sharpenThumbs(ov),0);
 }
 const starInput=(id,v)=>`<div class="starin" id="${id}" data-v="${+v||0}">${[1,2,3,4,5].map(i=>`<button type="button" class="${i<=(+v||0)?'on':''}" onclick="const p=this.parentNode,n=+p.dataset.v===${i}?0:${i};p.dataset.v=n;[...p.children].forEach((b,j)=>b.classList.toggle('on',j<n))">★</button>`).join('')}</div>`;
 function editColItem(cid,iid,status,preset){
@@ -5064,13 +5076,39 @@ function resize(file){return new Promise(res=>{const r=new FileReader();r.onload
   const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(src,0,0,w,h);res(c.toDataURL('image/jpeg',.93));
 };img.onerror=()=>res(null);img.src=r.result;};r.readAsDataURL(file);});}
+/* Réduction propre d'une image (par moitiés, lissage « high »), pour les vignettes : le navigateur, lui, réduit une grande image
+   d'un seul coup quand elle est affichée en petit, ce qui brouille les traits fins (dessins au crayon) */
+function downscaleTo(img,w,h){
+  let src=img,sw=img.naturalWidth||img.width,sh=img.naturalHeight||img.height;
+  while(sw/2>=w&&sh/2>=h){const t=document.createElement('canvas');t.width=Math.round(sw/2);t.height=Math.round(sh/2);const x=t.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(src,0,0,t.width,t.height);src=t;sw=t.width;sh=t.height;}
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(src,0,0,w,h);return c.toDataURL('image/jpeg',.92);
+}
+const THUMBS=new Map();
+function sharpenThumbs(root){
+  (root||document).querySelectorAll('img[data-ph]').forEach(el=>{
+    const go=()=>{const nw=el.naturalWidth,nh=el.naturalHeight,cw=el.clientWidth,ch=el.clientHeight;if(!nw||!cw||!ch)return;
+      /* Taille réellement affichée : « cover » remplit la case (rognée), sinon l'image entière tient dedans */
+      const k=getComputedStyle(el).objectFit==='cover'?Math.max(cw/nw,ch/nh):Math.min(cw/nw,ch/nh);
+      const tw=Math.min(nw,Math.ceil(nw*k*(window.devicePixelRatio||1)*1.15/50)*50),key=el.dataset.ph+'|'+tw;
+      if(THUMBS.has(key)){el.src=THUMBS.get(key);return;}
+      if(nw<=tw*1.3)return;
+      try{const d=downscaleTo(el,tw,Math.round(nh*tw/nw));THUMBS.set(key,d);el.src=d;}catch(e){}};
+    if(el.complete)go();else el.addEventListener('load',go,{once:true});
+  });
+}
 /* Image en grand, sur tout l'écran : clic ou Échap pour fermer */
 function viewImage(src,cap){
   if(!src)return;const ov=document.createElement('div');ov.className='imgview';
-  ov.innerHTML=`<img src="${esc(src)}" alt="">${cap?`<div class="iv-cap">${esc(cap)}</div>`:''}<button class="iv-x" aria-label="Fermer">✕</button>`;
+  ov.innerHTML=`<img src="${esc(src)}" alt="" title="Cliquer pour voir en taille réelle">${cap?`<div class="iv-cap">${esc(cap)}</div>`:''}<div class="iv-hint"></div><button class="iv-x" aria-label="Fermer">✕</button>`;
+  const im=ov.querySelector('img');ov.style.cursor='default';im.style.cursor='zoom-in';
+  im.onload=()=>{ov.querySelector('.iv-hint').textContent=`${im.naturalWidth} × ${im.naturalHeight} px · clic sur l'image : taille réelle`;};
   const close=()=>{ov.classList.remove('on');document.removeEventListener('keydown',key,true);setTimeout(()=>ov.remove(),200);};
   const key=e=>{if(e.key==='Escape'){e.stopPropagation();close();}};
-  ov.addEventListener('click',close);document.addEventListener('keydown',key,true);
+  ov.addEventListener('click',e=>{
+    if(e.target===im){const f=ov.classList.toggle('full');im.style.cursor=f?'zoom-out':'zoom-in';
+      if(f){const r=im.getBoundingClientRect();requestAnimationFrame(()=>{ov.scrollLeft=(im.offsetWidth-ov.clientWidth)/2;ov.scrollTop=(im.offsetHeight-ov.clientHeight)/2;});}return;}
+    close();});
+  document.addEventListener('keydown',key,true);
   document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('on'));
 }
 /* hidden : image importée ou collée pour un objectif, un rêve, une collection… elle ne s'affiche ni dans la galerie ni en fond d'accueil,
