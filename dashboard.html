@@ -972,6 +972,10 @@ body.web .paste-or{display:none}
 .wrow{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;border-radius:13px;background:var(--card);border:1px solid var(--line);margin-bottom:8px;cursor:pointer}
 .wrow:hover{border-color:var(--gold)}
 .wrow .d{color:var(--gold2);font-weight:600;min-width:58px;font-size:13px;padding-top:2px}
+.wrow .wt{flex:1}
+.wrow .w-date{margin-left:auto;background:none;border:1px solid transparent;border-radius:8px;padding:2px 7px;font-size:14px;cursor:pointer;opacity:.45;color:inherit}
+.wrow:hover .w-date{opacity:1;border-color:var(--line)}
+.wrow .w-date:hover{border-color:var(--gold)}
 
 /* ---------- Galerie ---------- */
 .drop{border:2px dashed var(--line2);border-radius:var(--r);padding:30px;text-align:center;color:var(--muted);cursor:pointer;margin-bottom:18px;transition:.2s}
@@ -4922,10 +4926,10 @@ function sportTarget(){
 function allWins(){
   const out=S.wins.filter(w=>w&&w.date).map(w=>({id:w.id,date:w.date,text:w.text,ic:'⭐',auto:false}));
   const ok=d=>/^\d{4}-\d{2}-\d{2}$/.test(d||'');
-  S.goals.forEach(g=>{if(g.progress>=100&&ok(g.doneAt))out.push({date:g.doneAt,text:`Objectif atteint : ${g.title}`,ic:'🏆',auto:true,go:`openGoal('${g.id}')`});});
-  (S.lifeGoals||[]).forEach(g=>{if(g.done&&ok(g.doneAt))out.push({date:g.doneAt,text:`Objectif de vie réalisé : ${g.t}`,ic:'🌟',auto:true});});
-  S.dreams.forEach(d=>{if(d.done&&ok(d.doneAt))out.push({date:d.doneAt,text:`Rêve réalisé : ${d.title}`,ic:'💫',auto:true,go:`editDream('${d.id}')`});});
-  S.skills.forEach(s=>{const st=s.stages||[];if(st.length&&st.every(x=>x.done&&ok(x.doneAt)))out.push({date:st.reduce((m,x)=>x.doneAt>m?x.doneAt:m,''),text:`Apprentissage terminé : ${s.name}`,ic:'🎓',auto:true});});
+  S.goals.forEach(g=>{if(g.progress>=100&&ok(g.doneAt))out.push({date:g.doneAt,text:`Objectif atteint : ${g.title}`,ic:'🏆',auto:true,kind:'goal',id:g.id,go:`openGoal('${g.id}')`});});
+  (S.lifeGoals||[]).forEach(g=>{if(g.done&&ok(g.doneAt))out.push({date:g.doneAt,text:`Objectif de vie réalisé : ${g.t}`,ic:'🌟',auto:true,kind:'life',id:g.id});});
+  S.dreams.forEach(d=>{if(d.done&&ok(d.doneAt))out.push({date:d.doneAt,text:`Rêve réalisé : ${d.title}`,ic:'💫',auto:true,kind:'dream',id:d.id,go:`editDream('${d.id}')`});});
+  S.skills.forEach(s=>{const st=s.stages||[];if(st.length&&st.every(x=>x.done&&ok(x.doneAt)))out.push({date:st.reduce((m,x)=>x.doneAt>m?x.doneAt:m,''),text:`Apprentissage terminé : ${s.name}`,ic:'🎓',auto:true,kind:'skill',id:s.id});});
   return out.sort((a,b)=>b.date.localeCompare(a.date));
 }
 /* « Il y a 1 an / 6 mois / 1 mois » : une victoire de la même période (à 3 jours près) ; sinon un souvenir tiré au hasard du jour */
@@ -4943,7 +4947,24 @@ function renderWins(){
   const ys=Object.keys(years).sort().reverse();
   const g={};w.forEach(x=>{const k=x.date.slice(0,7);(g[k]=g[k]||[]).push(x);});
   $('#winList').innerHTML=`<div class="win-years">${ys.map((y,i)=>`<div class="wy ${i?'':'cur'}"><b>${years[y]}</b><span>victoire${years[y]>1?'s':''} en ${y}</span></div>`).join('')}</div>`
-    +Object.entries(g).map(([k,xs])=>`<div class="month"><h3>${parse(k+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})} · ${xs.length}</h3>${xs.map(x=>`<div class="wrow ${x.auto?'auto':''}" onclick="${x.auto?(x.go||''):`editWin('${x.id}')`}" ${x.auto?'title="Ajoutée automatiquement"':''}><span class="d">${parse(x.date).getDate()} ${parse(x.date).toLocaleDateString('fr-FR',{month:'short'})}</span><span>${x.ic} ${esc(x.text)}</span></div>`).join('')}</div>`).join('');
+    +Object.entries(g).map(([k,xs])=>`<div class="month"><h3>${parse(k+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})} · ${xs.length}</h3>${xs.map(x=>`<div class="wrow ${x.auto?'auto':''}" onclick="${x.auto?(x.go||''):`editWin('${x.id}')`}" ${x.auto?'title="Ajoutée automatiquement"':''}><span class="d">${parse(x.date).getDate()} ${parse(x.date).toLocaleDateString('fr-FR',{month:'short'})}</span><span class="wt">${x.ic} ${esc(x.text)}</span>${x.auto&&x.kind?`<button class="w-date" title="Modifier la date" onclick="event.stopPropagation();editAutoWinDate('${x.kind}','${esc(x.id)}')">📅</button>`:''}</div>`).join('')}</div>`).join('');
+}
+/* Date d'une victoire automatique : on modifie la date de l'élément d'origine (objectif, objectif de vie, rêve, apprentissage) */
+function autoWinTarget(kind,id){
+  if(kind==='goal')return S.goals.find(g=>g.id===id);
+  if(kind==='life')return (S.lifeGoals||[]).find(g=>g.id===id);
+  if(kind==='dream')return S.dreams.find(d=>d.id===id);
+  if(kind==='skill')return S.skills.find(s=>s.id===id);
+}
+function editAutoWinDate(kind,id){
+  const o=autoWinTarget(kind,id);if(!o)return;
+  const cur=kind==='skill'?(o.stages||[]).reduce((m,x)=>x.doneAt>m?x.doneAt:m,''):o.doneAt;
+  const name=o.title||o.t||o.name||'';
+  modal({title:'Date : '+name,fields:[{key:'date',label:'Date de la victoire',type:'date',value:cur}],
+    onSave:v=>{const d=v.date;if(!/^\d{4}-\d{2}-\d{2}$/.test(d||''))return false;
+      if(kind==='skill'){(o.stages||[]).forEach(x=>{if(x.done&&(x.doneAt===cur||x.doneAt>d))x.doneAt=d;});}
+      else o.doneAt=d;
+      save();renderWins();toast('Date modifiée');}});
 }
 function editWin(id){
   const x=id?S.wins.find(w=>w.id===id):{text:'',date:dk()};
