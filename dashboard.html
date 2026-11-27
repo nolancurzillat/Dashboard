@@ -1675,6 +1675,10 @@ button.vc-time{font:inherit;color:var(--gold2);font-weight:600;background:none;b
 .cd.rt-lg{background:linear-gradient(160deg,rgba(var(--rt),.22),rgba(var(--rt),.1)),rgba(18,21,28,.82)}
 /* Grand accomplissement : trophée mis en avant, liseré doré */
 .cd.has-big{box-shadow:inset 0 0 0 1.5px rgba(242,205,120,.75),0 0 18px rgba(242,205,120,.18)}
+/* Journée parfaite (100 %) : vert foncé dedans, contour doré franc */
+.cd.perfect{border:2px solid #f2cd78;box-shadow:inset 0 0 0 1px rgba(255,226,150,.35),0 0 14px rgba(242,205,120,.35)}
+.cal-leg i.perfect{box-shadow:inset 0 0 0 1.5px #f2cd78}
+.cd.perfect.has-big{box-shadow:inset 0 0 0 1px rgba(255,226,150,.35),0 0 20px rgba(242,205,120,.5)}
 .cd-big{position:absolute;top:6px;right:8px;display:flex;gap:2px;font-size:20px;line-height:1;filter:drop-shadow(0 0 6px rgba(242,205,120,.7));animation:cdBig 2.6s ease-in-out infinite}
 .cd.has-big .cd-n{padding-right:28px}
 @keyframes cdBig{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
@@ -3888,9 +3892,9 @@ function renderCalendar(){
     if(show('life')&&a.wins.length)b.push(`<span class="cb" style="--c:#e0c27a">⭐ ${a.wins.length}</span>`);
     if(show('fin')&&a.fin)b.push(`<span class="cb" style="--c:#8fd1a5">💶 relevé</span>`);
     const dots='';
-    return `<button class="cd ${k===t?'today':''} ${k===calDay?'sel':''} ${fut?'fut':''} ${tier?'rt-'+tier:''} ${a.big.length?'has-big':''}" style="--l:${lvl.toFixed(2)}" title="${tier?`Journée réalisée à ${Math.round(a.rate*100)} %`:''}" onclick="calDay='${k}';renderCalendar();if(innerWidth<=700)setTimeout(()=>$('#calDay').scrollIntoView({behavior:'smooth',block:'start'}),30)"><div class="cd-n">${dt.getDate()}${a.journal||a.evening?'<span title="Journal écrit">✎</span>':''}</div>${big}<div class="cd-b">${b.slice(0,4).join('')}${b.length>4?`<span class="cb more">+${b.length-4}</span>`:''}</div>${dots?`<div class="cd-h">${dots}</div>`:''}</button>`;};
+    return `<button class="cd ${k===t?'today':''} ${k===calDay?'sel':''} ${fut?'fut':''} ${tier?'rt-'+tier:''} ${tier&&Math.round(a.rate*100)>=100?'perfect':''} ${a.big.length?'has-big':''}" style="--l:${lvl.toFixed(2)}" title="${tier?(Math.round(a.rate*100)>=100?'Journée parfaite : 100 %':`Journée réalisée à ${Math.round(a.rate*100)} %`):''}" onclick="calDay='${k}';renderCalendar();if(innerWidth<=700)setTimeout(()=>$('#calDay').scrollIntoView({behavior:'smooth',block:'start'}),30)"><div class="cd-n">${dt.getDate()}${a.journal||a.evening?'<span title="Journal écrit">✎</span>':''}</div>${big}<div class="cd-b">${b.slice(0,4).join('')}${b.length>4?`<span class="cb more">+${b.length-4}</span>`:''}</div>${dots?`<div class="cd-h">${dots}</div>`:''}</button>`;};
   $('#calGrid').innerHTML=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(x=>`<div class="cw">${x}</div>`).join('')+'<div class="cd empty"></div>'.repeat(first)+days.map(cell).join('')
-    +`<div class="cal-leg"><span>Journée réalisée :</span>${CAL_TIERS.map(([c,l])=>`<span><i class="rt-${c}"></i>${l}</span>`).join('')}<span class="cal-leg-n">selon habitudes, objectifs du jour, temps de session et sport · 🏆 grand accomplissement</span></div>`;
+    +`<div class="cal-leg"><span>Journée réalisée :</span>${CAL_TIERS.map(([c,l])=>`<span><i class="rt-${c}"></i>${l}</span>`).join('')}<span><i class="rt-dg perfect"></i>100 % (journée parfaite)</span><span class="cal-leg-n">selon habitudes, objectifs du jour, temps de session et sport · 🏆 grand accomplissement</span></div>`;
   renderCalDay();
 }
 function renderCalDay(){
